@@ -1,0 +1,39 @@
+<tool id="crux_psm_splitter" version="0.6a" name="crux_psm_splitter" >
+
+  <description>
+     Crux PSM splitter for crux percolator output with fido protein level scores.
+  </description>
+  <command>
+<![CDATA[
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_psm_splitter.py
+   -i $target_psm_input
+   -s $target_proteins
+   -q $protein_qvalue
+   -m $cruxmap
+   #if $nsaf=="-r"
+   $nsaf
+   #else
+   -f $fasta
+   #end if
+   2>&1;
+   #if $nsaf=="-r"
+   mv psm-split-output/filtered-spectral-counts-RAW.csv $outputtab
+   #else
+   mv psm-split-output/filtered-spectral-counts-NSAF.csv $outputtab
+   #end if
+]]>
+  </command>
+  <inputs>
+        <param name="target_psm_input" type="data" label="crux percolator target psm outputs" />
+        <param name="target_proteins" type="data" label="crux percolator target protein outputs" />
+        <param name="protein_qvalue" type="float" value="0.01" label="Protein level Q-value filter" />
+        <param name="cruxmap" type="data" label="cruxmap output from crux pin fixer" />
+        <param name="fasta" type="data" format="fasta" label="Protein Database FASTA" />
+        <param name="nsaf" type="boolean" truevalue="nsaf" falsevalue="-r" checked="true" label="Calculate NSAF spectral counts instead of RAW Spec Count values?" />
+  </inputs>
+  <outputs>    
+    <data name="outputtab" format="csv"/>
+  </outputs>
+  <help>
+  </help>
+</tool>

@@ -1,0 +1,374 @@
+<tool id="milkyway_msgfplus_search" name="SILAC TD MSGF+ MSMS Search" version="1.2.6">
+    <description>Run a Separate Target-Decoy MSGF+ Search</description>
+    <command>
+        #set $new_output = $input_file.display_name.split(".")[0]+"_target"
+        #set $new_decoy_output = $input_file.display_name.split(".")[0]+"_decoy"
+        #set $input_name = $input_file.display_name.split(".")[0]
+
+
+        #if $silac.silac_search
+        #set $silac_mods_str = str($silac.silac_mods)
+        #set $parsed_silac_mods = $silac_mods_str.rstrip("___").split("___")
+        #set $i=0
+        #for $each_modstr in $parsed_silac_mods
+            #set $parsed_silac_mods[$i] = $parsed_silac_mods[$i].strip(",")
+            #set $i=$i+1
+        #end for
+
+        #set $num_silac_mods = 0
+              
+        #set $silac_aas=""
+        #set $final_parsed_silac_mods=[]
+
+        #for $each_modstr in $parsed_silac_mods
+            #set $num_silac_mods=$num_silac_mods+1
+            #set $corrected_modstr = $each_modstr.replace("---","___")
+            echo '${corrected_modstr}___';
+            echo 'this was corrected...';
+            #silent $final_parsed_silac_mods.append(corrected_modstr+"___")
+            #if "___" in $corrected_modstr
+                #set $each_modstr_list = $corrected_modstr.split("___")
+                #for $each_inner_modstr in $each_modstr_list
+                    #set $aas = $each_inner_modstr.split(",")[1]
+                    #for $each_aa in $aas
+                        #if not $each_aa in $silac_aas
+                            #set $silac_aas=$silac_aas+","+$each_aa
+                        #end if
+                    #end for
+                #end for
+            #else
+                #set $aas = $each_modstr.split(",")[1]
+                #for $each_aa in $aas
+                    #if not $each_aa in $silac_aas
+                        #set $silac_aas=$silac_aas+","+$each_aa
+                    #end if
+                #end for
+            #end if
+            
+        #end for
+        #set $silac_aas = $silac_aas.lstrip(",")
+
+        #if $silac.search_light
+            #set $num_silac_mods = $num_silac_mods + 1
+            #silent $final_parsed_silac_mods.append("")
+        #end if
+        
+        #set $num_silac_mods_str = str($num_silac_mods)
+        echo '$silac_aas';
+        echo 'We will have $num_silac_mods_str SILAC modifications';
+
+
+        #set $modstr_to_descriptor={}
+        #for $each_modstr in $final_parsed_silac_mods
+            #set $descriptor_lists=$each_modstr.rstrip("___").split("___")
+            #set $this_descriptor=""
+            #for $each_little_str in $descriptor_lists
+                #if $each_little_str != ''
+                    #for $each_aa in each_little_str.split(",")[1]
+                        #set $this_descriptor=$this_descriptor+$each_aa+$each_little_str.split(",")[0].split(".")[0]
+                    #end for
+
+                #end if
+                #pass
+            #end for
+            #if $this_descriptor == ''
+                #set $modstr_to_descriptor[$each_modstr]='light'
+            #else
+                #set $modstr_to_descriptor[$each_modstr]=$this_descriptor
+            #end if
+            echo '$this_descriptor';
+        #end for
+
+
+
+        #else
+            #set $final_parsed_silac_mods=[""]
+            #set $modstr_to_descriptor={}
+            #set $modstr_to_descriptor[""]=''
+        #end if
+
+        mkdir outputs;
+        cd outputs;
+        mkdir targets;
+        mkdir decoys;
+        
+        cp '$input_file' '${input_name}';
+        echo "starting to look at the mods...";
+        #set $file=0
+
+        #for $each_modstr in $final_parsed_silac_mods
+            #set $file_str=str($file)
+            /galaxy-central/tools/wohl-proteomics/MSGFcrux/msgfplus_search.rb
+             --galaxy -d $database.target_fasta_file
+
+             --var-mods='
+             #set $tmp_var_modstr = str($variable_mods)
+             #if $tmp_var_modstr!="None"
+             $tmp_var_modstr
+             #end if
+             '
+             <!--#for $custom_variable_mod in $custom_variable_mods:
+                 #set $custom_mod_str=str($custom_variable_mod.custom_mod)
+                 #if $custom_mod_str!=None
+                 ${custom_mod_str}___
+                 #end if
+             #end for
+             '-->
+
+             --fix-mods='
+             #set $tmp_fix_modstr = str($fixed_mods)
+             #if $tmp_fix_modstr!="None"
+             $tmp_fix_modstr ___$each_modstr
+             #end if
+             '
+             <!--
+             #for $custom_fix_mod in $custom_fix_mods:
+                 #set $custom_fixmod_str=str($custom_fix_mod.custom_mod)
+                 #if $custom_fixmod_str != None
+                 ${custom_fixmod_str}___
+                 #end if
+             #end for
+             '-->
+
+             #if $selenocys
+             --custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___'
+             #end if
+
+             '$input_name'
+             #if $modstr_to_descriptor[$each_modstr] != ""
+             -o 'targets/${modstr_to_descriptor[$each_modstr]}_${new_output}.mzid'
+             #else
+             -o 'targets/${new_output}.mzid'
+             #end if
+             -r 
+             --enzyme=$enzyme 
+             --precursor-ion-tol-units=$precursor_tolu 
+             -p $precursor_ion_tol 
+             --instrument=$instrument
+             --isotope-error-range=$isotope_error_range
+             --fragment-method=$fragment_method
+             --protocol=$protocol
+             --min-pep-len=$min_pep_len
+             --max-pep-len=$max_pep_len
+             --max-pep-charge=$max_pep_charge
+             --ntt=$cleavage_semi
+             --min-pep-charge=$min_pep_charge
+             --num-reported-matches=$num_reported_matches
+             --java-mem=$java_mem
+             --num-mods=$num_mods
+             --threads $threads
+             &amp;
+
+
+             /galaxy-central/tools/wohl-proteomics/MSGFcrux/msgfplus_search.rb
+             --galaxy -d $database.decoy_fasta_file
+
+             #if $selenocys
+             --custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___'
+             #end if
+
+             --var-mods='
+             #set $tmp_var_modstr = str($variable_mods)
+             #if $tmp_var_modstr!="None"
+             $tmp_var_modstr
+             #end if
+             '
+             <!--#for $custom_variable_mod in $custom_variable_mods:
+                 #set $custom_mod_str=str($custom_variable_mod.custom_mod)
+                 #if $custom_mod_str!= None
+                 ${custom_mod_str}___
+                 #end if
+             #end for
+             '-->
+
+             --fix-mods='
+             #set $tmp_fix_modstr = str($fixed_mods)
+             #if $tmp_fix_modstr!="None"
+
+             $tmp_fix_modstr ___$each_modstr
+             #end if
+             '
+<!--             #for $custom_fix_mod in $custom_fix_mods:
+                 #set $custom_fixmod_str=str($custom_fix_mod.custom_mod)
+                 #if $custom_fixmod_str != None
+                 ${custom_fixmod_str}___
+                 #end if
+             #end for
+             '-->
+
+             '$input_name'
+             #if $modstr_to_descriptor[$each_modstr] != ""
+             -o 'decoys/${modstr_to_descriptor[$each_modstr]}_${new_decoy_output}.mzid'
+             #else
+             -o 'decoys/${new_decoy_output}.mzid'
+             #end if
+
+             -r 
+             --enzyme=$enzyme 
+             --precursor-ion-tol-units=$precursor_tolu 
+             -p $precursor_ion_tol 
+             --instrument=$instrument
+             --isotope-error-range=$isotope_error_range
+             --fragment-method=$fragment_method
+             --protocol=$protocol
+             --min-pep-len=$min_pep_len
+             --max-pep-len=$max_pep_len
+             --max-pep-charge=$max_pep_charge
+             --ntt=$cleavage_semi
+             --min-pep-charge=$min_pep_charge
+             --num-reported-matches=$num_reported_matches
+             --java-mem=$java_mem
+             --num-mods=$num_mods
+             --threads $threads
+            &amp;
+        
+             wait ;
+             #set $file=$file+1
+        #end for
+        rm '${input_name}';
+        sleep 45; wait;
+        tar czvf output.tar.gz *;
+        mv 'output.tar.gz' '$output_targz'
+    </command>
+
+    <inputs>
+        <conditional name="database">
+            <param name="source_select" type="select" label="Database source">
+                <option value="input_ref" selected="true">Your Upload File</option>
+            </param>
+            <when value="input_ref">
+                <param name="target_fasta_file" type="data" format="fasta" label="Target FASTA file" />
+                <param name="decoy_fasta_file" type="data" format="fasta" label="Decoy FASTA file" />
+            </when>
+        </conditional>
+        <param name="input_file" type="data" format="mzml" multiple="false" label="MSMS File" help="An mzML file with MS/MS data"/>
+        <param name="num_mods" type="integer" label="Maximum number of modifications per peptide" value="3" min="0" max="20" />
+        <conditional name="silac">
+            <param name="silac_search" type="boolean" checked="true" label="SILAC Search?" truevalue="true" falsevalue="false" />
+            <when value="true">
+                <param name="search_light" type="boolean" checked="true" label="Search unlabeled masses as light?" truevalue="true" falsevalue="false" />
+                <param name="silac_mods" format="text" type="select" multiple="true" label="SILAC Modifications" help="Multiple Selection Allowed">
+                    <options from_file="silac_mods.loc">
+                        <column name="name" index="0" />
+                        <column name="value" index="2" />
+                    </options>
+                </param>
+            </when>
+        </conditional>
+        <param name="variable_mods" format="text" type="select" multiple="true" label="Variable Modifications" help="Multiple Selection Allowed">
+            <options from_file="msgfplus_mods.loc">
+                <column name="name" index="0" />
+                <column name="value" index="2" />
+            </options>
+        </param>
+        <!--<repeat name="custom_variable_mods" title="Custom Variable Modifications" 
+            help="See https://bix-lab.ucsd.edu/pages/viewpage.action?pageId=13533355 for details on how to create these">
+            <param name="custom_mod" type="text" />
+        </repeat>-->
+        <param name="fixed_mods" format="text" type="select" multiple="true" label="Fixed Modifications" help="Multiple Selection Allowed">
+            <options from_file="msgfplus_mods.loc">
+                <column name="name" index="0" />
+                <column name="value" index="2" />
+            </options>
+        </param>
+        <!--
+        <repeat name="custom_fix_mods" title="Custom Fixed Modifications" help="See https://bix-lab.ucsd.edu/pages/viewpage.action?pageId=13533355 for details on how to create these">
+            <param name="custom_mod" type="text">
+            </param>
+        </repeat>-->
+        <param name="selenocys" type="boolean" checked="false" label="Allow selenocystine?" truevalue="true" falsevalue="false" />
+
+        <!--
+	<param name="missed_cleavages" type="select" format="text" help="Allow peptides to contain up to this many missed enzyme cleavage sites">
+            <label>Missed Cleavages Allowed</label>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option selected="true" value="2">2</option>
+        </param>
+	-->
+
+        
+        <param name="cleavage_semi" type="select" format="text" label="Allow semi-cleaved peptides" help="num of required enzymatic termini, this can increase search time dramatically">
+           <option value="0">0 termini (no enzymatic ends)</option>
+           <option value="1">1 terminus (at least 1 enzymatic end)</option>
+           <option value="2" selected="true">2 termini (fully enzymatic)</option>
+        </param>
+	
+
+
+        
+        <param name="enzyme" type="select" format="text">
+            <label>Enzyme</label>
+            <option value="0">unspecific cleavage</option>
+            <option value="1" selected="true">Trypsin</option>
+            <option value="2">Chymotrypsin</option>
+            <option value="3">Lys-C</option>
+            <option value="4">Lys-N</option>
+            <option value="5">glutamyl endopeptidase</option>
+            <option value="6">Arg-C</option>
+            <option value="7">Asp-N</option>
+            <option value="8">alphaLP</option>
+            <option value="9">no cleavage</option>
+        </param>
+        
+        <param name="instrument" type="select" format="text">
+            <label>MS2 Mass Analyzer Type</label>
+            <option value="2">TOF</option>
+            <option value="0">Low-res LCQ/LTQ</option>
+            <option value="1">High-res LTQ</option>
+            <option value="3" selected="true">Q-Exactive</option>
+        </param>
+
+        <param name="fragment_method" type="select" format="text">
+            <label>Fragmentation Method</label>
+            <option value="0">Respect Input File</option>
+            <option value="1">CID</option>
+            <option value="2">ETD</option>
+            <option value="3">HCD</option>
+            <option value="4">Merge spectra from same precursor</option>
+        </param>
+
+        <param name="protocol" type="select" format="text" help="This alters MSGF+ fragmentation scoring paramters based on enriched peptide types...">
+            <label>Protocol</label>
+            <option value="0">NoProtocol</option>
+            <option value="1">Phosphorylation</option>
+            <option value="2">iTRAQ</option>
+            <option value="3">iTRAQPhospho</option>
+            <option value="4">TMT</option>
+        </param>
+
+        <param name="precursor_ion_tol" help="Precursor Ion Tolerance (Da or ppm)" type="float" value="10" min="0" max="10000" label="Precursor ion tolerance"/>
+        <param name="precursor_tolu" type="select" format="text">
+            <label>Precursor Ion Tolerance Units</label>
+            <option value="ppm">ppm</option>
+            <option value="Da">Da</option>
+        </param>
+
+        <param name="isotope_error_range" help="Takes into account of the error introduced by chooosing a non-monoisotopic peak for fragmentation." type="text" size="80" value="0,1" label="Isotope Error Range"/>
+        <param name="min_pep_len" help="" type="integer" value="6" label="Minimum Peptide Length"/>
+        <param name="max_pep_len" help="" type="integer" value="40" label="Maximum Peptide Length"/>
+        <param name="min_pep_charge" help="" type="integer" value="2" label="Minimum Peptide Charge"/>
+        <param name="max_pep_charge" help="" type="integer" value="6" label="Maximum Peptide Charge"/>
+        <param name="num_reported_matches" help="Number of matches per spectrum to be reported" type="integer" value="1" label="Num reported matches"/>
+        <param name="java_mem" help="Increase this value if you get out of memory errors" type="text" size="80" value="3500M" label="Java Memory Limit"/>
+        <param name="threads" type="integer" value="16" label="Threads" help="Number of threads to use for search."/>        
+    </inputs>
+    <outputs>
+        <data name="output_targz" metadata_source="input_file">
+        </data>
+    </outputs>
+
+    <help>
+        tar cf - * | pigz > output.tar.gz;
+**What it does**
+
+Runs an MS/MS database search using the MSGFPlus search engine. Output is in the form of a mzid file containing identified peptides along with their raw search scores.
+
+----
+
+**References**
+
+Please see http://proteomics.ucsd.edu/Software/MSGFPlus.html for details of the MSGFPlus search engine and references describing its algorithm
+
+    </help>
+</tool>

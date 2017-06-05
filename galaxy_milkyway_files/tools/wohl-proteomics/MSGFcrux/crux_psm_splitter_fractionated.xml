@@ -1,0 +1,164 @@
+<tool id="milkyway_spectral_counts" version="0.9c" name="milkyway_spectral_counts" >
+
+  <description>
+     Crux PSM splitter for crux percolator output with fido protein level scores.
+  </description>
+  <command>
+   tar -xzvf $crux_perco_tar_gz;
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.py
+   -i output/
+   -s $fido_output
+   -q $protein_qvalue
+   -m $cruxmap
+   -t $psm_qvalue
+   $groupquant
+   --decoystr ${decoy_str}
+   -l protein
+   -f $fasta
+   #if $localization_filter.localization_type=="ptmRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="phosphoRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="LuciPHOr"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.luciphor_threshold
+   #end if
+   2>&amp;1;
+   mv psm-split-output/filtered-spectral-counts-NSAF.csv $outputnsaf;
+   
+
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.py
+   -i output/
+   -s $fido_output
+   -q $protein_qvalue
+   -m $cruxmap
+   -t $psm_qvalue
+   #if $saint_outputs
+   --saint ${saint_interact_raw},${saint_bait_raw},${saint_prey_raw}
+   #end if
+   $groupquant   
+   --decoystr ${decoy_str}
+   -l protein
+   -r
+   -f $fasta
+   #if $localization_filter.localization_type=="ptmRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="phosphoRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="LuciPHOr"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.luciphor_threshold
+   #end if
+   2>&amp;1;
+   mv psm-split-output/filtered-spectral-counts-RAW.csv $outputraw;
+
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.py
+   -i output/
+   -s $fido_output
+   -q $protein_qvalue
+   -m $cruxmap
+   -t $psm_qvalue
+   $groupquant   
+   --decoystr ${decoy_str}
+   -l peptide
+   -f $fasta
+   #if $localization_filter.localization_type=="ptmRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="phosphoRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="LuciPHOr"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.luciphor_threshold
+   #end if
+   2>&amp;1;
+   mv psm-split-output/filtered-spectral-counts-NSAF.csv $peptideoutputnsaf;
+
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.py
+   -i output/
+   -s $fido_output
+   -q $protein_qvalue
+   -m $cruxmap
+   -t $psm_qvalue
+   $groupquant   
+   --decoystr ${decoy_str}
+   -l peptide
+   -r
+   -f $fasta
+   #if $localization_filter.localization_type=="ptmRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="phosphoRS"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.ptmRS_threshold
+   #else if $localization_filter.localization_type=="LuciPHOr"
+   --ptmThresholdType $localization_filter.localization_type
+   --ptmThreshold $localization_filter.luciphor_threshold
+   #end if
+   2>&amp;1;
+   mv psm-split-output/filtered-spectral-counts-RAW.csv $peptideoutputraw
+
+
+
+
+
+
+  </command>
+  <inputs>
+        <param name="crux_perco_tar_gz" type="data" label="crux percolator tar gz file" />
+        <param name="fido_output" type="data" label="Fido output file" />
+        <!--<param name="quant_level" type="boolean" truevalue="peptide" falsevalue="protein" checked="false" label="Peptide level quantification?" help="otherwise, protein level... No protein level q-value filtering for this" />-->
+        <param name="protein_qvalue" type="float" value="0.01" label="Protein level Q-value filter" />
+        <param name="psm_qvalue" type="float" value="0.01" label="PSM level Q-value filter" />
+        <conditional name="localization_filter">
+            <param name="localization_type" type="select" label="Filter for peptide PTM localization confidence?">
+                <option value="none">None</option>
+                <option value="ptmRS">ptmRS</option>
+                <option value="phosphoRS">phosphoRS</option>
+                <option value="LuciPHOr">LuciPHOr</option>
+            </param>
+            <when value="ptmRS">
+            <param name="ptmRS_threshold" type="float" value=".95" min="0.0" max="1.00" label="ptmRS filter threshold (higher is better)" />
+            </when>
+            <when value="phosphoRS">
+            <param name="phosphoRS_threshold" type="float" value=".95" min="0.0" max="1.00" label="phosphoRS filter threshold (higher is better)" />
+            </when>
+            <when value="LuciPHOr">
+            <param name="luciphor_threshold" type="float" value=".05" min="0.0" max="1.00" label="LuciPHOr global FLR filter threshold (lower is better)" />
+            </when>
+        </conditional>
+        <param name="cruxmap" type="data" label="cruxmap output from crux pin fixer" />
+        <param name="fasta" type="data" format="fasta" label="Protein Database FASTA" />
+        <!--<param name="nsaf" type="boolean" truevalue="-r" falsevalue="" checked="false" label="Calculate RAW spectral counts instead of NSAF values?" />-->
+        <param name="saint_outputs" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Write SAINT analysis inputs?" help="Write SAINT input files for enrichment analysis" />
+        <param name="groupquant" type="boolean" truevalue="--groupquant average" falsevalue="" checked="false" label="Collapse ambiguous protein group quantities?" help="Protein groups will be quantitatively represented as the average of their values..." />
+        <param name="decoy_str" type="text" value="Reverse_" label="Decoy String for SAINT removal" />
+
+  </inputs>
+  <outputs>    
+    <data name="outputraw" format="tabular" label="Protein SpC Output"/>
+    <data name="outputnsaf" format="tabular" label="Protein NSAF Output"/>
+    <data name="peptideoutputraw" format="tabular" label="Peptide SpC Output"/>
+    <data name="peptideoutputnsaf" format="tabular" label="Peptide NSAF Output"/>
+    #if $saint_outputs
+    <data name="saint_bait_raw" format="tabular" label="SAINT RAW Bait Input"/>
+    <data name="saint_prey_raw" format="tabular" label="SAINT RAW Prey Input"/>
+    <data name="saint_interact_raw" format="tabular" label="SAINT RAW Interact Input"/>
+    <!--<data name="saint_bait_nsaf" format="tabular" label="SAINT NSAF Bait Input"/>
+    <data name="saint_prey_nsaf" format="tabular" label="SAINT NSAF Prey Input"/>
+    <data name="saint_interact_nsaf" format="tabular" label="SAINT NSAF Interact Input"/> -->
+    #end if    
+  </outputs>
+  <help>
+   <!--if $nsaf
+   mv psm-split-output/filtered-spectral-counts-RAW.csv $outputtab
+   else
+   mv psm-split-output/filtered-spectral-counts-NSAF.csv $outputtab
+   end if-->
+  </help>
+</tool>

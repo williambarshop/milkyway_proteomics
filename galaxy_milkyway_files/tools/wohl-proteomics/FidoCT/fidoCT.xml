@@ -1,0 +1,18 @@
+<tool id="fidoCT" name="FidoCT">
+    <description>Efficient Protein Inference</description>
+    <version_string>0.0.1</version_string>
+    <command interpreter="python"> fidoCT_wrapper.py $fidoout $roc_curve $stdout $errout FidoCT.exe $fidoin $fidoin $fidotd</command>
+    <inputs>
+        <param name="fidoin" type="data" label="Fido input graph file" />
+        <param name="fidotd" type="data" label="FidoCT target-decoy input data" />
+    </inputs>
+    
+    <outputs>
+        <data name="fidoout"/>
+        <data name="roc_curve"/>
+        <data name="stdout"/>
+        <data name="errout"/>
+    </outputs>
+    
+
+</tool>

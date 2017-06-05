@@ -1,0 +1,108 @@
+<tool id="ptmRSmax" version="0.1.7" name="ptmRSmax" >
+
+  <description>
+     ptmRS algorithm for PTM localization
+  </description>
+  <command>
+  #set $tmp_unscored_modstr = str($unscoredmods).replace("___,","___")
+  #set $tmp_scored_modstr = str($scoredmods).replace("___,","___")
+  echo $tmp_unscored_modstr ;
+  echo $tmp_scored_modstr ;
+
+   #set $mzml_list = ""
+   #for $each in $mzml_files:
+       #set $mzml_list+= "\""
+       cp '$each' '${each.display_name}';
+       #set $mzml_list+=$str($each.display_name)
+       #set $mzml_list+= "\""
+       #set $mzml_list+= ","
+   #end for
+   #set $mzml_list=mzml_list[:-1]
+
+
+   cwd=`pwd`;
+   tar -zxvf $perco_out;
+   python /galaxy-central/tools/wohl-proteomics/ptmRSmax/ptmrsmax_wrapper.py
+   /galaxy-central/tools/wohl-proteomics/ptmRSmax/ptmRSmax.exe 
+   --pout output/
+   --ms2tol $ms2tol
+   --scored $tmp_scored_modstr
+   --unscored $tmp_unscored_modstr
+
+   $scoreneutrallosses
+   --mp $maxnumperm
+   --nt $numthreads
+   --filter $filter
+   #if $silac.usesilac
+   --silac "${silac.silacmods}"
+   #else
+   --silac "-"
+   #end if
+   #if $xml.provided
+   --xml $xml.provided_xml
+   #end if
+   --expgroups $exp_file
+   --mzml $mzml_list
+    2>&amp;1;
+    find . -type f -name '*.mzML' -delete;
+    tar -cvf - output/ 2>/dev/null | pigz -9 -p 24 > $crux_tar_gz 2>&amp;1
+  </command>
+  <inputs>
+        <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
+        <param name="mzml_files" type="data" multiple="true" label="mzML files used in search"/>
+        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
+        <param name="ms2tol" type="float" value="0.02" label="MS2 Fragment Ion Tolerance" help="Units given as Daltons" />
+        <param name="filter" type="float" value="0.10" label="Percolator q-value threshold" help="Given as MAXIMUM percolator q-value (ie all PSMs lower than or equal to this q-value are scored)" />
+
+        <param name="scoredmods" format="text" type="select" multiple="true" label="SCORED Modifications" help="Multiple Selection Allowed">
+            <options from_file="msgfplus_mods.loc">
+                <column name="name" index="0" />
+                <column name="value" index="2" />
+            </options>
+        </param>
+
+        <param name="unscoredmods" format="text" type="select" multiple="true" label="UNSCORED Modifications" help="Multiple Selection Allowed">
+            <options from_file="msgfplus_mods.loc">
+                <column name="name" index="0" />
+                <column name="value" index="2" />
+            </options>
+        </param>
+
+        <conditional name="silac">
+            <param name="usesilac" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Use SILAC searching?" />
+            <when value="true">
+                <param name="silacmods" type="text" value="-,KR 6.020129,K 8.020129 R 10.027228" label="Unscored SILAC Modifications" help="Example shows a triplex SILAC... When not using SILAC modifications (or when including LIGHT [read:unlabeled]), please enter as a single dash (-)."/>
+            </when>
+        </conditional>
+        <param name="scoreneutrallosses" type="boolean" truevalue="--scorenl" falsevalue="" label="Use NL for scoring?" />
+        <param name="maxnumperm" type="integer" value="65536" help="Maximum number of permutations per sequence. Default is 16384" label="Maximum permutations per sequence" />
+        <param name="numthreads" type="integer" value="16" min="0" max="32" label="Number of threads" help="0 uses all available cores." />
+        <conditional name="xml">
+            <param name="provided" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Provide custom ptmRS XML file (advanced usage)" />
+            <when value="true">
+                <param name="provided_xml" type="data" format="xml" label="Provided ptmRS.XML file" />
+            </when>
+        </conditional>
+  </inputs>
+  <outputs>
+    <data name="crux_tar_gz" />
+  </outputs>
+  <help>
+   --target "$targetmods"
+   --targetnames "$targetmodnames"
+   --nl "$neutrallosses"
+
+   --di "DOLLARdiagnostic_ions"
+       ram name="diagnostic_ions" type="text" value="S 152.97690,-" label="Diagnostic ions for scoring" help="List the diagnostic ions that you want to consider... use a single dash (-) to indicate no DIs" 
+   #if $variablemods!=""
+   --variable "$variablemods"
+   #end if
+        param name="variablemods" type="text" value="C 57.021464" label="UNSCORED Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915,KR 14.015650 --using commas to separate mods."
+        param name="targetmodnames" type="text" value="phospho,oxidation" label="Modification Names for Scoring"
+        param name="targetmods" type="text" value="STY 79.966331,M 15.994915" label="Variable Modifications for Scoring"
+        param name="neutrallosses" type="text" value="ST -97.97690,-" label="Neutral losses for scoring" help="List the types of neutral losses that you want to consider... use a single dash (-) to indicate no NLs"
+
+
+
+  </help>
+</tool>

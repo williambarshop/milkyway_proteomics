@@ -1,0 +1,28 @@
+<toolbox monitor="true">
+  <section name="Wohl-Proteomics" id="wohlprot">
+    <tool file="wohl-proteomics/MSGFcrux/crux_percolator_fractionated.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/crux_pin_fixer_fractionated.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/crux_psm_splitter.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/tab_percolator_to_fido_fractionated.xml" />
+    <tool file="wohl-proteomics/fido/fido.xml" />
+    <tool file="wohl-proteomics/FidoCT/fidoCT.xml" />
+    <tool file="wohl-proteomics/fido/fido_q_values.xml" />
+    <tool file="wohl-proteomics/msgf2pin/silac_msgf2pin_fractions.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/msgfplus_search.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/silac_td_msgfplus_search.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/wohl_experiment_data.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.xml" />
+    <tool file="wohl-proteomics/MSGFcrux/mzml_mass_corrector.xml" />
+    <tool file="wohl-proteomics/luciphor2/luciphor2.xml" />
+    <tool file="wohl-proteomics/ptmRSmax/ptmrsmax.xml" />
+    <tool file="wohl-proteomics/ssl_converter/ssl_converter.xml" />
+    <tool file="wohl-proteomics/SAINTexpress/saintexpress.xml" />
+    <tool file="wohl-proteomics/SAINTq/saintq.xml" />
+    <tool file="wohl-proteomics/wohl_skyline/skyline.xml" />
+    <tool file="wohl-proteomics/wohl_skyline/msstats.xml" />
+    <tool file="wohl-proteomics/wohl_skyline/msstats_plots.xml" />
+    <tool file="wohl-proteomics/wohl_skyline/rdata_packaging.xml" />
+    <tool file="wohl-proteomics/psm_extract/psm_extract.xml" />
+    <tool file="wohl-proteomics/diaumpire/dia_umpire.xml" />
+  </section>
+</toolbox>

@@ -1,0 +1,129 @@
+<tool id="skylinerunner" version="0.1.0a" name="Skyline" >
+
+  <description>
+	Skyline intensity based quantitation via the SkylineRunner interface!
+  </description>
+  <command>
+      python ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database} $add_mods
+      --mode ${ms_level.quant_type}
+      #if $ms_level.quant_type=="dda_ms1"
+      --ms1_res ${ms_level.ms1_resolution}
+      --ms1_res_mz ${ms_level.ms1_res_mz}
+      #else if $ms_level.quant_type=="ms2_prm"
+      --ms2_res ${ms_level.ms2_resolution}
+      --ms2_res_mz ${ms_level.ms2_res_mz}
+      #else if $ms_level.quant_type=="dia"
+      --ms1_res ${ms_level.ms1_resolution_dia}
+      --ms1_res_mz ${ms_level.ms1_res_mz_dia}
+      --ms2_res ${ms_level.ms2_resolution_dia}
+      --ms2_res_mz ${ms_level.ms2_res_mz_dia}
+      --skyline_file ${ms_level.skyline_file_dia}
+      #else if $ms_level.quant_type=="provided_file"
+      --skyline_file ${ms_level.skyline_file}
+      #end if
+      --rt_tolerance $rt_tolerance
+      $add_mods
+      #if $msstats
+      --msstats $output_msstats
+      #end if
+      $mprophet
+      #if $protdb_upload.protdb
+      #set $protdb_file = $str($protdb_upload.protdb_file)
+      --protdb $protdb_file
+      #else
+      #set $background_database = $str($protdb_upload.background_database)
+      #set $enzyme = $str($protdb_upload.enzyme)
+      #set $missedcleave = $str($protdb_upload.missedcleave)
+      --background_db $background_database
+      --enzyme $enzyme
+      --missedcleave $missedcleave
+      #end if
+      --exp_file $exp_file
+      $makeblib
+      --output $output
+      --chromatograms_file $output_chromatograms
+      --peak_boundaries $output_boundaries
+      --num_procs $num_procs ; sleep 5 
+  </command>
+  <inputs>
+        <param name="ssl_and_mzml" type="data" label="SSL tar.gz file with data included"/>
+        <param name="fractions" type="boolean" truevalue="--fractions" falsevalue="" checked="False" label="Fractionated Dataset?"/>
+        <param name="makeblib" type="boolean" truevalue="--makeblib" falsevalue="" checked="False" label="Make new BLIB files?" help="Please use SSL converter when doing PTM localization studies! This will include type2 PSMs!" />
+        <param name="database" type="data" format="fasta" label="FASTA Database for Quantitation (Accepted Proteins)"/>
+        <param name="msstats" type="boolean" checked="True" label="Generate MSstats files?"/>
+        <param name="exp_file" type="data"  label="Experiment Map File"/>
+
+        <conditional name="ms_level">
+            <param name="quant_type" type="select" label="Choose quantitation type" help="Skyline Document Upload, DDA-MS1, t-MS2 (PRM), DIA MS1+2 msx" >
+               <option value="provided_file">Skyline Document Upload</option>
+               <!--<option value="dda_ms1">DDA MS1</option>
+               <option value="ms2_prm">MS2-PRM</option>
+               <option value="dia">DIA_MS1+2</option>-->
+            </param>
+
+            <when value="dda_ms1">
+                <param name="ms1_resolution" type="integer" value="70000" label="Resolution of MS1 scans" />   
+                <param name="ms1_res_mz" type="integer" value="200" label="m/z for MS1 resolution definition" />
+            </when>
+
+            <when value="ms2_prm">
+                <param name="ms2_resolution" type="integer" value="17500" label="Resolution of MS2 scans" />   
+                <param name="ms2_res_mz" type="integer" value="200" label="m/z for MS2 resolution definition" />        
+            </when>
+
+            <when value="dia">
+                <param name="ms1_resolution_dia" type="integer" value="70000" label="Resolution of MS1 scans" />   
+                <param name="ms1_res_mz_dia" type="integer" value="200" label="m/z for MS1 resolution definition" />
+                <param name="ms2_resolution_dia" type="integer" value="17500" label="Resolution of MS2 scans" />   
+                <param name="ms2_res_mz_dia" type="integer" value="200" label="m/z for MS2 resolution definition" />        
+            </when>
+            <when value="provided_file">
+                <param name="skyline_file" type="data" label="Skyline File Upload" />
+            </when>
+               
+        </conditional>
+
+        <param name="rt_tolerance" type="float" value="2.0" label="RT window for chromatogram extraction (+/- min)" help="Time is in minutes..." />
+        <param name="add_mods" type="boolean" truevalue="--add_mods" falsevalue="" checked="true" label="Add found mods in Skyline?" />
+    <conditional name="protdb_upload">
+        <param name="protdb" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Upload protdb libraries?" />
+        <when value="true">
+        <param name="protdb_file" optional="true" value="0" type="data" label="protdb file for skyline" />
+        </when>
+        <when value="false">
+        <param name="background_database" type="data" format="fasta" label="FASTA Database for ProtDB" />
+        <param name="enzyme" type="select" label="Choose Proteolytic Enzyme" help="You should match this to the document you uploaded..." >
+               <option value="Trypsin">Trypsin [K|R]^P</option>
+               <option value="TrypsinP">Trypsin/P [K|R]</option>
+               <option value="Chymotrypsin">Chymotrypsin [F|W|Y|L]^P</option>
+        </param>
+        <param name="missedcleave" type="integer" value="0" min="0" max="9" label="Number of allowable missed cleavages" />
+        </when>
+
+    </conditional>
+
+        <param name="mprophet" type="select" label="Use mProphet model?" help="How to build the mProphet model?" >
+           <option value="--mprophet decoy">(MS1) Mass Shifted Decoy Peptides</option>
+           <option value="--mprophet secondbest">(MS1 or MS2) Second Best Peaks</option>
+           <option value="--mprophet reverse">(MS2) Reverse Peptides</option>
+           <option value="--mprophet shuffle">(MS2) Shuffled Peptides</option>
+           <option value="">None</option>
+        </param>
+
+        <param name="num_procs" type="integer" value="6" min="0" max="32" label="Number of parallel import processes" />
+
+
+  </inputs>
+  <outputs>
+    <data name="output" label="Skyline tar.gz Output"/>
+    <data name="output_msstats" label="MSstats Input CSV"> <!--format="csv"-->
+    <filter>$msstats</filter>
+    </data>
+    <data name="output_chromatograms" label="Skyline Chromatograms TSV" /> <!--format="tabular"-->
+    <data name="output_boundaries" label="Skyline Boundaries CSV"/> <!--format="csv"-->
+
+  </outputs>
+  <help>
+    This was coded for use with Skyline-Daily v3.6.1.10690 and NEWER releases.
+  </help>
+</tool>

@@ -1,0 +1,105 @@
+#This file lists the names of inbuilt chemical modifications accepted by msgfplus
+#Each entry consists of 4 tab separated fields like this
+#<Displayed Name>	<DBKey>	<Modification String>	<DBKey>
+#
+#Modification strings should conform to the standard MSGFPlus syntax with the following exception
+#The ModType field is overridden by the msgfplus_search.rb tool. In other words any of these mods
+#May be passed to the tool as a variable or fixed mod and the tool will substitute the appropriate ModType
+#value
+#
+#Standard MSGFPlus syntax is
+#
+# To input a modification, use the following command:
+# Mass or CompositionStr, Residues, ModType, Position, Name (all the five fields are required).
+# CompositionStr (C[Num]H[Num]N[Num]O[Num]S[Num]P[Num])
+# 	- C (Carbon), H (Hydrogen), N (Nitrogen), O (Oxygen), S (Sulfer) and P (Phosphorus) are allowed.
+# 	- Atom can be omitted. The sequence of atoms must be followed. 
+# 	- Negative numbers are allowed.
+# 	- E.g. C2H2O1 (valid), H2C1O1 (invalid) 
+# Mass can be used instead of CompositionStr. It is important to specify accurate masses (integer masses are insufficient).
+# 	- E.g. 15.994915 
+# Residues: affected amino acids (must be upper letters)
+# 	- Must be uppor letters or *
+# 	- Use * if this modification is applicable to any residue. 
+# 	- * should not be "anywhere" modification (e.g. "15.994915, *, opt, any, Oxidation" is not allowed.) 
+# 	- E.g. NQ, *
+# ModType: "fix" for fixed modifications, "opt" for variable modifications (case insensitive)
+# Position: position in the peptide where the modification can be attached. 
+# 	- One of the following five values should be used:
+# 	- any (anywhere), N-term (peptide N-term), C-term (peptide C-term), Prot-N-term (protein N-term), Prot-C-term (protein C-term) 
+# 	- Case insensitive
+# 	- "-" can be omitted
+# 	- E.g. any, Any, Prot-n-Term, ProtNTerm => all valid
+# Name: name of the modification (Unimod PSI-MS name)
+# 	- For proper mzIdentML output, this name should be the same as the Unimod PSI-MS name
+# 	- E.g. Phospho, Acetyl
+#C2H3N1O1,C,fix,any,Carbamidomethyl 		# Fixed Carbamidomethyl C
+# Variable Modifications (default: none)
+#O1,M,opt,any,Oxidation				# Oxidation M
+#15.994915,M,opt,any,Oxidation			# Oxidation M (mass is used instead of CompositionStr)
+#H-1N-1O1,NQ,opt,any,Deamidated			# Negative numbers are allowed.
+#C2H3NO,*,opt,N-term,Carbamidomethyl		# Variable Carbamidomethyl N-term
+#H-2O-1,E,opt,N-term,Pyro_glu			# Pyro-glu from E
+#H-3N-1,Q,opt,N-term,Pyro-glu			# Pyro-glu from Q
+#C2H2O,*,opt,Prot-N-term,Acetyl			# Acetylation Protein N-term
+#C2H2O1,K,opt,any,Acetyl			# Acetylation K
+#CH2,K,opt,any,Methy				# Methylation K
+#HO3P,STY,opt,any,Phospho			# Phosphorylation STY
+
+Carbamidomethyl C	carbamidomethyl_c_	C2H3N1O1,C,opt,any,Carbamidomethyl,___	carbamidomethyl_c_
+Oxidation M	oxidation_m_	O1,M,opt,any,Oxidation,___	oxidation_m_
+Phosphorylation STY	phospho_sty_	HO3P,STY,opt,any,Phospho,97.976896ST___	phospho_sty_
+Methyl K	methyl_k_	CH2,K,opt,any,Methyl,___	methyl_k_
+Methyl R	methyl_r_	CH2,R,opt,any,Methyl,___	methyl_r_
+Dimethyl K	dimethyl_k_	C2H4,K,opt,any,Dimethyl,___	dimethyl_k_
+Dimethyl R	dimethyl_r_	C2H4,R,opt,any,Dimethyl,___	dimethyl_r_
+Trimethyl K	trimethyl_k_	C3H6,K,opt,any,Trimethyl,___	trimethyl_k_
+Trimethyl R	trimethyl_r_	C3H6,R,opt,any,Trimethyl,___	trimethyl_r_
+Acetyl K	acetyl_k_	C2H2O1,K,opt,any,Acetyl,___	acetyl_k_
+Acetyl (Protein N-term)	acetyl_proteinn-term_	C2H2O,*,opt,Prot-N-term,Acetyl,___	acetyl_proteinn-term_
+Deamidated NQ	deamidated_nq_	H-1N-1O1,NQ,opt,any,Deamidated,___	deamidated_nq_
+Ubiquitinyl-GG K	ubiquitinylation_k_	C4H6N2O2,K,opt,any,GG,___	ubiquitinylation_k_
+C13-N15-Heavy K	C13N15heavy_lysine_k_	8.014199,K,opt,any,Label:13C(6)15N(2),___	C13N15heavy_k_
+C13-N15-Heavy R	C13N15heavy_arginine_r_	10.008269,R,opt,any,Label:13C(6)15N(4),___	C13N15heavy_r_
+C13-Heavy K	C13heavy_lysine_k_	6.020129,K,opt,any,Label:13C(6),___	C13heavy_k_
+C13-Heavy R	C13heavy_arginine_r_	6.020129,R,opt,any,Label:13C(6),___	C13heavy_r_
+cleav-ICAT-LIGHT	cleav-icat_c_	227.126991,C,opt,any,ICAT-C,___	cleav-icat_c_
+cleav-ICAT-HEAVY	cleav-icat-heavy_c_	236.157185,C,opt,any,ICAT-C:13C(9),___	cleav-icat-heavy_c_
+cleav-ICAT-HEAVYDIFF	cleav-icat-heavydiff_c_	9.030193,C,opt,any,ICAT-13C-DIFF,___	cleav-icat-heavydiff_c_
+2H-Monomethyl K	2Hmonomethyl_lysine_k_	17.034480,K,opt,any,Methyl:2H(3),___	deuterated-methyl-ester_k_
+2H-Monomethyl R	2Hmonomethyl_arginine_r_	17.034480,R,opt,any,Methyl:2H(3),___	deuterated-methyl-ester_r_
+2H-Dimethyl K	2HDimethyl_lysine_k_	34.068961,K,opt,any,Dimethyl:2H(6),___	deuterated-dimethyl-ester_k_
+2H-Dimethyl R	2HDimethyl_arginine_r_	34.068961,R,opt,any,Dimethyl:2H(6),___	deuterated-dimethyl-ester_r_
+2H-Trimethyl K	2HTrimethyl_lysine_k_	51.103441,K,opt,any,Trimethyl:2H(9),___	deuterated-trimethyl-ester_k_
+2H-Trimethyl R	2HTrimethyl_arginine_r_	51.103441,R,opt,any,Trimethyl:2H(9),___	deuterated-trimethyl-ester_r_
+Trideuterated M	Trideuteration_methionine_m_	3.018830232,M,opt,any,Label:2H(3),___	trideuteration_m_
+Methyl D	methyl_d_	CH2,D,opt,any,Methyl,___	methyl_e_
+Methyl E	methyl_e_	CH2,E,opt,any,Methyl,___	methyl_d_
+Dimethyl D	dimethyl_d_	C2H4,D,opt,any,Dimethyl,___	dimethyl_e_
+Dimethyl E	dimethyl_e_	C2H4,E,opt,any,Dimethyl,___	dimethyl_d_
+Trimethyl D	trimethyl_d_	C3H6,D,opt,any,Trimethyl,___	trimethyl_e_
+Trimethyl E	trimethyl_e_	C3H6,E,opt,any,Trimethyl,___	trimethyl_d_
+2H-Monomethyl D	2Hmonomethyl_lysine_d_	17.034480,D,opt,any,Methyl:2H(3),___	deuterated-methyl-ester_d_
+2H-Monomethyl E	2Hmonomethyl_arginine_e_	17.034480,E,opt,any,Methyl:2H(3),___	deuterated-methyl-ester_e_
+2H-Dimethyl D	2HDimethyl_lysine_d_	34.068961,D,opt,any,Dimethyl:2H(6),___	deuterated-dimethyl-ester_d_
+2H-Dimethyl E	2HDimethyl_arginine_e_	34.068961,E,opt,any,Dimethyl:2H(6),___	deuterated-dimethyl-ester_e_
+2H-Trimethyl D	2HTrimethyl_lysine_d_	51.103441,D,opt,any,Trimethyl:2H(9),___	deuterated-trimethyl-ester_d_
+2H-Trimethyl E	2HTrimethyl_arginine_e_	51.103441,E,opt,any,Trimethyl:2H(9),___	deuterated-trimethyl-ester_e_
+Dimedone C	dimedone_c_	C8H10O2,C,opt,any,ICDID,___	dimedone_c_
+2-monomethylsuccinyl C	2-monomethylsuccinyl_cysteine_c	C5H6O4,C,opt,any,2-monomethylsuccinyl,___	2-monomethylsuccinyl_c_
+2-dimethylsuccinyl C	2-dimethylsuccinyl_cysteine_c	C6H8O4,C,opt,any,2-dimethylsuccinyl,___	2-dimethylsuccinyl_c_
+2-succinyl C	2-succinyl_cysteine_c	C4H4O4,C,opt,any,2-succinyl,___	2-succinyl_c_
+2-monomethylsuccinyl U	2-monomethylsuccinyl_cysteine_u	C5H6O4,U,opt,any,2-monomethylsuccinyl,___	2-monomethylsuccinyl_u_
+2-dimethylsuccinyl U	2-dimethylsuccinyl_cysteine_u	C6H8O4,U,opt,any,2-dimethylsuccinyl,___	2-dimethylsuccinyl_u_
+2-succinyl U	2-succinyl_cysteine_u	C4H4O4,U,opt,any,2-succinyl,___	2-succinyl_u_
+Carbamidomethyl U	carbamidomethyl_u_	C2H3N1O1,U,opt,any,Carbamidomethyl,___	carbamidomethyl_u_
+Sec->Dha U	SecToDha_u_	-81.93216967,U,opt,any,Sec->Dha,___	SecToDha_u_
+TMT6or10 plex K	TMT6plex_k_	229.162932,K,opt,any,TMT6plex,___	TMT6plex_k_
+TMT6or10 plex PepNterm	TMT6plex_PepNTerm_	229.162932,*,opt,N-term,TMT6plex,___	TMT6plex_N-term_
+TMT2 plex K	TMT2plex_k_	225.155833,K,opt,any,TMT2plex,___	TMT2plex_k_
+TMT2 plex PepNterm	TMT2plex_PepNTerm_	225.155833,*,opt,N-term,TMT2plex,___	TMT2plex_N-term_
+TMT0 K	TMT_k_	224.152478,K,opt,any,TMT,___	TMT_k_
+TMT0 PepNterm	TMT_PepNTerm_	224.152478,*,opt,N-term,TMT,___	TMT_N-term_
+iodoTMT0 C	iodoTMT_c_	324.216141,C,opt,any,iodoTMT,___	iodoTMT_C_
+iodoTMT6plex C	iodoTMT6plex_c_	329.226595,C,opt,any,iodoTMT6plex,___	iodoTMT6plex_C_
+#No-Mod X	nomod_x_	,,,,___	nomod_x_

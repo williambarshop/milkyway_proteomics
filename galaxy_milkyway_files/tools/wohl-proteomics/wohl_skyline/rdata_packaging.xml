@@ -1,0 +1,130 @@
+<tool id="RdataPackaging" version="0.5.0a" name="Rdata packaging" >
+
+  <description>
+	Rdata packaging tool
+  </description>
+  <command>
+   <!--#set $history_id=$__app__.security.encode_id($RDataOutput.creating_job.history.id)
+   #set $history_name=$RDataOutput.creating_job.history.name
+   #set $job_id=$__app__.security.encode_id($RDataOutput.creating_job.id)-->
+   <!--#set $job_id=$RDataOutput.creating_job.id-->
+
+   <!--#set $job_id = $RDataOutput.creating_job_associations-->
+   #for $associations in $RDataOutput.creating_job_associations   
+       #set $job_id=$__app__.security.encode_id($associations.job.id)
+   #end for
+
+   #set $ms2_dataset_id = $__app__.security.encode_id($MS2Output.id)
+
+   #set $mzml_list = ""
+   #for $each in $mzml:
+       #set $mzml_list+= "\""
+       ln -s '$each' '${each.display_name}';
+       #set $mzml_list+=$str($each.display_name)
+       #set $mzml_list+= "\""
+       #set $mzml_list+= "___"
+   #end for
+   #set $mzml_list=mzml_list[:-3]
+
+python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
+<!-- COMMON EXPERIMENT OPTIONS -->
+--analysis_type $analysis_type.selection
+--experiment_file ${experiment_map}
+--nsaf_table $nsaf_table
+--spc_table $spc_table
+--peptide_nsaf_table $peptide_nsaf_table
+--peptide_spc_table $peptide_spc_table
+--fido_roc $fido_roc
+--RDataOutput $RDataOutput
+--RScriptOutput $RScriptOutput
+--psm_table $psm_table
+--fasta $fasta
+--job_id $job_id
+--MS2Output $MS2Output
+--MS2Output_id $ms2_dataset_id
+--mzml $mzml_list
+--renameProteinType $renameType
+
+<!--LFQ SPECIFIC OPTIONS-->
+#if $analysis_type.selection=="lfq"
+    --skyline_chromatograms ${analysis_type.skyline_chromatograms}
+    --msstats_comparison $analysis_type.msstats_comparison
+    --msstats_condition $analysis_type.msstats_condition
+    --msstats_quantification $analysis_type.msstats_quantification
+    --msstats_skyline_input $analysis_type.msstats_skyline_input
+    --skyline_boundaries $analysis_type.skyline_boundaries
+    --saint_table $analysis_type.saint_table
+    #if $analysis_type.filter_decoys
+    --filter_decoys
+    #end if
+
+<!--QUALITATIVE-SpC-COMPARISON SPECIFIC OPTIONS-->
+#elif $analysis_type.selection=="qualCompare"
+    --saint_table $analysis_type.saint_table
+
+<!--ISOBARIC TAGGING SPECIFIC OPTIONS-->
+#elif $analysis_type.selection=="isobar"
+   #pass
+
+<!--QUALITATIVE SPECIFIC OPTIONS-->
+#elif $analysis_type.selection=="qual"
+   <!-- add here if we end up doing some specific stuff for qual, otherwise this should do nothing special beyond basic analysis.-->
+   #pass
+#end if
+
+  </command>
+  <inputs>
+    <conditional name="analysis_type">
+           <param name="selection" type="select" label="Milkyway Analysis Type">
+               <option value="lfq">LFQ Intensity Based Comparison Analysis</option>
+               <option value="qualCompare">Qualitative SpC Comparison Analysis</option>
+               <option value="qual">Identification Analysis</option>
+               <!--<option value="isobar">Isobaric Labeling Based Analysis</option>-->
+           </param>
+        
+        <when value="lfq">
+        <param name="skyline_chromatograms" type="data" label="Skyline Chromatograms TSV"/>
+        <param name="filter_decoys" type="boolean" value="true" label="Remove chromatogram decoys? (ON for DDA, OFF for DIA)" help="this assumes a 1:1 relationship between decoys and targets... DIA chromatograms lack the decoy data"/>
+        <param name="skyline_boundaries" type="data" label="Skyline Boundaries CSV"/>
+        <param name="msstats_comparison" type="data" label="MSstats Comparison CSV"/>
+        <param name="msstats_condition" type="data" label="MSstats Condition Plot CSV"/>
+        <param name="msstats_quantification" type="data" label="MSstats Sample Quantification"/>
+        <param name="msstats_skyline_input" type="data" label="MSstats Skyline Input"/>
+        <param name="saint_table" type="data" label="SAINT Table"/>
+        </when>
+
+        <when value="qualCompare">
+        <param name="saint_table" type="data" label="SAINT Table"/>
+        </when>
+
+    </conditional>
+    <param name="renameType" type="select" label="Identifier Conversion for Enrichr?" >
+       <option value="accToGene">Uniprot ACC to GENENAME</option>
+       <!--<option value="accToProtein">Uniprot ACC to ID (protein name)</option>-->
+       <option value="geneToProtein">Uniprot GENENAME to ID (protein, works for Toxo gondii)</option>
+       <!--<option value="norename">No renaming (leave as is)</option>-->
+        </param>
+
+    <param name="fasta" type="data" label="Target Protein FASTA db"/>
+    <param name="mzml" type="data" label="mzML files from search" multiple="true"/>
+    <!--<param name="zlib" type="boolean" value="true" label="mzML files are zlib compressed?"/>-->
+    <param name="psm_table" type="data" label="PSM Extraction Table"/>
+    <param name="nsaf_table" type="data" label="NSAF Table"/>
+    <param name="spc_table" type="data" label="SpC Table"/>
+    <param name="peptide_nsaf_table" type="data" label="Peptide NSAF Table"/>
+    <param name="peptide_spc_table" type="data" label="Peptide SpC Table"/>
+    <param name="fido_roc" type="data" label="Fido q-value Conversion CSV"/>
+    <param name="experiment_map" type="data" label="Experimental Design File"/>
+
+
+  </inputs>
+  <outputs>
+    <data name="RDataOutput" label="Merged Rdata Output v2"/>
+    <data name="MS2Output" label="MS2 HDF5"/>
+    <data name="RScriptOutput" label="Rdata Merger R Script"/>
+
+  </outputs>
+  <help>
+    Prepare an Rdata image for plotting and analysis
+  </help>
+</tool>

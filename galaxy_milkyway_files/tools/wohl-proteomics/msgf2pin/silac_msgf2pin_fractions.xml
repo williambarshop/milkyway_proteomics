@@ -1,0 +1,121 @@
+<tool id="milkyway_msgf2pin_converter" version="3.0.0" name="silac msgf2pin for fractionated data" >
+
+  <description>
+     Conversion of mzid output from MSGF+ to pin format for use with percolator.
+  </description>
+  <command>
+   cwd=`pwd`;
+   mkdir output;
+   #for $each in $targz_input:
+       tar xzvf $each;
+   #end for
+
+    python /galaxy-central/tools/wohl-proteomics/msgf2pin/milkyway_msgf2pin_converter.py -m $matches
+    ${aafreq}
+    $ptm
+    #if $ppm.ppm_bool
+    --ppm
+    #end if
+
+    #if $varExists('$ppm.ppm_fix')
+        #if $ppm.ppm_fix.ppm_fix_bool
+            -x $ppm.ppm_fix.e_threshold
+        #end if
+    #end if
+
+    --enzyme $enzyme
+    $pngasef
+    $isotope
+    $silac
+    $diaumpire
+    --pattern $pattern
+   ## --databases $database_list
+   ## --cleavages $cleavages
+   ## --min-length=${minlength}
+   ## --max-length ${maxlength}
+   ## --min-mass ${minmass}
+   ## --max-mass ${maxmass}
+   ## --outputXML ${outputxml}
+    --outputfolder output/
+    --target_folder targets/
+    --decoy_folder decoys/
+    --fractions $fraction_file;
+   tar -czvf combined_pins.tar.gz output/;
+   mv combined_pins.tar.gz $output_tar;
+   #if $varExists('$ppm.ppm_fix')
+        #if $ppm.ppm_fix.ppm_fix_bool
+            mv ppm_shifts.csv ${output_mass_corrections};
+        #end if
+   #end if
+   echo 'All done!'
+   
+  </command>
+
+  <inputs>
+        <param name="fraction_file" type="data" label="Fraction information input from wohl-fractionation tool" />
+        <param name="targz_input" type="data" multiple="true" label="target decoy targz inputs from msgf+" />
+        <param name="matches" type="integer" value="1" label="Number of Matches per PSM to Consider" help="How many matches to consider per spectrum? NB: When using SILAC, this gets OVERWRITTEN with a value of 15.  Control via MSGF+" />
+        <param name="aafreq" type="boolean" truevalue="--aa-freq" falsevalue="" checked="true" label="Calculate amino acid frequency features?" />
+        <param name="ptm" type="boolean" truevalue="--PTM" falsevalue="" checked="true" label="Calculate feature for number of PTMs?" />
+        <param name="silac" type="boolean" truevalue="--SILAC" falsevalue="" checked="true" label="Prepare/combine files as SILAC analysis?" />
+
+    <conditional name="ppm">
+        <param name="ppm_bool" type="boolean" truevalue="--ppm" falsevalue="" checked="true" label="Calculate features for ppm mass accuracy?" />
+        <when value="--ppm">
+            <conditional name="ppm_fix">
+                <param name="ppm_fix_bool" type="boolean" truevalue="true" falsevalue="" checked="true" label="Correct ppm mass accuracy per run?" />
+                    <when value="true">
+                        <param name="e_threshold" type="float" value="0.00001" label="E-value threshold for ppm fixing" help="MSGF+ E-value threshold for ppm correction per run" />
+                    </when>
+            </conditional>
+        </when>
+    </conditional>
+
+
+
+        <param name="enzyme" type="select" optional="false" label="Enzyme Used in Search">
+            <option value="no_enzyme">No Enzyme</option>
+            <option value="elastase">Elastase</option>
+            <option value="pepsin">Pepsin</option>
+            <option value="proteinasek">ProteinaseK</option>
+            <option value="thermolysin">Thermolysin</option>
+            <option value="chymotrypsin">Chymotrypsin</option>
+            <option value="lys-n">Lys-N</option>
+            <option value="lys-c">Lys-C</option>
+            <option value="arg-c">Arg-C</option>
+            <option value="asp-n">Asp-N</option>
+            <option value="glu-c">Glu-C</option>
+            <option value="trypsin">Trypsin</option>
+        </param>
+        <param name="diaumpire" type="boolean" checked="false" label="DIAUmpire Search?" truevalue="--diaumpire" falsevalue="" help="Correct scan numbers and SpecId values to match mzML scan indicies from DIAUmpire converted mzML files?" />
+        <param name="pngasef" type="boolean" truevalue="--PNGaseF" falsevalue="" label="PNGaseF Feature?" help="Calculate feature based on N-linked glycosylation pattern resulting from a PNGaseF treatment. (N[*].[ST])" />
+        <param name="isotope" type="boolean" truevalue="--isotope" falsevalue="" label="Delta Mass to nearest isotopic peak? (else: delta to avg mass)" checked="true" help="Mass difference calculated to closest isotope mass rather than to the average mass." />
+        <param name="pattern" type="text" value="Reverse_" label="Decoy PSM label pattern" />
+        
+        <!--
+        <param name="cleavages" type="integer" value="5" label="Maximum Missed Cleavages" />
+
+        <param name="minlength" type="integer" value="6" label="Minimum Peptide Length" />
+        <param name="databases" format="fasta" type="data" multiple="true" label="Databases for search (target and decoy)" />
+        <param name="maxlength" type="integer" value="40" label="Maximum Peptide Length" />
+        <param name="minmass" type="integer" value="400" label="Minimum Peptide Mass" />
+        <param name="maxmass" type="integer" value="6000" label="Maximum Peptide Mass" />
+        -->
+  </inputs>
+  <outputs>
+    <data name="output_tar"/>
+    <data name="output_mass_corrections" label="Mass Accuracy Corrections File" >
+    <filter>$ppm['ppm_fix']['ppm_fix_bool']=="true"</filter>
+    </data>
+
+    <!--
+    ppm.ppm_fix.ppm_fix_bool
+    <data name="Percolator Input Files" format="tabular">
+        <discover_datasets pattern="__designation_and_ext__" ext="tabular" directory="output" visible="true" />
+    </data>
+    -->
+  </outputs>
+  <help>
+   Databases has been disabled!!
+  </help>
+</tool>

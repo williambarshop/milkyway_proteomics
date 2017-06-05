@@ -1,0 +1,84 @@
+<tool id="msgf2pin" version="0.0.6a" name="msgf2pin" >
+
+  <description>
+     Conversion of mzid output from MSGF+ to pin format for use with percolator.
+  </description>
+  <command>
+   cwd=`pwd`;
+   mkdir output;
+   #set $newtarget_input = $target_input.display_name
+   #set $newdecoy_input = $decoy_input.display_name
+   ln -s '${target_input}' '${newtarget_input}';
+   ln -s '${decoy_input}' '${newdecoy_input}';
+   ln -s '$ms2file' '${ms2file.display_name}';
+
+   #set $database_list = ""
+   #for $each in $databases:
+       #set $database_list+= "\""
+       ln -s '$each' '${each.display_name}';
+       #set $database_list+=$str($each.display_name)
+       #set $database_list+= "\""
+       #set $database_list+= ","
+   #end for
+   #set $database_list=database_list[:-1]
+
+   msgf2pin -m $matches
+    ${aafreq}
+    $ptm
+    $ppm
+    --enzyme $enzyme
+    $pngasef
+    --ms2-file '${ms2file.display_name}'
+    $isotope
+    --pattern $pattern
+    --databases $database_list
+    --cleavages $cleavages
+   ## --min-length=${minlength}
+   ## --max-length ${maxlength}
+   ## --min-mass ${minmass}
+   ## --max-mass ${maxmass}
+   ## --outputXML ${outputxml}
+    --outputTab ${outputtab}
+    '${newtarget_input}' '${newdecoy_input}' 2&gt;&amp;1
+  </command>
+  <inputs>
+        <param name="target_input" type="data" format="mzid" label="mzid target inputs from msgf+" />
+        <param name="decoy_input" type="data" format="mzid" label="mzid decoy inputs from msgf+" />
+        <param name="matches" type="integer" value="1" label="Number of Matches per PSM to Consider" help="How many matches to consider per spectrum?" />
+        <param name="aafreq" type="boolean" truevalue="--aa-freq" falsevalue="" checked="true" label="Calculate amino acid frequency features?" />
+        <param name="ptm" type="boolean" truevalue="--PTM" falsevalue="" checked="true" label="Calculate feature for number of PTMs?" />
+        <param name="ppm" type="boolean" truevalue="--ppm" falsevalue="" checked="true" label="Calculate ppm mass accuracy features?" />
+        <param name="enzyme" type="select" optional="false" label="Enzyme Used in Search">
+            <option value="no_enzyme">No Enzyme</option>
+            <option value="elastase">Elastase</option>
+            <option value="pepsin">Pepsin</option>
+            <option value="proteinasek">ProteinaseK</option>
+            <option value="thermolysin">Thermolysin</option>
+            <option value="chymotrypsin">Chymotrypsin</option>
+            <option value="lys-n">Lys-N</option>
+            <option value="lys-c">Lys-C</option>
+            <option value="arg-c">Arg-C</option>
+            <option value="asp-n">Asp-N</option>
+            <option value="glu-c">Glu-C</option>
+            <option value="trypsin">Trypsin</option>
+        </param>
+        <param name="pngasef" type="boolean" truevalue="--PNGaseF" falsevalue="" label="PNGaseF Feature?" help="Calculate feature based on N-linked glycosylation pattern resulting from a PNGaseF treatment. (N[*].[ST])" />
+        <param name="ms2file" type="data" label="mzML file containing spectra" />
+        <param name="isotope" type="boolean" truevalue="--isotope" falsevalue="" label="Delta Mass to isotope or average?" checked="true" help="Mass difference calculated to closest isotope mass rather than to the average mass." />
+        <param name="pattern" type="text" value="Reverse_" label="Decoy PSM label pattern" />
+        <param name="databases" format="fasta" type="data" multiple="true" label="Databases for search (target and decoy)" />
+        <param name="cleavages" type="integer" value="0" label="Maximum Missed Cleavages" />
+        
+        <!-- <param name="minlength" type="integer" value="6" label="Minimum Peptide Length" />
+        <param name="maxlength" type="integer" value="40" label="Maximum Peptide Length" />
+        <param name="minmass" type="integer" value="400" label="Minimum Peptide Mass" />
+        <param name="maxmass" type="integer" value="6000" label="Maximum Peptide Mass" />
+        -->
+  </inputs>
+  <outputs>
+    <!-- <data name="outputxml"/> -->
+    <data name="outputtab"/>
+  </outputs>
+  <help>
+  </help>
+</tool>

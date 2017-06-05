@@ -1,0 +1,29 @@
+<tool id="wohl_fraction_data" version="2.5" name="WOHL Define fractionation groups">
+	<description>e.g. samples or pools, analysis batches-- adapted from Adapt</description>
+	
+	<command>
+              touch newoutput;
+              #for $i,$s in enumerate($pools)
+                  #if $s.set_identifier and $s.set_name and $s.bio_condition:
+                    echo '${s.set_identifier}___${s.set_name}___${s.bio_condition}___${s.control}___${s.bio_replicate}' &gt;&gt; newoutput;
+                  #end if
+              #end for
+
+              cp newoutput $fraction_data</command>
+    <inputs>
+      <repeat name="pools" title="Experimental sets">
+	    <param name="set_identifier" type="text" label="Filename part identifying biological set" 
+	    help="Specify part of the input spectra filenames that are unique for each set, e.g set_A."/>
+	    <param name="set_name" type="text" label="Nice name for the set" help="e.g. Set #1, Patient 3" />
+	    <param name="bio_condition" type="text" label="Bio-Condition for SAINT, etc." help="e.g. C-BioID-KCTD3" />
+	    <param name="control" type="boolean" checked="false" truevalue="C" falsevalue="T" label="Group is a control" help="Check if the group is control... Otherwise... don't." />
+            <param name="bio_replicate" type="integer" value="1" min="1" max="100" label="Biological Replicate ID" help="Technical replicates share the same Bio-Replicate ID"/>
+      </repeat>
+    </inputs>
+    <outputs>
+	    <data name="fraction_data" label="Experimental Fraction Data"/>
+    </outputs>
+<help>
+Good luck!
+</help>
+</tool>

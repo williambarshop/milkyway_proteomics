@@ -1,0 +1,75 @@
+<tool id="luciphor2" version="0.1.0" name="luciphor2" >
+
+  <description>
+     Luciphor2 for PTM localization
+  </description>
+  <command>
+   #set $mzml_list = ""
+   #for $each in $mzml_files:
+       #set $mzml_list+= "\""
+       cp '$each' '${each.display_name}';
+       #set $mzml_list+=$str($each.display_name)
+       #set $mzml_list+= "\""
+       #set $mzml_list+= ","
+   #end for
+   #set $mzml_list=mzml_list[:-1]
+
+
+   cwd=`pwd`;
+   tar -zxvf $perco_out;
+   python /galaxy-central/tools/wohl-proteomics/luciphor2/luciphor_wrapper.py
+   /galaxy-central/tools/wohl-proteomics/luciphor2/luciphor2.jar 
+   --pout output/
+   $algorithm
+   $ppm_or_da
+   --ms2tol $ms2tol
+   --minmz $minmz
+   --fixed "$fixedmods"
+   #if $variablemods!=""
+   --variable "$variablemods"
+   #end if
+   --target "$targetmods"
+   --nl "$neutrallosses"
+   --dm $decoymass
+   --dnl "$decoynl"
+   --mc $maxcharge
+   --ml $maxlen
+   --mp $maxnumperm
+   --mst $modelscorethreshold
+   --st $scorethreshold
+   --nt $numthreads
+   --min_psms $min_psms
+   --expgroups $exp_file
+   --mzml $mzml_list
+    2>&amp;1;
+    tar -cvf - output/ 2>/dev/null | pigz -9 -p 24 > $crux_tar_gz 2>&amp;1
+  </command>
+  <inputs>
+        <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
+        <param name="mzml_files" type="data" multiple="true" label="mzML files used in search"/>
+        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
+        <param name="algorithm" type="boolean" truevalue="--hcd" falsevalue="--cid" checked="true" label="HCD Mode?" help="When off, CID mode..." />
+        <param name="ppm_or_da" type="boolean" truevalue="--ppm" falsevalue="" label="Use ppm instead of Da for MS2 tolerance?" checked="true"/>
+        <param name="ms2tol" type="float" value="15.0" label="MS2 Fragment Ion Tolerance" help="Units as set above..." />
+        <param name="minmz" type="float" value="150.0" label="Minimum m/z to consider for peak matching" />
+        <param name="fixedmods" type="text" value="C 57.021464" label="Fixed Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915  --using commas to separate mods." />
+        <param name="variablemods" type="text" value="" label="UNSCORED Variable Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915 --using commas to separate mods." />
+        <param name="targetmods" type="text" value="S 79.966331,T 79.966331,Y 79.966331" label="Variable Modifications for Scoring" />
+        <param name="neutrallosses" type="text" value="sty -H3PO4 -97.97690" label="Neutral losses for scoring" help="List the types of neutral losses that you want to consider. The residue field is case sensitive. For example: lower case \'sty\' implies that the neutral loss can only occur if the specified modification is present. Syntax: NL = RESDIUES -NEUTRAL_LOSS_MOLECULAR_FORMULA -MASS_LOST" />
+        <param name="decoymass" type="float" value="79.966331" label="Decoy mass shift" />
+        <param name="decoynl" type="text" value="X -H3PO4 -97.97690" label="Decoy neutral loss" />
+        <param name="maxcharge" type="integer" value="6" label="Maximum charge state to consider" />
+        <param name="maxlen" type="integer" value="40" label="Maximum peptide length to consider" />
+        <param name="maxnumperm" type="integer" value="65536" help="Maximum number of permutations per sequence. Default is 16384" label="Maximum permutations per sequence" />
+        <param name="modelscorethreshold" type="float" min="0.0" max="1.0" value=".01" label="MAXIMUM score a PSM needs to be considered for modeling" />
+        <param name="scorethreshold" type="float" value=".01" min="0.0" max="1.0" label="PSM scoring threshold" help="PSMs ABOVE this value will be discarded." />
+        <param name="min_psms" type="integer" value="35" min="0"  label="Number of PSMs required to model" help="deault is 50" />
+        <param name="numthreads" type="integer" value="8" min="0" max="32" label="Number of threads" help="0 uses all available cores." />
+  </inputs>
+  <outputs>
+    <data name="crux_tar_gz" />
+  </outputs>
+  <help>
+
+  </help>
+</tool>

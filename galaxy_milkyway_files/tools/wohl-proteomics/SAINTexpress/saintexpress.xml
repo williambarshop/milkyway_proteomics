@@ -1,0 +1,44 @@
+<tool id="SAINT_express" version="0.1.0a" name="SAINT_express" >
+
+  <description>
+     SAINTexpress Interactome Analysis
+  </description>
+  <command>
+   cwd=`pwd`;
+/galaxy-central/tools/wohl-proteomics/SAINTexpress/SAINTexpress-spc ${interact_raw} ${prey_raw} ${bait_raw} 2&gt;&amp;1;
+mv list.txt ${SAINT_raw_output};
+python /galaxy-central/tools/wohl-proteomics/SAINTexpress/saint_wrapper.py ${SAINT_raw_output} ${SAINT_simple_raw_output} $filter 2&gt;&amp;1;
+
+<!-- /galaxy-central/tools/wohl-proteomics/SAINTexpress/SAINTexpress-spc ${interact_nsaf} ${prey_nsaf} ${bait_nsaf} 2&gt;&amp;1;
+mv list.txt ${SAINT_nsaf_output};
+python /galaxy-central/tools/wohl-proteomics/SAINTexpress/saint_wrapper.py ${SAINT_nsaf_output} ${SAINT_simple_nsaf_output} $filter 2&gt;&amp;1 -->
+
+    <!--
+    mv crux-output/percolator.target.psms.txt $results_psms;
+    mv crux-output/percolator.decoy.psms.txt $decoy_results_psms;
+    mv crux-output/percolator.target.peptides.txt $target_peptides;
+    mv crux-output/percolator.decoy.peptides.txt $decoy_peptides;
+    mv crux-output/percolator.target.pout.xml $xml_output;
+    rm ${tabin}.pin;
+        <param name="interact_nsaf" type="data" format="tabular" label="SAINT NSAF Interaction Input"/>
+        <param name="prey_nsaf" type="data" format="tabular" label="SAINT NSAF Prey Input"/>
+        <param name="bait_nsaf" type="data" format="tabular" label="SAINT NSAF Bait Input"/>
+    <data format="tabular" name="SAINT_nsaf_output" label="SAINT NSAF Output"/>
+    <data format="tabular" name="SAINT_simple_nsaf_output" label="SAINT Simple NSAF"/>
+
+-->
+  </command>
+  <inputs>
+        <param name="interact_raw" type="data" format="tabular" label="SAINT RAW Interaction Input"/>
+        <param name="prey_raw" type="data" format="tabular" label="SAINT RAW Prey Input"/>
+        <param name="bait_raw" type="data" format="tabular" label="SAINT RAW Bait Input"/>
+        <param name="filter" type="float" min="0.0" max="1.0" value="0.0" label="Filter proteins which never score above threshold..."/>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="SAINT_raw_output" label="SAINT RAW Output"/>
+    <data format="tabular" name="SAINT_simple_raw_output" label="SAINT Simple RAW"/>
+  </outputs>
+  <help>
+   SPC SAINT analysis
+  </help>
+</tool>

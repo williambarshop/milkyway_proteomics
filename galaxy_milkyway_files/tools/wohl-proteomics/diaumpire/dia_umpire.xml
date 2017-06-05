@@ -1,0 +1,106 @@
+<tool id="milkyway_dia_umpire" name="DIA Umpire" version="1.0.0">
+    <description>Run a DIA Umpire to generate a pseudo MS2 mzML</description>
+    <command>
+    mkdir mzML_input_folder/ &amp;&amp;
+    ln -s $input_file mzML_input_folder/${input_file.display_name} &amp;&amp;
+    python $__tool_directory__/dia-umpire-wrapper.py -inputFolder mzML_input_folder/ -mzMLoutput $output_mzml
+    -tooldir $__tool_directory__
+    -Thread $threads
+    -RPmax $RPmax
+    -RFmax $RFmax
+    -CorrThreshold $CorrThreshold
+    -DeltaApex $DeltaApex
+    -RTOverlap $RTOverlap
+    -AdjustFragIntensity $AdjustFragIntensity
+    -BoostComplementaryIon $BoostComplementaryIon
+    -ExportPrecursorPeak $ExportPrecursorPeak
+    -MS1PPM $SE_MS1PPM
+    -MS2PPM $SE_MS2PPM
+    -Resolution $SE_Resolution
+    -SN $SE_SN
+    -MS2SN $SE_MS2SN
+    -EstimateBG $SE_EstimateBG
+    -MinMSIntensity $SE_MinMSIntensity
+    -MinMSMSIntensity $SE_MinMSMSIntensity
+    -NoMissedScan $SE_NoMissedScan
+    -MaxCurveRTRange $SE_MaxCurveRTRange
+    -RemoveGroupedPeaks $SE_RemoveGroupedPeaks
+    -RemoveGroupedPeaksRTOverlap $SE_RemoveGroupedPeaksRTOverlap
+    -RemoveGroupedPeaksCorr $SE_RemoveGroupedPeaksCorr
+    -MinNoPeakCluster $SE_MinNoPeakCluster
+    -MaxNoPeakCluster $SE_MaxNoPeakCluster
+    -IsoPattern $SE_IsoPattern
+    -MassDefectFilter $SE_MassDefectFilter
+    -MassDefectOffset $SE_MassDefectOffset
+    -StartCharge $SE_StartCharge
+    -EndCharge $SE_EndCharge
+    -MS2StartCharge $SE_MS2StartCharge
+    -MS2EndCharge $SE_MS2EndCharge
+    -MinFrag $SE_MinFrag
+    -StartRT $SE_StartRT
+    -EndRT $SE_EndRT
+    -MinMZ $SE_MinMZ
+    -MinPrecursorMass $SE_MinPrecursorMass
+    -MaxPrecursorMass $SE_MaxPrecursorMass
+    -WindowType $WindowType
+    -WindowSize $WindowSize
+    #if $manual
+    -WindowSetting "$WindowSetting"
+    #end if
+    -paraOutput $output_params
+    </command>
+    <inputs>
+        <param name="input_file" type="data" format="mzml" multiple="false" label="MSMS File" help="An mzML file with MS/MS data"/>
+        <param name="threads" type="integer" label="threads" value="32" min="1" max="128" />
+        <param name="RPmax" type="integer" label="RPmax" value="25" min="1" max="1000" />
+        <param name="RFmax" type="integer" label="RFmax" value="300" min="1" max="1000" />
+        <param name="CorrThreshold" type="float" label="CorrThreshold" value="0.2" min="0.01" max="10.0" />
+        <param name="DeltaApex" type="float" label="DeltaApex" value="0.6" min="0.01" max="10.0" />
+        <param name="RTOverlap" type="float" label="RTOverlap" value="0.3" min="0.01" max="10.0" />
+        <param name="AdjustFragIntensity" type="boolean" checked="true" label="AdjustFragIntensity" truevalue="true" falsevalue="false" />
+        <param name="BoostComplementaryIon" type="boolean" checked="false" label="BoostComplementaryIon" truevalue="true" falsevalue="false" />
+        <param name="ExportPrecursorPeak" type="boolean" checked="true" label="ExportPrecursorPeak" truevalue="true" falsevalue="false" />
+        <param name="SE_MS1PPM" type="integer" label="SE_MS1PPM" value="10" min="1" max="1000" />
+        <param name="SE_MS2PPM" type="integer" label="SE_MS2PPM" value="15" min="1" max="1000" />
+        <param name="SE_Resolution" type="integer" label="SE_Resolution" value="15000" min="1" max="1000000" />
+        <param name="SE_SN" type="float" label="SE_SN" value="1.1" min="0.01" max="10.0" />
+        <param name="SE_MS2SN" type="float" label="SE_MS2SN" value="1.1" min="0.01" max="10.0" />
+        <param name="SE_EstimateBG" type="boolean" checked="false" label="SE_EstimateBG" truevalue="true" falsevalue="false" />
+        <param name="SE_MinMSIntensity" type="integer" label="SE_MinMSIntensity" value="1" min="1" max="1000" />
+        <param name="SE_MinMSMSIntensity" type="integer" label="SE_MinMSMSIntensity" value="1" min="1" max="1000" />
+        <param name="SE_NoMissedScan" type="integer" label="SE_NoMissedScan" value="2" min="1" max="1000" />
+        <param name="SE_MaxCurveRTRange" type="integer" label="SE_MaxCurveRTRange" value="2" min="1" max="1000" />
+        <param name="SE_RemoveGroupedPeaks" type="boolean" checked="true" label="SE_RemoveGroupedPeaks" truevalue="true" falsevalue="false" />
+        <param name="SE_RemoveGroupedPeaksRTOverlap" type="float" label="SE_RemoveGroupedPeaksRTOverlap" value="0.3" min="0.01" max="10.0" />
+        <param name="SE_RemoveGroupedPeaksCorr" type="float" label="SE_RemoveGroupedPeaksCorr" value="0.3" min="0.01" max="10.0" />
+        <param name="SE_MinNoPeakCluster" type="integer" label="SE_MinNoPeakCluster" value="2" min="1" max="1000" />
+        <param name="SE_MaxNoPeakCluster" type="integer" label="SE_MaxNoPeakCluster" value="4" min="1" max="1000" />
+        <param name="SE_IsoPattern" type="float" label="SE_IsoPattern" value="0.3" min="0.01" max="10.0" />
+        <param name="SE_MassDefectFilter" type="boolean" checked="true" label="SE_MassDefectFilter" truevalue="true" falsevalue="false" />
+        <param name="SE_MassDefectOffset" type="float" label="SE_MassDefectOffset" value="0.1" min="0.01" max="10.0" />
+        <param name="SE_StartCharge" type="integer" label="SE_StartCharge" value="1" min="1" max="1000" />
+        <param name="SE_EndCharge" type="integer" label="SE_EndCharge" value="6" min="1" max="1000" />
+        <param name="SE_MS2StartCharge" type="integer" label="SE_MS2StartCharge" value="1" min="1" max="1000" />
+        <param name="SE_MS2EndCharge" type="integer" label="SE_MS2EndCharge" value="6" min="1" max="1000" />
+        <param name="SE_MinFrag" type="integer" label="SE_MinFrag" value="10" min="1" max="1000" />
+        <param name="SE_StartRT" type="integer" label="SE_StartRT" value="1" min="1" max="10000" />
+        <param name="SE_EndRT" type="integer" label="SE_EndRT" value="9999" min="1" max="10000" />
+        <param name="SE_MinMZ" type="integer" label="SE_MinMZ" value="200" min="1" max="10000" />
+        <param name="SE_MinPrecursorMass" type="integer" label="SE_MinPrecursorMass" value="600" min="1" max="10000" />
+        <param name="SE_MaxPrecursorMass" type="integer" label="SE_MaxPrecursorMass" value="6000" min="1" max="10000" />
+        <param name="WindowType" size="30" type="text" value="V_SWATH" label="WindowType"/>
+        <param name="WindowSize" type="integer" label="WindowSize" value="10" min="1" max="100" />
+        <param name="manual" type="boolean" value="false" label="Use manual isolation window input"/>
+        <param name="WindowSetting" type="text" area="True" size="5x25" value="399.75\t410.55\n410.05\t420.45\n419.95\t429.05\n428.55\t436.85\n436.35\t443.95\n443.45\t450.35\n449.85\t456.75\n456.25\t463.15\n462.65\t469.55\n469.05\t475.85\n475.35\t482.25\n481.75\t488.65\n488.15\t495.05\n494.55\t502.15\n501.65\t508.55\n508.05\t515.65\n515.15\t522.05\n521.55\t528.45\n527.95\t535.55\n535.05\t541.95\n541.45\t549.05\n548.55\t556.15\n555.65\t563.25\n562.75\t570.35\n569.85\t578.25\n577.75\t586.05\n585.55\t593.15\n592.65\t601.65\n601.15\t608.75\n608.25\t616.55\n616.05\t625.15\n624.65\t633.65\n633.15\t642.15\n641.65\t651.35\n650.85\t662.05\n661.55\t671.95\n671.45\t682.65\n682.15\t694.05\n693.55\t705.35\n704.85\t718.15\n717.65\t733.05\n732.55\t748.05\n747.55\t764.35\n763.85\t782.15\n781.65\t801.35\n800.85\t823.35\n822.85\t846.05\n845.55\t869.55\n869.05\t896.55\n896.05\t926.35\n925.85\t961.85\n961.35\t1012.35\n1011.85\t1091.95\n1091.45\t1217.65\n1217.15\t1543.75\n"/>
+    </inputs>
+    <outputs>
+        <data name="output_mzml" label="$input_file.display_name" format="mzml">
+        </data>
+        <data name="output_params" label="DIAUmpire Parameters File" >
+        </data>
+    </outputs>
+    <help>
+     <!-- removed metadata_source="input_file" from the output...-->
+    </help>
+</tool>
+

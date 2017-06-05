@@ -1,0 +1,31 @@
+<tool id="fraction_data" version="2.5" name="Define fractionation groups">
+	<description>e.g. samples or pools, analysis batches-- adapted from Adapt</description>
+	
+	<command>mv $script_file $fraction_data</command>
+    <inputs>
+      <repeat name="pools" title="Experimental sets">
+	    <param name="set_identifier" type="text" label="Filename part identifying biological set" 
+	    help="Specify part of the input spectra filenames that are unique for each set, e.g set_A."/>
+	    <param name="set_name" type="text" label="Nice name for the set" help="e.g. Set #1, Patient 3" />
+	    <param name="bio_condition" type="text" label="Bio-Condition for SAINT, etc." help="e.g. C-BioID-KCTD3" />
+	    <param name="control" type="boolean" checked="false" truevalue="C" falsevalue="T" label="Group is a control" help="Check if the group is control... Otherwise... don't." />
+	    <param name="bio_replicate" type="int" label="Biological Replicate ID" help="Technical replicates share the same Bio-Replicate ID"/>
+      </repeat>
+    </inputs>
+    <outputs>
+	    <data name="fraction_data" label="Experimental Fraction Data"/>
+    </outputs>
+    
+    <configfiles>
+        <configfile name="script_file">
+        #for $i,$s in enumerate($pools)
+		#if $s.set_identifier and $s.set_name and $s.bio_condition and $s.bio_replicate:
+		    	${s.set_identifier}___${s.set_name}___${s.bio_condition}___${s.control}___${s.bioreplicate
+		#end if
+        #end for
+        </configfile>
+    </configfiles>
+<help>
+Good luck!
+</help>
+</tool>

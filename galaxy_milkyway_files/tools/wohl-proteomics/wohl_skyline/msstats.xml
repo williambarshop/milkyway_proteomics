@@ -1,0 +1,140 @@
+<tool id="MSstats" version="0.3.0a" name="MSstats" >
+
+  <description>
+	MSstats analysis of Skyline output files by TMP
+  </description>
+  <command interpreter="python">msstats_wrapper.py
+--galaxy-csv ${csv_input}
+--experiment_file ${experiment_map}
+--mprophet_q ${q_threshold}
+--rename
+$remove_decoys
+$remove_repeated_peptides
+$peptide_level
+$merge_isotopes
+$remove_empty
+$censoredInt
+$fillMissingFeatures
+--cutoffCensored $cutoffCensored
+--renameProteinType norename
+--fillIncompleteRows
+$MBimpute
+$noimpute
+
+#if $maxQuantileforCensored.censor=="NULL"
+--maxQuantileforCensored NULL
+#else
+--maxQuantileforCensored ${maxQuantileforCensored.selection}
+#end if
+#if $remove_proteins_by_text!=""
+--removeProteinsByText "$remove_proteins_by_text"
+#end if
+--normalization $normalization
+      #if $normalization=="globalStandards"
+      --normalization_protein "${norm_protein}"
+      #end if
+
+      #if $featureSubset.subset=="topN"
+      --featureSubset topN
+      --featureSubsetN ${featureSubset.featureTopN}
+      #else if $featureSubset.subset=="all"
+      --featureSubset all
+      #else if $featureSubset.subset=="highQuality"
+      --featureSubset highQuality
+      #end if
+--processedDataOutput $processedDataOutput
+--comparisonOutput $comparisonOutput
+--quantificationOutput $quantificationOutput
+--quantificationConditionOutput $quantificationConditionOutput
+--RDataOutput $RDataOutput
+--QCplotOutput $QCplotOutput
+--ProfilePlotOutput $ProfilePlotOutput
+--ConditionPlotOutput $ConditionPlotOutput
+--conditionPlotCSVOutput $conditionPlotCSVOutput
+--RScriptOutput $RScriptOutput
+  </command>
+  <inputs>
+        <param name="csv_input" type="data" label="MSstats CSV file"/>
+        <param name="experiment_map" type="data" label="Experiment Map File"/>
+        <param name="q_threshold" type="float" value="0.01" min="0.00" max="1.00" label="mProphet Q-Value Threshold"/>
+        <param name="remove_decoys" type="boolean" truevalue="--remove_decoys" falsevalue="" checked="true" label="Remove Decoy Peptides?" />
+
+               <param name="normalization" type="select" label="What type of normalization?" >
+                   <option value="equalizeMedians">Equalize Medians</option>
+                   <option value="quantile">Quantile</option>
+                   <option value="globalStandards">Global Standards</option>
+                   <option value="false">No Normalization</option>
+               </param>
+               <param name="norm_protein" type="text" value="" label="Which protein will you normalize to? Must be a string unique to the protein of interest from the FASTA header!" help="THIS IS IGNORED IF NOT NORMALIZING BY GLOBALSTANDARDS. Multiple proteins can be comma separated.  If only a subset of peptides from that protein are used for normalization, separate them with '::' (e.g. Q96T76::GLSHVLNR::AIFQEVHVQSLPQVD,CIAO1_HUMAN::DSLVLLGRVPAHPDS)"/>
+
+        <param name="remove_repeated_peptides" type="boolean" truevalue="--remove_repeated_peptides" falsevalue="" checked="false" label="Remove repeated peptides?" help="TEMPORARY WORKAROUND UNTIL SKYLINE FIXES THEIR IMPORT FILTERS..." />
+        <param name="merge_isotopes" type="boolean" truevalue="--merge_isotopes" falsevalue="" checked="false" label="Merge DDA isotopes?" help="DO NOT USE WITH DIA, UNTESTED..." />
+        <param name="remove_truncated_peaks" type="boolean" truevalue="--remove_truncated" falsevalue="" checked="true" label="Remove truncated peaks?" help="Replaces truncated peak values with NA." />
+        <param name="peptide_level" type="boolean" truevalue="--peptide_level" falsevalue="" checked="false" label="Peptide Level Analysis?" />
+        <param name="remove50missing" type="boolean" truevalue="--remove50missing" falsevalue="" checked="false" label="Remove RUNS with &gt;50% missing data?" help="removes the runs which have more than 50% missing values."/>
+        <param name="remove_empty" type="boolean" truevalue="--remove_empty" falsevalue="" checked="false" label="Remove Proteins with no Results?" />
+        <param name="remove_single_run" type="boolean" truevalue="--remove_single_run" falsevalue="" checked="false" label="Remove peptides detected in fewer than two runs?" />
+        <param name="MBimpute" type="boolean" truevalue="--MBimpute" falsevalue="" checked="true" label="Use Model Based (AFT) imputation?" />
+        <param name="noimpute" type="boolean" truevalue="--noimpute" falsevalue="" checked="false" label="Force NO imputation?" />
+        <param name="remove_proteins_with_interference" type="boolean" truevalue="--remove_proteins_with_interference" falsevalue="" checked="false" label="Remove Proteins with Interference?" help="TRUE allows the algorithm to remove the proteins if deem interfered. FALSE (default) does not allow to remove the proteins, in which all features are interfered. In this case, the proteins, which will completely loss all features by the algorithm, will keep the most abundant peptide." />
+    
+        <conditional name="featureSubset">
+            <param name="subset" type="select" label="Use feature subset?" >
+               <option value="all">All</option>
+               <option value="topN">Top N</option>
+               <option value="highQuality">highQuality</option>
+            </param>
+
+            <when value="topN">
+                <param name="featureTopN" type="integer" value="3" min="1" label="Top N Peptides per Protein"/>   
+            </when>
+               
+        </conditional>
+        <param name="remove_proteins_by_text" type="text" label="Targetted Removal of Proteins? Must be a string unique to the protein of interest from the FASTA header!" help="Flanking whitespace will be removed. Multiple proteins can be comma separated (e.g. Q96T76,CIAO1_HUMAN...)"/>
+
+        <param name="censoredInt" type="boolean" truevalue="--censoredInt NA" falsevalue="--censoredInt 0" checked="false" label="Censored Ints are NA values instead of 0's?" help="If you don't know what this is, and you used mProphet, leave this as false."/>
+
+        <param name="cutoffCensored" type="select" label="cutoffCensored for modeling and imputation" >
+           <option value="minFeature">minFeature (minimum value per feature)</option>
+           <option value="minRun">minRun (minimum value per run)</option>
+           <option value="minFeatureNRun">minFeatureNRun (minimum among feature and run)</option>
+        </param>
+
+        <conditional name="maxQuantileforCensored">
+            <param name="censor" type="select" label="Set Censor Threshold? (NULL emulates pre-v3.4)" >
+               <option value="NULL">NULL</option>
+               <option value="select">Select</option>
+            </param>
+
+            <when value="select">
+                <param name="selection" type="float" value="0.999" min="0.0" max="1.0" label="Max Quantile for Censored (implemented v3.6)"/>   
+            </when>
+               
+        </conditional>
+<!--        <param name="renameType" type="select" label="Rename FASTA IDs?" >
+           <option value="accToGene">Uniprot ACC to GENENAME</option>
+           <option value="accToProtein">Uniprot ACC to ID (protein name)</option>
+           <option value="geneToProtein">Uniprot GENENAME to ID (protein, works for Toxo gondii)</option>
+           <option value="norename">No renaming (leave as is)</option>
+        </param>
+-->
+        <param name="fillMissingFeatures" type="boolean" truevalue="--fillMissingFeatures" falsevalue="" checked="true" label="Fill Missing Feature/Rows?" />
+
+  </inputs>
+  <outputs>
+    <data name="comparisonOutput" label="MSstats Comparison CSV Output" format="csv"/>
+    <data name="quantificationOutput" label="MSstats Sample Quantification CSV Output" format="csv"/>
+    <data name="quantificationConditionOutput" label="MSstats Condition Quantification CSV Output" format="csv"/>
+    <data name="conditionPlotCSVOutput" label="MSstats Condition plot CSV Output" format="csv"/>
+    <data name="RDataOutput" label="MSstats RData Image Output"/>
+    <data name="processedDataOutput" label="MSstats Processed Data" format="csv"/>
+    <data name="QCplotOutput" label="QC plots" format="pdf"/>
+    <data name="ProfilePlotOutput" label="Profile plots" format="pdf"/>
+    <data name="ConditionPlotOutput" label="Condition plots" format="pdf"/>
+    <data name="RScriptOutput" label="R Script"/>
+
+  </outputs>
+  <help>
+    This was coded for use with MSstats 3.6 and above! (Currently 3.7.3)
+  </help>
+</tool>

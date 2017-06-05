@@ -1,0 +1,140 @@
+<tool id="ssl_converter" version="3.0.0" name="SSL Converter" >
+
+  <description>
+     SSL file conversion from percolator output
+  </description>
+  <command>
+   #set $mzml_list = ""
+   #for $each in $mzml_files:
+       #set $mzml_list+= "\""
+       ln -s '$each' '${each.display_name}';
+       #set $mzml_list+=$str($each.display_name)
+       #set $mzml_list+= "\""
+       #set $mzml_list+= ","
+   #end for
+   #set $mzml_list=mzml_list[:-1]
+   ln -s '${fwd_fasta_file}' '${fwd_fasta_file.display_name}';
+
+   #set $corrected_mzmls = "None"
+   #if $blibbuild.blib
+   #set $corrected_mzmls = $str($blibbuild.corrected_mzml_files)
+   echo '$corrected_mzmls';
+   #if $corrected_mzmls != "0" and $corrected_mzmls !="None"
+   #set $corr_mzml_list = ""
+   #for $each in $blibbuild.corrected_mzml_files:
+       #set $corr_mzml_list+= "\""
+       ln -s '$each' 'mc_${each.display_name}';
+       #set $corr_mzml_list+="mc_"+$str($each.display_name)
+       #set $corr_mzml_list+= "\""
+       #set $corr_mzml_list+= ","
+   #end for
+   #set $corr_mzml_list=corr_mzml_list[:-1]
+   #end if
+   #end if
+
+   tar -zxvf $perco_out;
+   mkdir ssl_files;
+   python /galaxy-central/tools/wohl-proteomics/ssl_converter/ssl_converter.py
+   --pout output/
+   --ssl ssl_files
+   --fasta '${fwd_fasta_file.display_name}'
+   --fido_q_raw $fido_q_raw
+   --qthresh $q_threshold
+   --fidoq $fido_q_threshold
+   $diaumpire
+   #if $blibbuild.blib
+   --blib
+   #end if
+   --expgroups $exp_file
+   $fractions
+   $no_mzml
+   #if $localization.algorithm=="luciphor"
+   --FLRthresh $localization.flr_threshold
+   $localization.one_pps
+   $localization.only_mod
+   $localization.local_flr
+   #end if
+   #if $localization.algorithm=="phosphoRS"
+   --pRS_prob_thresh $localization.prs_prob_threshold
+   $localization.one_pps
+   $localization.only_mod
+   #end if
+   #if $localization.algorithm=="ptmRS"
+   --ptmRS_prob_thresh $localization.ptmrs_prob_threshold
+   $localization.one_pps
+   $localization.only_mod
+   #end if
+   --ffasta ${fido_fasta}
+   --mzml $mzml_list
+   #if $corrected_mzmls!="None"
+   --mass_corrected_mzml $corr_mzml_list
+   #end if
+    2>&amp;1;
+
+    #if $labels.filter
+    python /galaxy-central/tools/wohl-proteomics/ssl_converter/ssl_mixed_label_filter.py $labels.labeled_aas ssl_files/ $labels.unlabelable;
+    #end if
+
+    <!--tar -cvf - output/ 2>/dev/null | pigz -9 -p 32 > $crux_tar_gz 2>&amp;1;-->
+    tar -cvf - ssl_files/ 2>/dev/null | pigz -9 -p 32 > $ssl_files_with_mzml_tar_gz 2>&amp;1;
+  </command>
+  <inputs>
+        <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
+        <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
+    <conditional name="blibbuild">
+        <param name="blib" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Construct blib libraries?" help="If used with ptm localization, will only include type1 PSMs."/>
+        <when value="true">
+        <param name="corrected_mzml_files" optional="true" value="0" type="data" multiple="true" label="mzML files to include in final package" help="if you want to download mass corrected mzML files, this is how to do it. Otherwise, just leave it blank! NB: mzML inclusion still requires flag below!!!!" />
+        </when>
+    </conditional>
+        <param name="no_mzml" type="boolean" truevalue="" falsevalue="--no_mzml" checked="false" label="Include mzML files in output?" help="This can make the outputs VERY large!!!" />
+        <param name="diaumpire" type="boolean" truevalue="--diaumpire" falsevalue="" checked="false" label="Are inputs are DIAUmpire search results?" help="We will shift the scan numbers to correctly match with the mzML file index!" />
+        <param name="fwd_fasta_file" type="data" label="Forward FASTA database"/>
+        <param name="fido_q_raw" type="data" label="FIDO q-value CSV file"/>
+        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
+        <param name="q_threshold" type="float" label="maximum PSM q-value threshold" value="0.01" min="0.00" max="1.00"/>
+        <param name="fido_q_threshold" type="float" label="maximum Protein/FIDO q-value threshold" value="0.01" min="0.00" max="1.00"/>
+        <param name="fractions" type="boolean" truevalue="--fractions" falsevalue="" checked="false" label="Group SSL files by fractions" help="Organize by fractions... Check if doing fractionated experiments!" />
+
+    <conditional name="localization">
+        <param name="algorithm" type="select" label="Use results from PTM localization algorithm?" help="If not, the default localizations from the search algorithm are used.  Obviously, this won't work if the localization algorithm hasn't been run on the data..." >
+        <option value="">None</option>
+        <option value="ptmRS">ptmRS</option>
+        <option value="phosphoRS">PhosphoRS</option>
+        <option value="luciphor">LuciPHOr</option>
+        </param>
+        <when value="luciphor">
+            <param name="flr_threshold" type="float" value="0.05" min="0.00" max="1.00" label="LuciPHOr FLR threshold for Filtering" />
+            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
+            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
+            <param name="local_flr" type="boolean" truevalue="--LFLR" falsevalue="" checked="false" label="Filter by local FLR instead of global FLR?" />
+        </when>
+        <when value="phosphoRS">
+            <param name="prs_prob_threshold" type="float" value="0.95" min="0.00" max="1.00" label="pRS probability threshold for filtering" help="Anything below this will be excluded..." />
+            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
+            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
+        </when>
+        <when value="ptmRS">
+            <param name="ptmrs_prob_threshold" type="float" value="0.95" min="0.00" max="1.00" label="pRS probability threshold for filtering" help="Anything below this will be excluded..." />
+            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
+            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
+        </when>
+    </conditional>
+    <conditional name="labels">
+        <param name="filter" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Filter for SILAC aminoacids?" help="Only use if your experiment has heavy labeled AAs you care about... THIS WILL NOT WORK WITH AUTOMATIC BLIB EXPORT!" />
+        <when value="true">
+            <param name="labeled_aas" type="text" value="K,R" label="Heavy labelable amino acids" help="Multiple AAs can be specified by placing a comma between them. NO SPACES. CAUTION!!!! THIS WILL NOT WORK WITH AUTOMATIC BLIB EXPORT!!!" />
+            <param name="unlabelable" type="boolean" truevalue="True" falsevalue="False" checked="True" label="Remove unlabelable peptides" help="That means peptides with no amino acid which COULD be heavy..." />
+        </when>
+    </conditional>
+  </inputs>
+  <outputs>
+    <!--<data name="crux_tar_gz" />-->
+    <data name="ssl_files_with_mzml_tar_gz" />
+    <data name="fido_fasta" format="fasta" label="FIDO filtered FASTA"/>
+  </outputs>
+  <help>
+    tar -czvf $ssl_files_with_mzml_tar_gz ssl_files/
+
+  </help>
+</tool>

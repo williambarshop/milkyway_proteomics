@@ -1,0 +1,74 @@
+<tool id="SAINTq" version="0.1.0a" name="SAINTq" >
+
+  <description>
+     SAINTq Interactome Analysis
+  </description>
+  <command>
+python ${__tool_directory__}/saintq_wrapper.py --exp_file $exp_file $normalize_control
+--quant_level $input_data.input_level
+#if $input_data.input_level == "protein":
+--input_file $input_data.input_file
+#elif $input_data.input_level == "peptide":
+--input_file $input_data.pep_input_file
+--mprophet_q $input_data.pep_mprophet_qvalue_filter
+--best_prop_pep $best_prop_pep
+--min_n_pep $min_n_pep
+$input_data.pep_remove_repeated_peptides
+#elif $input_data.input_level == "fragment":
+--input_file $input_data.frag_input_file
+--mprophet_q $input_data.frag_mprophet_qvalue_filter
+--best_prop_pep $best_prop_pep
+--min_n_pep $min_n_pep
+--best_prop_frag $best_prop_frag
+--min_n_frag $min_n_frag
+$input_data.frag_remove_repeated_peptides
+#end if
+--compress_n_ctrl $compress_n_ctrl
+--compress_n_rep $compress_n_rep 
+--output_file $output
+--simple_output_file $simple_output 2&gt;&amp;1 ; sleep 5
+  </command>
+  <inputs>
+
+        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
+        <param name="normalize_control" type="boolean" truevalue="--normalize true" falsevalue="--normalize false" label="Normalize avg control intensities?" help="normalize control intensities by multiplying a constant to all control intensities so that the average observed test intensities is equal to the average observed control intensities" />
+        <conditional name="input_data">        
+            <param name="input_level" type="select" format="text">
+                <label>Quantitative Data Input Level</label>
+                <option value="protein">protein</option>
+                <option value="peptide">peptide</option>
+                <option value="fragment">fragment</option>
+            </param>
+        <when value="protein">
+            <param name="input_file" type="data" label="MSstats Protein Sample Quantitation Table"/>
+        </when>
+        <when value="peptide">
+            <param name="pep_input_file" type="data" label="MSstats Input CSV from Skyline"/>
+            <param name="pep_mprophet_qvalue_filter" type="float" min="0.0" max="1.0" value="0.01" label="mProphet q-value filter"/>
+            <param name="pep_remove_repeated_peptides" type="boolean" truevalue="--remove_repeated_peptides" falsevalue="" label="Only use uniquely mapping peptides?" />
+        </when>
+        <when value="fragment">
+            <param name="frag_input_file" type="data" label="MSstats Input CSV from Skyline"/>
+            <param name="frag_mprophet_qvalue_filter" type="float" min="0.0" max="1.0" value="0.01" label="mProphet q-value filter"/>
+            <param name="frag_remove_repeated_peptides" type="boolean" truevalue="--remove_repeated_peptides" falsevalue="" label="Only use uniquely mapping peptides?" />
+        </when>
+        </conditional>
+
+
+        <param name="compress_n_ctrl" type="integer" value="100" min="0" max="1000" label="Compress Number of Control Runs" help="the number of control baits used in calculations, with priority for baits with greater intensities. Setting this number to a large number makes the program use all available control data (recommended in cases with at most several controls)"/>
+        <param name="compress_n_rep" type="integer" value="100" min="0" max="1000" label="Compress Number of Test Bait Replicates" help="the number of test bait replicates used for scoring, with priority given to the baits with higher probability scores. If this number is greater than or equal to the number of available replicates, then the scores will use the data from all replicates. Otherwise, the highest scoring replicate scores will be averaged to yield the ﬁnal probability score"/>
+        <param name="best_prop_pep" type="float" min="0.0" max="1.0" value="0.5" label="Proportion of peptides to use for protein scores" help="the proportion of peptides to be used for protein score calculation. Default is 0.5 (50%)."/>
+        <param name="min_n_pep" type="integer" value="3" min="1" max="25" label="Minimum number of peptides intensities" help="a minimum number of peptide intensities to be used for protein score calculation. This sets a lower bound on the number of peptides used when the best_prop_pep parameter selects too few peptides. Default is 3"/>
+        <param name="best_prop_frag" type="float" min="0.0" max="1.0" value="0.5" label="Proportion of fragments to use for peptide scores" help="the proportion of fragments to be used for peptide score calculation. Default is 0.5 (50%)"/>
+        <param name="min_n_frag" type="integer" value="3" min="1" max="25" label="Minimum number of fragments for peptide score calculation" help="a minimum number of fragment intensities to be used for peptide score calculation. This sets a lower bound on the number of fragments used when the “best_prop_frag” parameter selects too few fragments. Default is 3."/>
+
+
+  </inputs>
+  <outputs>
+    <data format="tabular" name="output" label="SAINTq RAW Output"/>
+    <data format="tabular" name="simple_output" label="Simple SAINTq Output"/>
+  </outputs>
+  <help>
+   Intensity SAINTq analysis
+  </help>
+</tool>

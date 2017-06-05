@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<repositories description="Required proteomics dependencies.">
+    <repository changeset_revision="25f42af5b73d" name="proteomics_datatypes" owner="iracooke" toolshed="http://testtoolshed.g2.bx.psu.edu" />
+</repositories>

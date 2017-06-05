@@ -1,0 +1,23 @@
+<tool id="percolator_merge_fractionated" name="Merge Percolator Fractionated Data">
+  
+    <description>multiple datsets into a single XML file</description>
+    <command>
+             tar -xzvf $input;
+             python /galaxy-central/tools/wohl-proteomics/MSGFcrux/percolator_merge_fractionated.py output;
+             python /galaxy-central/tools/wohl-proteomics/MSGFcrux/percolator_output_modifier_fractionated.py merge script_file $mergeout
+    </command>
+    
+    <inputs>
+        <param name="input" type="data" />
+    </inputs>
+    
+    <outputs>
+        <data format="percout" name="mergeout"/>
+    </outputs>
+    
+  <help>
+    This tool does not create a single dataset from composite Percolator output, but it can
+    be used when e.g. having a target and a decoy XML file which have been altered and have to
+    be merged back together.
+  </help>
+</tool>

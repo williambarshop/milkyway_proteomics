@@ -1,0 +1,22 @@
+<tool id="crux_pin_fixer" version="0.0.1" name="crux_pin_fixer" >
+
+  <description>
+     Conversion of msgf2pin output to crux compatible pin file and cruxmap
+  </description>
+  <command>
+    python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_pin_fixer.py -i ${pin_input} -o ${output_pin} -m ${map_file} -u /galaxy-central/tools/wohl-proteomics/MSGFcrux/unimod.obo
+    #if $seleno
+    -s
+    #end if
+  </command>
+  <inputs>
+       <param name="pin_input" type="data" label="tab delimited pin from msgf2pin" />
+       <param name="seleno" type="boolean" checked="false" label="Remove selenocysteine mod?" truevalue="true" falsevalue="false" />
+  </inputs>
+  <outputs>
+    <data name="output_pin"/>
+    <data name="map_file"/>
+  </outputs>
+  <help>
+  </help>
+</tool>

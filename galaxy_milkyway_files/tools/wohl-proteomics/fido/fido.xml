@@ -1,0 +1,22 @@
+<tool id="fido_wohl" name="FidoChooseParameters">
+    <description>Protein identification</description>
+    <version_string>0.0.2</version_string>
+    <command>python /galaxy-central/tools/wohl-proteomics/fido/fido.py $fidoout $fidoin $fidotd $cleannames $allpsms $groupinference -c $griddepth</command>
+    <inputs>
+        <param name="fidoin" type="data" label="Fido input data" />
+        <param name="fidotd" type="data" label="Fido target-decoy input data" />
+        <param name="cleannames" type="boolean" truevalue="-p" falsevalue="" checked="false" label="Omit peptide name cleaning?" />
+        <param name="allpsms" type="boolean" truevalue="-a" falsevalue="" checked="false" label="Use all PSM matches instead of best?" />
+        <param name="groupinference" type="boolean" truevalue="-g" falsevalue="" checked="false" label="Use protein group level inference?" />
+        <param name="griddepth" type="integer" label="Depth of Gridsearch (1-3)" value="1" help="1 = best, 2 = relaxed, 3 = sloppy"/>
+    </inputs>
+    
+    <outputs>
+        <data name="fidoout"/>
+    </outputs>
+    
+<requirements>
+    <requirement type="package">fido</requirement>
+</requirements>
+
+</tool>

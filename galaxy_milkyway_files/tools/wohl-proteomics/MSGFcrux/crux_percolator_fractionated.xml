@@ -1,0 +1,74 @@
+<tool id="milkyway_crux_percolator" version="0.9.00" name="milkyway_crux_percolator" >
+
+  <description>
+     Milkyway's crux percolator tool
+  </description>
+  <command>
+   cwd=`pwd`;
+   tar -zxvf $pin_targz 2>&amp;1;
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_perco_wrapper.py
+   newoutput/
+   $exp_file 
+   crux percolator 
+     --train-fdr $trainFDR
+     --test-fdr $testFDR
+     --maxiter $maxiter
+     --pout-output T
+     --decoy-xml-output T
+     --top-match $topmatch
+     $unitnorm
+     $testeachiteration
+     $klammer
+     --txt-output T
+     --overwrite T
+     --decoy-prefix $pattern
+     --percolator-seed time
+     --search-input separate
+     --tdc F
+    #if $protein.protein_mode
+    --protein T
+    $protein.allowproteingroup
+    $protein.empiricalproteinq
+    $protein.fidonopruneproteins
+    $protein.fidogroupproteins
+    --fido-gridsearch-depth $protein.fidogridsearchdepth 2>&amp;1;
+    #else
+    $protein.onlypsms
+    2>&amp;1;
+    #end if
+    tar -cvf - output/ 2>/dev/null | pigz -9 -p 24 > $crux_tar_gz 2>&amp;1;
+
+  </command>
+  <inputs>
+        <param name="pin_targz" type="data" label="tab pin files in tar.gz"/>
+        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
+        <param name="trainFDR" type="float" value="0.01" label="Training FDR" help="False discovery rate threshold to define positive examples in training. Set by cross validation if 0. Default is 0.01." />
+        <param name="testFDR" type="float" value="0.01" label="Testing FDR" help="False discovery rate threshold for evaluating best cross validation result and the reported end result. Default is 0.01." />
+        <param name="maxiter" type="integer" value="10" label="Maximal number of iterations" />
+        <param name="topmatch" type="integer" value="1" min="0" max="100" label="Top matches to report per PSM" />
+        <param name="unitnorm" type="boolean" truevalue="--unitnorm T" falsevalue="" checked="false" label="Use unit normalization?" help="Use unit normalization [0-1] instead of standard deviation normalization" />
+        <param name="testeachiteration" type="boolean" truevalue="--test-each-iteration T" falsevalue="" checked="false" label="Test Each Iteration?" help="Measure performance on test set each iteration." />
+        <param name="klammer" type="boolean" truevalue="--klammer T" falsevalue="" checked="false" label="Klammer retention time features?" help="Retention time features calculated as in Klammer et al.?" />
+        <param name="pattern" type="text" value="Reverse_" label="Decoy protein text pattern" />
+    <conditional name="protein">
+        <param name="protein_mode" type="boolean" truevalue="--protein T" falsevalue="" checked="false" label="Protein level probabilities?" help="If this option is not checked, peptide level PEP is calculated" />
+        <when value="">
+        <param name="onlypsms" type="boolean" truevalue="--only-psms T" falsevalue="" checked="false" label="--only-psms" help="Consider all PSMs, not just the highest quality" />
+        </when>
+        <when value="--protein T">
+            <param name="allowproteingroup" type="boolean" truevalue="--allow-protein-group T" falsevalue="" checked="false" label="Allow Protein Groups?" help="treat ties as if it were one protein" />
+            <param name="empiricalproteinq" type="boolean" truevalue="--fido-empirical-protein-q T" falsevalue="" checked="true" label="Calculate Empirical Protein Q-Values?" />
+            <param name="fidonopruneproteins" type="boolean" truevalue="--no-prune-proteins T" falsevalue="" checked="false" label="Fido No Prune Proteins?" help="it does not prune peptides with a very low score (~0.0) which means that if a peptide with a very low score is matching two proteins, when we prune the peptide, it will be duplicated to generate two new protein groups." />
+            <param name="fidogroupproteins" type="boolean" truevalue="--group-proteins T" falsevalue="" checked="false" label="Fido Group Proteins" help="Treat ties as if it were one protein" />
+            <param name="fidogridsearchdepth" type="integer" value="0" label="Fido Gridsearch Depth" help="Setting depth 0 or 1 or 2 from low depth to high depth(less computational time) of the grid search for the estimation Alpha,Beta and Gamma Default value is 0." />
+        </when>
+    </conditional>
+  </inputs>
+  <outputs>
+    <data name="crux_tar_gz" label="${pin_targz.display_name}" />
+  </outputs>
+  <help>
+     --feature-file T
+
+  </help>
+</tool>

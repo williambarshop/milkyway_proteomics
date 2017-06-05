@@ -1,0 +1,83 @@
+<tool id="crux_percolator" version="0.5.0d" name="crux_percolator" >
+
+  <description>
+     CRUX Percolator!
+  </description>
+  <command>
+   cwd=`pwd`;
+   ln -s $tabin ${tabin}.pin;
+   crux percolator 
+     --train-fdr $trainFDR
+     --test-fdr $testFDR
+     --maxiter $maxiter
+     --decoy-xml-output T
+     $unitnorm
+     $testeachiteration
+     $klammer
+     --decoy-prefix $pattern
+     --mzid-output T
+     --txt-output T
+     --overwrite T
+     --feature-file T
+    '${tabin}.pin'
+    #if $protein
+    --protein T
+    $protein.allowproteingroup
+    $protein.empiricalproteinq
+    $protein.fidonopruneproteins
+    $protein.fidogroupproteins
+    --deepness $protein.fidogridsearchdepth 2>&amp;1;
+    mv crux-output/percolator.target.proteins.txt $protein_output_tab;
+    mv crux-output/percolator.decoy.proteins.txt $decoy_protein_output_tab;
+    #else
+    2>&amp;1;
+    #end if
+    mv crux-output/percolator.target.mzid $target_mzid;
+    mv crux-output/percolator.decoy.mzid $decoy_mzid;
+    mv crux-output/percolator.target.psms.txt $results_psms;
+    mv crux-output/percolator.decoy.psms.txt $decoy_results_psms;
+    mv crux-output/percolator.target.peptides.txt $target_peptides;
+    mv crux-output/percolator.decoy.peptides.txt $decoy_peptides;
+    mv crux-output/percolator.target.pout.xml $xml_output;
+    rm ${tabin}.pin;
+  </command>
+  <inputs>
+        <param name="tabin" type="data" label="tab delimited in-file"/>
+        <param name="trainFDR" type="float" value="0.01" label="Training FDR" help="False discovery rate threshold to define positive examples in training. Set by cross validation if 0. Default is 0.01." />
+        <param name="testFDR" type="float" value="0.01" label="Testing FDR" help="False discovery rate threshold for evaluating best cross validation result and the reported end result. Default is 0.01." />
+        <param name="maxiter" type="integer" value="10" label="Maximal number of iterations" />
+        <param name="unitnorm" type="boolean" truevalue="--unitnorm T" falsevalue="" checked="false" label="Use unit normalization?" help="Use unit normalization [0-1] instead of standard deviation normalization" />
+        <param name="testeachiteration" type="boolean" truevalue="--test-each-iteration T" falsevalue="" checked="false" label="Test Each Iteration?" help="Measure performance on test set each iteration." />
+        <param name="klammer" type="boolean" truevalue="--klammer T" falsevalue="" checked="false" label="Klammer retention time features?" help="Retention time features calculated as in Klammer et al.?" />
+         <param name="pattern" type="text" value="Reverse_" label="Decoy protein text pattern" />
+    <conditional name="protein">
+        <param name="protein_mode" type="boolean" truevalue="--protein T" falsevalue="" checked="false" label="Protein level probabilities?" help="Incompatible with Only PSMs setting!" />
+        <when value="" />
+        <when value="--protein T">
+            <param name="allowproteingroup" type="boolean" truevalue="--allow-protein-group T" falsevalue="" checked="false" label="Allow Protein Groups?" help="treat ties as if it were one protein" />
+            <param name="empiricalproteinq" type="boolean" truevalue="--empirical-protein-q T" falsevalue="" checked="true" label="Calculate Empirical Protein Q-Values?" />
+            <param name="fidonopruneproteins" type="boolean" truevalue="--no-prune-proteins T" falsevalue="" checked="false" label="Fido No Prune Proteins?" help="it does not prune peptides with a very low score (~0.0) which means that if a peptide with a very low score is matching two proteins, when we prune the peptide, it will be duplicated to generate two new protein groups." />
+            <param name="fidogroupproteins" type="boolean" truevalue="--group-proteins T" falsevalue="" checked="false" label="Fido Group Proteins" help="Treat ties as if it were one protein" />
+            <param name="fidogridsearchdepth" type="integer" value="0" label="Fido Gridsearch Depth" help="Setting depth 0 or 1 or 2 from low depth to high depth(less computational time) of the grid search for the estimation Alpha,Beta and Gamma Default value is 0." />
+        </when>
+    </conditional>
+  </inputs>
+  <outputs>
+    <data name="protein_output_tab">
+    <filter>protein.protein_mode=="--protein T"</filter>
+    </data>
+    <data name="decoy_protein_output_tab">
+    <filter>protein.protein_mode=="--protein T"</filter>
+    </data>
+    <data name="results_psms"/>
+    <data name="decoy_results_psms"/>
+    <data name="features_tab"/>
+    <data name="target_mzid" format="mzid"/>
+    <data name="decoy_mzid" format="mzid"/>
+    <data name="target_peptides" />
+    <data name="decoy_peptides" format="mzid"/>
+    <data name="xml_output" />
+  </outputs>
+  <help>
+  </help>
+</tool>

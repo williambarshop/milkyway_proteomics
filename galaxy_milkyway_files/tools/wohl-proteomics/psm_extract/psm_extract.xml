@@ -1,0 +1,17 @@
+<tool id="psm_extract" name="psm_extraction">
+    <description>PSM Extraction</description>
+    <version_string>0.0.2</version_string>
+    <command> tar -zxvf $tar_gz_file; cp $exp_file "experimental_groups.tsv"; python /galaxy-central/tools/wohl-proteomics/psm_extract/psm_extract.py --qthresh $q_threshold --fidoq $fido_q_threshold 2&gt;&amp;1; mv "MERGED_OUTPUT.tsv" $output_table</command>
+    <inputs>
+        <param name="tar_gz_file" type="data" label=".tar.gz input file" />
+        <param name="exp_file" type="data" label="Percolator experimental fraction file" />
+        <param name="q_threshold" type="float" label="maximum PSM q-value threshold" value="0.01" min="0.00" max="1.00"/>
+        <param name="fido_q_threshold" type="float" label="maximum Protein/FIDO q-value threshold" value="0.01" min="0.00" max="1.00"/>
+    </inputs>
+
+    
+    <outputs>
+        <data name="output_table" format="tabular"/>
+    </outputs>
+    
+</tool>

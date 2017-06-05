@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="proteowizard" version="3_0_4388">
+        <repository changeset_revision="d21f91402d1c" name="package_proteowizard_3_0_4388" owner="iracooke" toolshed="http://testtoolshed.g2.bx.psu.edu" />
+    </package>
+</tool_dependency>

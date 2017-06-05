@@ -1,0 +1,35 @@
+<tool id="mzml_mass_corrector" version="0.0.1" name="mzML mass corrector" >
+
+  <description>
+     Correction of mzML masses
+  </description>
+  <command>
+   cp '${mzml}' '${mzml.display_name}';
+   mkdir output;
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/mzml_mass_corrector.py '$mass_correction_file' '${mzml.display_name}' $minMSlevel $maxMSlevel;
+   mv output/tempout.mzML $mzml_out
+  </command>
+  <inputs>
+       <param name="mzml" type="data" format="mzml" label="Input mzML file" />
+       <param name="mass_correction_file" type="data" label="Mass Correction File" />
+       <param name="maxMSlevel" type="integer" value="2" label="Maximum MS level to correct" />
+       <param name="minMSlevel" type="integer" value="1" label="Minimum MS level to correct" />
+
+  </inputs>
+  <outputs>
+    <data name="mzml_out" label="${mzml.display_name}" />
+  </outputs>
+  <help>
+  <!--
+  # #set $pin_list = ""
+  # #for $each in $list:
+  #     #set $pin_list+= "\""
+  #     ln -s '$each' '${each.display_name}';
+  #     #set $pin_list+=$str($each.display_name)
+  #     #set $pin_list+= "\""
+  #     #set $pin_list+= ","
+  # #end for
+  # #set $pin_list=pin_list[:-1]
+  -->
+  </help>
+</tool>

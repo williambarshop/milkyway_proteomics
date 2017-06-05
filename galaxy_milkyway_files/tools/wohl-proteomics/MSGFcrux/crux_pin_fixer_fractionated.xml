@@ -1,0 +1,39 @@
+<tool id="milkyway_crux_pin_fixer" version="0.1.7" name="milkyway_crux_pin_fixer" >
+
+  <description>
+     Conversion of msgf2pin output to crux compatible pin file and cruxmap, for fractionated data
+  </description>
+  <command>
+   tar -zxvf $pin_tar;
+   mkdir newoutput;
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/milkyway_crux_pin_fixer.py -i output/ -o newoutput/ -m ${map_file} -u /galaxy-central/tools/wohl-proteomics/MSGFcrux/unimod.obo -e $fraction_groups
+   #if $seleno
+   -s
+   #end if
+   ;
+   tar -cvf - newoutput/ 2>/dev/null | pigz -9 -p 24 > newoutput.tar.gz 2>&amp;1 ;
+   mv newoutput.tar.gz $out_pin_tar
+  </command>
+  <inputs>
+       <param name="pin_tar" type="data" label="tab delimited pin(s) from msgf2pin" />
+       <param name="fraction_groups" type="data" label="Experimental Fractionation Groups" />
+       <param name="seleno" type="boolean" checked="false" label="Remove selenocysteine mod?" truevalue="true" falsevalue="false" />
+  </inputs>
+  <outputs>
+    <data name="out_pin_tar" label="${pin_tar.display_name}_pin.tar.gz" />
+    <data name="map_file" label="${pin_tar.display_name}_experiment_map.txt" />
+  </outputs>
+  <help>
+  <!--
+  # #set $pin_list = ""
+  # #for $each in $list:
+  #     #set $pin_list+= "\""
+  #     ln -s '$each' '${each.display_name}';
+  #     #set $pin_list+=$str($each.display_name)
+  #     #set $pin_list+= "\""
+  #     #set $pin_list+= ","
+  # #end for
+  # #set $pin_list=pin_list[:-1]
+  -->
+  </help>
+</tool>

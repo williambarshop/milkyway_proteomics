@@ -1,0 +1,73 @@
+<tool id="MSstatsPlots" version="0.1.0a" name="MSstats Plotting Wrapper" >
+  <description>
+	MSstats analysis plotting
+  </description>
+  <command>python /galaxy-central/tools/wohl-proteomics/wohl_skyline/msstats_plots_wrapper.py
+--msstats-image-RData ${RData_input}
+--msstats-comparison-csv ${csv_input}
+--significance $significance
+--experiment_file ${experiment_map}
+--FCthreshold $FCthreshold
+$autoAxes
+--ylimUp $ylimUp
+--ylimDown $ylimDown
+--xlimUp $xlimUp
+--xAxisSize $xAxisSize
+--yAxisSize $yAxisSize
+--width $width
+--height $height
+--numProtein $numProtein
+--clustering $clustering
+--dotSize $dotSize
+$proteinName
+--textSize $textSize
+--legendSize $legendSize
+
+
+--comparisonPlotOutput $comparisonPlotOutput
+--volcanoPlotOutput $volcanoPlotOutput
+--heatmapOutput $heatmapOutput
+
+--RScriptOutput $RScriptOutput 2&gt;&amp;1
+  </command>
+  <inputs>
+        <param name="csv_input" type="data" format="csv" label="MSstats Comparison CSV Output"/>
+        <param name="RData_input" type="data" label="MSstats Image RData Output"/>
+        <param name="experiment_map" type="data" label="Experiment Map File"/>
+        <param name="significance" type="float" value=".01" min="0.00" max="1.00" label="Significance Threshold" help="Significance threshold for heatmap and volcano plot. 100(1-sig)% confidence interval will be drawn on ComparisonPlot" />   
+        <param name="FCthreshold" type="float" value="2.0" min="0.00" label="Fold-Change Threshold" help="FC threshold for volcanoplot and heatmap." />   
+
+        <param name="autoAxes" type="boolean" truevalue="--autoAxes" falsevalue="" checked="true" label="Automatically size plot axes?" help="Automatically size axes?  If checked, the two following options will be IGNORED." />
+        <param name="ylimUp" type="float" value="50.0" min="0.00" label="Y-Axis Upper Limit"/>   
+        <param name="ylimDown" type="float" value="-1.0" label="Y-Axis Lower Limit"/>   
+        <param name="xlimUp" type="float" value="20.0" min="0.00" label="X-Axis Limit"/>   
+
+        <param name="xAxisSize" type="integer" value="10" min="0" label="X-Axis Text Size" help="size of axes labels, e.g. name of the comparisons in heatmap, and in comparison plot"/>   
+        <param name="yAxisSize" type="integer" value="10" min="0" label="Y-Axis Text Size" help="size of axes labels, e.g. name of targeted proteins in heatmap" />   
+        <param name="width" type="integer" value="10" min="0" label="Output Width" />   
+        <param name="height" type="integer" value="10" min="0" label="Output Height" />   
+
+        <param name="numProtein" type="integer" value="180" min="1" label="Number of Proteins in Heatmap" help="per page"/>   
+
+            <param name="clustering" type="select" label="What type of heatmap clustering?" >
+               <option value="protein">protein</option>
+               <option value="comparison">comparison</option>
+               <option value="both">both</option>
+            </param>
+        <param name="dotSize" type="integer" value="3" min="0" label="Volcano Plot Dot Size" />
+        <param name="proteinName" type="boolean" truevalue="--proteinName" falsevalue="" checked="false" label="Print protein names on Volcano Plot?" />
+        <param name="textSize" type="integer" value="4" min="0" label="Volcano Plot Text Size" />
+        <param name="legendSize" type="integer" value="7" min="0" label="Volcano Plot Legend Size" />
+
+  </inputs>
+  <outputs>
+    <data name="comparisonPlotOutput" label="MSstats Comparison Plot Output" format="pdf"/>
+    <data name="volcanoPlotOutput" label="MSstats Volcano Plot Output" format="pdf"/>
+    <data name="heatmapOutput" label="MSstats Heatmap Output" format="pdf"/>
+    <data name="RScriptOutput" label="R Script"/>
+
+  </outputs>
+  <help>
+    This was coded for use with MSstats 3.5.whatever
+  </help>
+</tool>
