@@ -1,9 +1,9 @@
-<tool id="milkyway_msgfplus_search" name="SILAC TD MSGF+ MSMS Search" version="1.2.6">
+<tool id="milkyway_msgfplus_search" name="SILAC TD MSGF+ MSMS Search" version="1.2.7">
     <description>Run a Separate Target-Decoy MSGF+ Search</description>
     <command>
-        #set $new_output = $input_file.display_name.split(".")[0]+"_target"
-        #set $new_decoy_output = $input_file.display_name.split(".")[0]+"_decoy"
-        #set $input_name = $input_file.display_name.split(".")[0]
+        #set $new_output = $input_file.display_name.rsplit(".",1)[0]+"_target"
+        #set $new_decoy_output = $input_file.display_name.rsplit(".",1)[0]+"_decoy"
+        #set $input_name = $input_file.display_name.rsplit(".",1)[0]
 
 
         #if $silac.silac_search
