@@ -101,7 +101,7 @@ end
 # Database must be indexed
 ##But first let's go ahead and swap out and make sure we have upper case database...
 
-system("awk \'{ if ($0 !~ />/) {print toupper($0)} else {print $0} }\' #{database_path}")
+system("gawk -i \'{ if ($0 !~ />/) {print toupper($0)} else {print $0} }\' #{database_path}")
 unless FileTest.exists?("#{database_path}.canno")
   # dbdir = Pathname.new(database_path).dirname.to_s
   tdavalue=search_tool.decoy_search ? 1 : 0;
