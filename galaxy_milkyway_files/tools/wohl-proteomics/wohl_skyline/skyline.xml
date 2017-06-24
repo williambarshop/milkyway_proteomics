@@ -4,7 +4,13 @@
 	Skyline intensity based quantitation via the SkylineRunner interface!
   </description>
   <command>
-      python ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database} $add_mods
+      awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${database} > ${database}_corrected.fasta &amp;
+      #if not $protdb_upload.protdb
+      #set $background_database = $str($protdb_upload.background_database)
+
+      awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${background_database} > ${background_database}_corrected.fasta &amp;
+      #end if
+      python ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database}_corrected.fasta $add_mods
       --mode ${ms_level.quant_type}
       #if $ms_level.quant_type=="dda_ms1"
       --ms1_res ${ms_level.ms1_resolution}
@@ -31,10 +37,9 @@
       #set $protdb_file = $str($protdb_upload.protdb_file)
       --protdb $protdb_file
       #else
-      #set $background_database = $str($protdb_upload.background_database)
       #set $enzyme = $str($protdb_upload.enzyme)
       #set $missedcleave = $str($protdb_upload.missedcleave)
-      --background_db $background_database
+      --background_db ${background_database}_corrected.fasta
       --enzyme $enzyme
       --missedcleave $missedcleave
       #end if
@@ -43,7 +48,7 @@
       --output $output
       --chromatograms_file $output_chromatograms
       --peak_boundaries $output_boundaries
-      --num_procs $num_procs ; sleep 5 
+      --num_procs $num_procs ; sleep 5
   </command>
   <inputs>
         <param name="ssl_and_mzml" type="data" label="SSL tar.gz file with data included"/>
