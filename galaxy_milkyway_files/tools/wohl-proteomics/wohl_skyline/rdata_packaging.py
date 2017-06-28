@@ -196,7 +196,10 @@ if "accToGene" in options.renameProteinType or options.renameProteinType is None
     if options.analysis_type=="lfq":
         combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern,expand=False)
     #uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='ACC',t='GENENAME')
-    uni_mapping_dict_combined=uni.map(list(protein_extracted),f='ACC',t='GENENAME')
+    try:
+        uni_mapping_dict_combined=uni.map(list(protein_extracted),f='ACC',t='GENENAME')
+    except:
+        uni_mapping_dict_combined={} #failure....
     for each_acc in uni_mapping_dict_combined:
         catch=uni_mapping_dict_combined[each_acc]
         if len(catch)>0:
@@ -229,7 +232,10 @@ if "accToGene" in options.renameProteinType or options.renameProteinType is None
 elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH ProteinS
     combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern)
     #uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='ACC',t='ID')
-    uni_mapping_dict_combined=uni.map(list(protein_extracted),f='ACC',t='ID')
+    try:
+        uni_mapping_dict_combined=uni.map(list(protein_extracted),f='ACC',t='ID')
+    except:
+        uni_mapping_dict_combined={} #failure....
     for each_acc in uni_mapping_dict_combined:
         catch=uni_mapping_dict_combined[each_acc]
         if len(catch)>0:
@@ -262,7 +268,11 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
     #protein_full_name_series_collapsed=protein_full_name_series_list.apply(pandas.Series).stack().reset_index(drop=True)
     combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern)
 #    uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='GENENAME',t='ID')
-    uni_mapping_dict_combined=uni.map(list(protein_extracted),f='GENENAME',t='ID')
+    try:
+        uni_mapping_dict_combined=uni.map(list(protein_extracted),f='GENENAME',t='ID')
+    except:
+        uni_mapping_dict_combined={} #failure....
+
     for each_acc in uni_mapping_dict_combined:
         catch=uni_mapping_dict_combined[each_acc]
         if len(catch)>0:
