@@ -86,7 +86,8 @@ job_process=subprocess.Popen(arguments,stdout=subprocess.PIPE, stderr=subprocess
 #
 # NB NB NB NB: This code assumes that 1. Decoys come after targets. AND 2. Decoys are 1:1 with targets.  There are no targets without decoys, and no target transitions without decoy transitions.
 if options.analysis_type=="lfq":
-    chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t",low_memory=False)
+    chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t")
+    #chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t",low_memory=False)
 
     if options.filter_decoys:
         #groups=chromatogram_df.groupby(by='FileName')
