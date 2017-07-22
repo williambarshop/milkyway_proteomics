@@ -102,7 +102,7 @@ python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
        <option value="accToGene">Uniprot ACC to GENENAME</option>
        <!--<option value="accToProtein">Uniprot ACC to ID (protein name)</option>-->
        <option value="geneToProtein">Uniprot GENENAME to ID (protein, works for Toxo gondii)</option>
-       <!--<option value="norename">No renaming (leave as is)</option>-->
+       <option value="norename">No renaming (leave as is)</option>
         </param>
 
     <param name="fasta" type="data" label="Target Protein FASTA db"/>
