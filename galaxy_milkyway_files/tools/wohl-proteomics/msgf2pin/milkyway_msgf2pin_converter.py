@@ -832,9 +832,9 @@ if options.ppm:
                             for each_item_line in split_line[peptide_index:]:
                                 new_line.append(each_item_line)
 
-                        #And we'll fix the ExpMass and CalcMass columns from msgf2pin....
-                        new_line[expmass_index]=str((exp_mz*mycharge)-(mycharge*isotope_mass_difference))
-                        new_line[mass_index]=str((theo_mz*mycharge)-(mycharge*isotope_mass_difference))
+                        #And we'll fix the ExpMass and CalcMass columns from msgf2pin.... These are the singly charged masses.
+                        new_line[expmass_index]=str((exp_mz*mycharge)-((mycharge-1)*proton_mass))
+                        new_line[mass_index]=str((theo_mz*mycharge)-((mycharge-1)*proton_mass))
 
                         new_reconstructed_lines.append(new_line)
 
