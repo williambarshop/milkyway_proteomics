@@ -4,8 +4,8 @@
 ## For use in Galaxy-Proteomics Workflows
 ## where fractionated data is common.
 ##
-version="1.05"
-##Date : 2016-09-08
+version="1.06"
+##Date : 2017-07-22
 ##
 ######################################
 from optparse import OptionParser
@@ -831,7 +831,13 @@ if options.ppm:
                         else:
                             for each_item_line in split_line[peptide_index:]:
                                 new_line.append(each_item_line)
+
+                        #And we'll fix the ExpMass and CalcMass columns from msgf2pin....
+                        new_line[expmass_index]=str((exp_mz*mycharge)-(mycharge*isotope_mass_difference))
+                        new_line[mass_index]=str((theo_mz*mycharge)-(mycharge*isotope_mass_difference))
+
                         new_reconstructed_lines.append(new_line)
+
                     linectr+=1
 
 
