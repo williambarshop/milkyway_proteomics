@@ -27,10 +27,10 @@ from xml.etree import ElementTree
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.65A
-version="0.65A"
-#DATE: 4/26/2017
-date="4/26/2017"
+#VERSION 0.70A
+version="0.70A"
+#DATE: 7/21/2017
+date="7/21/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -191,8 +191,19 @@ def skyline_decoy_generator(skylineFile):
 
 
     # Open the Skyline File
+    attempt=0
+    #while attempt<10:
+    #    time.sleep(30)
+    #    try:
     with open(skylineFile,'rb') as fd:
         doc = xmltodict.parse(fd.read())
+    #    except Exception as e:
+    #        shutil.copyfile(skylineFile,"temporary")
+    #        os.remove(skylineFile)
+    #        shutil.move("temporary",skylineFile)
+    #        print "moved the file back and forth to temporary"
+    #        print "FAILED",e.message,e.args
+    #        attempt+=1
 
     #doc=convert(doc)
     max_mz=float(doc['srm_settings']['settings_summary']['transition_settings']['transition_instrument']['@max_mz'])
@@ -406,6 +417,7 @@ def skyline_decoy_generator(skylineFile):
     outFile.close()
 
     # Simply to prettify the skyline file so that the xml syntax is readable by Skyline
+    os.remove(skylineFile)
     with open(skylineFile[:-4]+'-temp.sky', 'rt') as f:
         tree = ElementTree.parse(f)
     tree.write(skylineFile)
@@ -865,7 +877,8 @@ if options.fractions:
         if options.msstats is not None:
             single_cfgwriter.write("--report-name=Wohl_MSstats_Input\n")
             single_cfgwriter.write("--report-file=MSstats_"+each_fraction_fldr+".csv\n")
-        single_cfgwriter.write("--save\n")
+        single_cfgwriter.write("--out=docker_protection_temporary.sky\n")
+        #single_cfgwriter.write("--save\n")
         single_cfgwriter.close()
         final_cmd=skyline_runner_cmd+"skyline_batch"
         #final_cmd=final_cmd.split()
@@ -873,6 +886,10 @@ if options.fractions:
         returncode = proc.wait()
         if returncode != 0:
             raise Exception, "Program returned with non-zero exit code %d." % (returncode)
+        os.remove(skyline_filename)
+        shutil.copy("docker_protection_temporary.sky",skyline_filename)
+        os.remove("docker_protection_temporary.sky")
+
 
 
     pass
@@ -1017,7 +1034,7 @@ else:
 
     if options.mprophet is not None and "decoy" in options.mprophet:
 
-        cfgwriter.write("--save\n")
+        cfgwriter.write("--out=docker_protection_temporary.sky\n")
         cfgwriter.close()
         
         with open('skyline_batch','rb') as batchreader:
@@ -1055,12 +1072,16 @@ else:
         time.sleep(30)
         #skyline_decoy_generator("combined_analysis.sky")
         print "Building Skyline Mass-Shifted Decoys..."
-        skyline_decoy_generator(skyline_filename)
+        skyline_decoy_generator("docker_protection_temporary.sky")
+        print "finished adding decoy peptides!"
+        shutil.move(skyline_filename,"ORIGINAL.sky")
+        shutil.copy("docker_protection_temporary.sky",skyline_filename)
+        os.remove("docker_protection_temporary.sky")
         time.sleep(30)
 
         ################################# END DECOYS #########################################
         #Now we're going to strip out all the results so that we can reimport with the decoys!
-        strip_cmd="SkylineCmd --in="+skyline_filename+" --remove-all=. --save"
+        strip_cmd="SkylineCmd --in="+skyline_filename+" --remove-all=. --out=docker_protection_temporary.sky"
         notConnectedSkyline=True
         attempt=1
         while notConnectedSkyline:
@@ -1084,6 +1105,10 @@ else:
 
         time.sleep(20)
 
+        os.remove(skyline_filename)
+        shutil.copy("docker_protection_temporary.sky",skyline_filename)
+        os.remove("docker_protection_temporary.sky")
+
         shutil.move("skyline_batch","before_decoys")
 
         cfgwriter=open("skyline_batch",'wb')
@@ -1091,7 +1116,8 @@ else:
         cfgwriter.write("--in="+skyline_filename+"\n")
         #cfgwriter.write("--remove-all=.\n")
 
-    cfgwriter.write("--save\n")
+    #cfgwriter.write("--out=docker_protection_temporary.sky\n")
+
 
     if options.num_procs is not None:
         #cfgwriter.write("--import-process-count={0}\n".format(options.num_procs)) #DISABLED UNTIL PATCHED...
@@ -1170,7 +1196,11 @@ else:
     #single_cfgwriter.write("--report-add=peak_boundaries.skyr\n")
     #single_cfgwriter.write("--report-name=Peak_Boundaries\n")
     #single_cfgwriter.write("--report-file={0}\n".format("peak_boundaries.csv"))#options.peak_boundaries))
-    single_cfgwriter.write("--save\n")
+    single_cfgwriter.write("--out=docker_protection_temporary.sky\n")
+
+
+
+
     single_cfgwriter.close()
     #final_cmd=skyline_runner_cmd+"skyline_batch"
 
@@ -1215,6 +1245,9 @@ else:
         
         #stdout, stderr = subprocess.Popen("cmd.exe", stdout=subprocess.PIPE,startupinfo=sysuser).communicate()
 
+    os.remove(skyline_filename)
+    shutil.copy("docker_protection_temporary.sky",skyline_filename)
+    os.remove("docker_protection_temporary.sky")
 
 
     shutil.copy("C:\\skyline\\peak_boundaries.skyr","peak_boundaries.skyr")
