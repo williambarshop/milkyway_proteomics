@@ -31,7 +31,7 @@ from itertools import islice
 #sys.exit(2)
 
 
-#proton_mass=1.00727646677
+proton_mass=1.00727646677
 #proton_mass=1.007825035
 #proton_w_electron_mass=1.007825035+0.00054858026 #This is proton + electron mass.
 #neutron_mass=1.0086654
