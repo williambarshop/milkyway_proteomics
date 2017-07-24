@@ -15,6 +15,7 @@ arguments=arguments[1:]
 exp_group_file=arguments[0]
 arguments=arguments[1:]
 
+proton_mass=1.007276
 
 onlyfiles = [ f for f in listdir(folder) if isfile(join(folder,f)) ]
 
@@ -70,6 +71,8 @@ for index,row in group_information.iterrows():
 ################ ===== As of crux version 3.1, we will also begin to fix the charge column...
 os.chdir(startingdir)
 pin_list=[]
+
+spectral_expmz={}
 for each in onlyfiles:
     os.chdir("output/"+each+"_out")
     with open("temp.tsv",'wb') as filewriter:
@@ -77,6 +80,7 @@ for each in onlyfiles:
             linectr=0
             peptide_index=0
             index_ctr=0
+            expmass_index=0
             specID_index=0
             scan_index=0
             label_index=0
@@ -92,6 +96,8 @@ for each in onlyfiles:
                             specID_index=index_ctr
                         elif each_item == "ScanNr":
                             scan_index=index_ctr
+                        elif each_item == "ExpMass":
+                            expmass_index = index_ctr
                         elif each_item == "Label":
                             label_index=index_ctr
                         elif "Charge" in each_item:
@@ -104,12 +110,19 @@ for each in onlyfiles:
                     thisline=eachline.split("\t")
                     peptide = thisline[peptide_index].split(".",1)[1]
                     peptide = peptide.rsplit(".",1)[0]
+                    this_run=run_dict[thisline[specID_index].rsplit("_",4)[1]].rsplit(".",1)[0]
                     charge=0
                     for each_charge in charge_indicies:
                         if thisline[charge_indicies[each_charge]]=="1":
                             charge=each_charge[-1]
                     if charge == 0:
                         print "We couldnt find a charge for "+str(thisline[specID_index])+" so its defaulting to zero!"
+                    
+                    if this_run not in spectral_expmz:
+                        spectral_expmz[this_run]={}
+                    else:
+                        spectral_expmz[this_run][int(thisline[scan_index])]=str((float(thisline[expmass_index])+((float(charge)-1)*proton_mass))/float(charge))
+
                     filewriter.write(thisline[specID_index]+"\t"+thisline[label_index]+"\t"+thisline[scan_index]+"\t"+peptide+"\t"+str(charge)+"\n")
                 linectr+=1
 
@@ -169,6 +182,15 @@ for each in onlyfiles:
     corrected_df.drop('unique_name',axis=1,inplace=True)
     corrected_df.drop('sequence',axis=1,inplace=True)
     corrected_df.rename(columns={'Peptide':'sequence'},inplace=True)
+
+
+    #Fixing precursor spectral m/z for targets
+    corrected_df['scan']=corrected_df['scan'].astype(int)
+    for index,each_group in corrected_df.groupby('file'):
+        corrected_df.loc[corrected_df['file']==index,'spectrum precursor m/z']=corrected_df.loc[corrected_df['file']==index,'scan'].map(spectral_expmz[index.rsplit(".",1)[0]])
+
+
+
     #HERE WE CAN MAKE UNIQUE IDS
     #AND THEN DO A LEFT JOIN TO TAKE IN THE OLD (good) SEQUENCES
     #AND THEN GET RID OF THE BAD SEQUENCES AND REPLACE THEM WITH THE GOOD
@@ -186,7 +208,18 @@ for each in onlyfiles:
             mask['file']=run_dict[str(eachone)]
             corrected_decoys.append(mask)
             #print mask,"this is mask for",str(eachone)
+
+    #Fixing precursor spectral m/z for decoys
+    corrected_df['scan']=corrected_df['scan'].astype(int)
+    for index,each_group in corrected_df.groupby('file'):
+        corrected_df.loc[corrected_df['file']==index,'spectrum precursor m/z']=corrected_df.loc[corrected_df['file']==index,'scan'].map(spectral_expmz[index.rsplit(".",1)[0]])
     corrected_df=pandas.concat(corrected_decoys)
+
+
+
+
+
+
     corrected_df.to_csv("crux-output/"+eachfile,sep='\t',index=False)
     #this_run=
 
