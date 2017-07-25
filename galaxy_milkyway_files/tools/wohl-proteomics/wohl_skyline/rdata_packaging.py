@@ -15,10 +15,10 @@ import uniprot as uni
 #This is a script to combine the outputs of many tools into
 #an Rdata image!
 #
-#VERSION 0.98A
-version="0.98A"
-#DATE: 4/05/2017
-date="4/05/2017"
+#VERSION 0.985A
+version="0.985A"
+#DATE: 7/25/2017
+date="7/25/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the Rdata merger for Galaxy, Wohlschlegel Lab UCLA"
@@ -302,9 +302,10 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
 
 
 elif "norename" in options.renameProteinType:
+    combined_results['Gene ID']=combined_results['uniprot_acc']
     print "Not renaming proteins... leaving as is!"
 
-if options.analysis_type=="lfq":    
+if options.analysis_type=="lfq":
     combined_results.drop('backup',axis=1,inplace=True)
     combined_results.to_csv('msstats_comparison.csv',sep=',',index=False)
 
