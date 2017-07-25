@@ -400,8 +400,9 @@ with open("Rdata_Script.R",'wb') as script_writer:
         script_writer.write("quant_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.quant_experiment_file))
     if options.qual_experiment_file is not None:
         script_writer.write("qual_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.qual_experiment_file))
+        script_writer.write("experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.qual_experiment_file)) #WORKAROUND UNTIL HJK UPDATES R SIDE....
     if options.qual_experiment_file is None and options.experiment_file is not None:
-        script_writer.write("qual_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.qual_experiment_file))
+        script_writer.write("qual_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.experiment_file))
     script_writer.write("psm_table<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format('psm_table.tsv'))
     #script_writer.write("psm_table<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.psm_table))
     #script_writer.write("chromatograms<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.skyline_chromatograms))
