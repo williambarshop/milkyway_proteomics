@@ -62,6 +62,8 @@ parser.add_option("--RDataOutput",action="store",type="string",dest="RDataOutput
 parser.add_option("--MS2Output",action="store",type="string",dest="MS2Output")
 parser.add_option("--MS2Output_id",action="store",type="string",dest="MS2Output_id")
 parser.add_option("--experiment_file",action="store",type="string",dest="experiment_file")
+parser.add_option("--quant_experiment_file",action="store",type="string",dest="quant_experiment_file")
+parser.add_option("--qual_experiment_file",action="store",type="string",dest="qual_experiment_file")
 parser.add_option("--psm_table",action="store",type="string",dest="psm_table")
 parser.add_option("--filter_decoys",action="store_true",dest="filter_decoys")
 parser.add_option("--zlib",action="store_true",dest="zlib")
@@ -392,7 +394,12 @@ psm_table.to_csv('psm_table.tsv',sep='\t',index=False)
 
 with open("Rdata_Script.R",'wb') as script_writer:
     #script_writer.write("comparison_csv<-read.csv(\"{0}\",check.names=FALSE)\n".format(options.msstats_comparison))
-    script_writer.write("experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.experiment_file))
+    if options.experiment_file is not None:
+        script_writer.write("experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.experiment_file))
+    if options.quant_experiment_file is not None:
+        script_writer.write("quant_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.experiment_file))
+    if options.qual_experiment_file is not None:
+        script_writer.write("qual_experiment_design<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.experiment_file))
     script_writer.write("psm_table<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format('psm_table.tsv'))
     #script_writer.write("psm_table<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.psm_table))
     #script_writer.write("chromatograms<-read.csv(\"{0}\",sep=\"\\t\",check.names=FALSE)\n".format(options.skyline_chromatograms))

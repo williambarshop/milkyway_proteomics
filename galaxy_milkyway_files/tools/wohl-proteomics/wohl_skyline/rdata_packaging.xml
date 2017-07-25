@@ -29,7 +29,7 @@
 python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
 <!-- COMMON EXPERIMENT OPTIONS -->
 --analysis_type $analysis_type.selection
---experiment_file ${experiment_map}
+--qual_experiment_file ${qual_experiment_map}
 --nsaf_table $nsaf_table
 --spc_table $spc_table
 --peptide_nsaf_table $peptide_nsaf_table
@@ -47,6 +47,7 @@ python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
 
 <!--LFQ SPECIFIC OPTIONS-->
 #if $analysis_type.selection=="lfq"
+    --quant_experiment_file ${quant_experiment_map}
     --skyline_chromatograms ${analysis_type.skyline_chromatograms}
     --msstats_comparison $analysis_type.msstats_comparison
     --msstats_condition $analysis_type.msstats_condition
@@ -83,6 +84,7 @@ python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
            </param>
         
         <when value="lfq">
+        <param name="quant_experiment_map" type="data" label="Quantitative Experimental Design File"/>
         <param name="skyline_chromatograms" type="data" label="Skyline Chromatograms TSV"/>
         <param name="filter_decoys" type="boolean" value="true" label="Remove chromatogram decoys? (ON for DDA, OFF for DIA)" help="this assumes a 1:1 relationship between decoys and targets... DIA chromatograms lack the decoy data"/>
         <param name="skyline_boundaries" type="data" label="Skyline Boundaries CSV"/>
@@ -114,7 +116,7 @@ python /galaxy-central/tools/wohl-proteomics/wohl_skyline/rdata_packaging.py
     <param name="peptide_nsaf_table" type="data" label="Peptide NSAF Table"/>
     <param name="peptide_spc_table" type="data" label="Peptide SpC Table"/>
     <param name="fido_roc" type="data" label="Fido q-value Conversion CSV"/>
-    <param name="experiment_map" type="data" label="Experimental Design File"/>
+    <param name="qual_experiment_map" type="data" label="Qualitative (Percolator/ID) Experimental Design File"/>
 
 
   </inputs>
