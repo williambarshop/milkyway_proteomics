@@ -2,11 +2,12 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "05-14-17 Qualitative-Analysis-Lumos", 
+    "name": "07-27-17 Qualitative-Analysis-Lumos", 
     "steps": {
         "0": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 0, 
             "input_connections": {}, 
             "inputs": [
@@ -22,7 +23,6 @@
                 "left": 577.9375, 
                 "top": 387.5
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"collection_type\": \"list\", \"name\": \"Input Dataset Collection\"}", 
             "tool_version": null, 
@@ -39,6 +39,7 @@
         "1": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 1, 
             "input_connections": {}, 
             "inputs": [
@@ -47,14 +48,13 @@
                     "name": "FASTA Database Input (fwd only)"
                 }
             ], 
-            "label": null, 
+            "label": "FASTA Database Input (fwd only)", 
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
                 "left": 199.71875, 
                 "top": 861.46875
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"FASTA Database Input (fwd only)\"}", 
             "tool_version": null, 
@@ -71,6 +71,7 @@
         "2": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 2, 
             "input_connections": {}, 
             "inputs": [
@@ -79,14 +80,13 @@
                     "name": "Experimental Design File"
                 }
             ], 
-            "label": null, 
+            "label": "Experimental Design File", 
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
                 "left": 1314.03125, 
                 "top": 269.203125
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Experimental Design File\"}", 
             "tool_version": null, 
@@ -103,6 +103,7 @@
         "3": {
             "annotation": "", 
             "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
+            "errors": null, 
             "id": 3, 
             "input_connections": {
                 "input": {
@@ -139,7 +140,6 @@
                     "output_name": "output_refinement"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
             "tool_shed_repository": {
                 "changeset_revision": "f8cf3be564bb", 
@@ -162,6 +162,7 @@
         "4": {
             "annotation": "", 
             "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/openms_decoydatabase/DecoyDatabase/2.1.0", 
+            "errors": null, 
             "id": 4, 
             "input_connections": {
                 "param_in": {
@@ -196,7 +197,6 @@
                     "output_name": "param_out"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/openms_decoydatabase/DecoyDatabase/2.1.0", 
             "tool_shed_repository": {
                 "changeset_revision": "8ced1ef014ae", 
@@ -219,6 +219,7 @@
         "5": {
             "annotation": "", 
             "content_id": "milkyway_msgfplus_search", 
+            "errors": null, 
             "id": 5, 
             "input_connections": {
                 "database|decoy_fasta_file": {
@@ -261,10 +262,9 @@
                 "top": 683.34375
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_msgfplus_search", 
             "tool_state": "{\"protocol\": \"\\\"0\\\"\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"\\\"2\\\"\", \"__page__\": 0, \"fixed_mods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"variable_mods\": \"null\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
-            "tool_version": "1.2.6", 
+            "tool_version": "1.2.7", 
             "type": "tool", 
             "uuid": "e6beb055-1bfe-4cd4-b12e-7d79b1485e48", 
             "workflow_outputs": [
@@ -278,6 +278,7 @@
         "6": {
             "annotation": "", 
             "content_id": "milkyway_msgf2pin_converter", 
+            "errors": null, 
             "id": 6, 
             "input_connections": {
                 "fraction_file": {
@@ -316,9 +317,8 @@
                 "top": 392.65625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_msgf2pin_converter", 
-            "tool_state": "{\"__page__\": 0, \"ptm\": \"\\\"true\\\"\", \"pngasef\": \"\\\"false\\\"\", \"ppm\": \"{\\\"ppm_bool\\\": \\\"true\\\", \\\"ppm_fix\\\": {\\\"ppm_fix_bool\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"__current_case__\\\": 0}\", \"fraction_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"matches\": \"\\\"1\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"isotope\": \"\\\"true\\\"\", \"enzyme\": \"\\\"trypsin\\\"\", \"aafreq\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"silac\": \"\\\"false\\\"\"}", 
+            "tool_state": "{\"isotope\": \"\\\"true\\\"\", \"__page__\": 0, \"ptm\": \"\\\"true\\\"\", \"pngasef\": \"\\\"false\\\"\", \"fraction_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"matches\": \"\\\"1\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"ppm\": \"{\\\"ppm_bool\\\": \\\"true\\\", \\\"ppm_fix\\\": {\\\"ppm_fix_bool\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"__current_case__\\\": 0}\", \"enzyme\": \"\\\"trypsin\\\"\", \"aafreq\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"silac\": \"\\\"false\\\"\"}", 
             "tool_version": "3.0.0", 
             "type": "tool", 
             "uuid": "c1de469d-bdb6-4b54-8444-58590d22c130", 
@@ -338,6 +338,7 @@
         "7": {
             "annotation": "", 
             "content_id": "milkyway_crux_pin_fixer", 
+            "errors": null, 
             "id": 7, 
             "input_connections": {
                 "fraction_groups": {
@@ -376,7 +377,6 @@
                 "top": 649.53125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_crux_pin_fixer", 
             "tool_state": "{\"__page__\": 0, \"seleno\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"fraction_groups\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.1.7", 
@@ -398,6 +398,7 @@
         "8": {
             "annotation": "", 
             "content_id": "milkyway_crux_percolator", 
+            "errors": null, 
             "id": 8, 
             "input_connections": {
                 "exp_file": {
@@ -440,7 +441,6 @@
                     "output_name": "crux_tar_gz"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "milkyway_crux_percolator", 
             "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
             "tool_version": "0.9.00", 
@@ -457,6 +457,7 @@
         "9": {
             "annotation": "", 
             "content_id": "milkyway_percolator_to_fido", 
+            "errors": null, 
             "id": 9, 
             "input_connections": {
                 "decoydatabase": {
@@ -503,7 +504,6 @@
                 "top": 585.5625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_percolator_to_fido", 
             "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fct\": \"{\\\"fidoCT\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"true\\\"\", \"pout_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoydatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.2.1", 
@@ -525,6 +525,7 @@
         "10": {
             "annotation": "", 
             "content_id": "fido_wohl", 
+            "errors": null, 
             "id": 10, 
             "input_connections": {
                 "fidoin": {
@@ -559,9 +560,8 @@
                 "top": 504.5625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "fido_wohl", 
-            "tool_state": "{\"groupinference\": \"\\\"false\\\"\", \"__page__\": 0, \"fidoin\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"cleannames\": \"\\\"false\\\"\", \"allpsms\": \"\\\"true\\\"\", \"griddepth\": \"\\\"1\\\"\", \"fidotd\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"groupinference\": \"\\\"false\\\"\", \"__page__\": 0, \"fidoin\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"cleannames\": \"\\\"false\\\"\", \"allpsms\": \"\\\"true\\\"\", \"fidotd\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"griddepth\": \"\\\"1\\\"\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "e3e889a8-5da1-4dd3-b899-3e9e7b257bbe", 
@@ -576,6 +576,7 @@
         "11": {
             "annotation": "", 
             "content_id": "fido_q_values", 
+            "errors": null, 
             "id": 11, 
             "input_connections": {
                 "crux_perco_targz": {
@@ -626,9 +627,8 @@
                 "top": 761.859375
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "fido_q_values", 
-            "tool_state": "{\"__page__\": 0, \"fidoCT\": \"\\\"false\\\"\", \"add_peptide_indicies\": \"\\\"true\\\"\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"clean_spectra\": \"\\\"true\\\"\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"add_peptide_indicies\": \"\\\"true\\\"\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoCT\": \"\\\"false\\\"\", \"clean_spectra\": \"\\\"true\\\"\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "76094b8c-5b3c-4cb4-9128-e9c77b34023e", 
@@ -653,6 +653,7 @@
         "12": {
             "annotation": "", 
             "content_id": "milkyway_spectral_counts", 
+            "errors": null, 
             "id": 12, 
             "input_connections": {
                 "crux_perco_tar_gz": {
@@ -742,9 +743,8 @@
                     "output_name": "outputraw"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "milkyway_spectral_counts", 
-            "tool_state": "{\"cruxmap\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"protein_qvalue\": \"\\\"0.01\\\"\", \"__page__\": 0, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"psm_qvalue\": \"\\\"0.01\\\"\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_tar_gz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"groupquant\": \"\\\"true\\\"\", \"saint_outputs\": \"\\\"true\\\"\", \"localization_filter\": \"{\\\"__current_case__\\\": 3, \\\"localization_type\\\": \\\"none\\\"}\"}", 
+            "tool_state": "{\"cruxmap\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"protein_qvalue\": \"\\\"0.01\\\"\", \"__page__\": 0, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"psm_qvalue\": \"\\\"0.01\\\"\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"localization_filter\": \"{\\\"__current_case__\\\": 3, \\\"localization_type\\\": \\\"none\\\"}\", \"groupquant\": \"\\\"true\\\"\", \"saint_outputs\": \"\\\"true\\\"\", \"crux_perco_tar_gz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.9c", 
             "type": "tool", 
             "uuid": "8486ded8-4aa0-48b4-bee6-592074aaccef", 
@@ -804,6 +804,7 @@
         "13": {
             "annotation": "", 
             "content_id": "psm_extract", 
+            "errors": null, 
             "id": 13, 
             "input_connections": {
                 "exp_file": {
@@ -838,7 +839,6 @@
                 "top": 779.5
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "psm_extract", 
             "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"tar_gz_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"q_threshold\": \"\\\"1.0\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fido_q_threshold\": \"\\\"1.0\\\"\"}", 
             "tool_version": "1.0.0", 
@@ -855,6 +855,7 @@
         "14": {
             "annotation": "", 
             "content_id": "SAINT_express", 
+            "errors": null, 
             "id": 14, 
             "input_connections": {
                 "bait_raw": {
@@ -901,7 +902,6 @@
                 "top": 974.828125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "SAINT_express", 
             "tool_state": "{\"__page__\": 0, \"interact_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"prey_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter\": \"\\\"0.0\\\"\", \"bait_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.1.0a", 
@@ -933,15 +933,12 @@
         "15": {
             "annotation": "", 
             "content_id": "RdataPackaging", 
+            "errors": null, 
             "id": 15, 
             "input_connections": {
                 "analysis_type|saint_table": {
                     "id": 14, 
                     "output_name": "SAINT_simple_raw_output"
-                }, 
-                "experiment_map": {
-                    "id": 7, 
-                    "output_name": "map_file"
                 }, 
                 "fasta": {
                     "id": 1, 
@@ -971,6 +968,10 @@
                     "id": 13, 
                     "output_name": "output_table"
                 }, 
+                "qual_experiment_map": {
+                    "id": 7, 
+                    "output_name": "map_file"
+                }, 
                 "spc_table": {
                     "id": 12, 
                     "output_name": "outputraw"
@@ -991,11 +992,11 @@
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "experiment_map"
+                    "name": "analysis_type"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "spc_table"
+                    "name": "qual_experiment_map"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
@@ -1003,11 +1004,11 @@
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "analysis_type"
+                    "name": "fasta"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "fasta"
+                    "name": "spc_table"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
@@ -1035,13 +1036,12 @@
                 }
             ], 
             "position": {
-                "left": 4753.734375, 
-                "top": 1142.1875
+                "left": 4163.734375, 
+                "top": 881.1875
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "RdataPackaging", 
-            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"__rerun_remap_job_id__\": null, \"analysis_type\": \"{\\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.5.0a", 
             "type": "tool", 
             "uuid": "63be5fc4-6ba6-4a66-acbe-04879d283027", 
@@ -1064,5 +1064,5 @@
             ]
         }
     }, 
-    "uuid": "a2a269f2-10ec-4e91-b61e-b6279d4f5ff6"
+    "uuid": "2487322e-8b7d-4024-9433-c1280e51cb6f"
 }
