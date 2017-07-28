@@ -1,14 +1,15 @@
-version=".75A"
-date="12/21/2015"
+version=".85A"
+date="7/27/2017"
 
-
-import sys, os, subprocess
+import sys, os, subprocess, shutil
 import pandas
 from os import listdir
 from os.path import isfile, join
 
 arguments=sys.argv
 print arguments
+arguments=arguments[1:]
+independent_perco=arguments[0]
 arguments=arguments[1:]
 folder=arguments[0]
 arguments=arguments[1:]
@@ -27,32 +28,16 @@ processes=[]
 
 os.mkdir("output")
 #print onlyfiles,"onlyfiles"
-for each in onlyfiles:
-    #print each
-    cmd=arguments[:]
-    cmd.append("--fileroot")
-    cmd.append(each.split(".")[0])
-    cmd.append(each)
-    os.mkdir("output/"+each+"_out")
-    os.rename(folder+"/"+each,"output/"+each+"_out/"+each)
-    os.chdir("output/"+each+"_out")
-    print "---------------------------"
-    print cmd,"this will run"
-    print "---------------------------"
-    processes.append(subprocess.Popen(cmd))
-    os.chdir(startingdir)
-for each in processes:
-    each.wait()
-
-
 
 group_information = pandas.read_csv(exp_group_file,sep='\t')
 
 run_dict={} # Key is file_idx, value is file_name.mzML
+run_dict_reverse={}
 group_to_run_dict={} # Key is group, value is [1, 2, 3, 4] list of file_idx belonging to runs in the group...
 group_to_file_name={} # key is group, value is ["xxxx.mzML", "xxxx.mzML"]
 for index,row in group_information.iterrows():
     run_dict[str(row['Crux File Integer'])]=row['Original File Name']+".mzML"
+    run_dict_reverse[row['Original File Name']+".mzML"]=row['Crux File Integer']
     if row['Fractionation Group ID String'] in group_to_run_dict:
         group_to_run_dict[row['Fractionation Group ID String']].append(str(row['Crux File Integer']))
     else:
@@ -65,10 +50,91 @@ for index,row in group_information.iterrows():
 
 
 
+
+#Here we actually run percolator
+if independent_perco=="T": #If =="T" then we'll run percolator separately for each file
+    for each in onlyfiles:
+        #print each
+        cmd=arguments[:]
+        cmd.append("--fileroot")
+        cmd.append(each.split(".")[0])
+        cmd.append(each)
+        os.mkdir("output/"+each+"_out")
+        os.rename(folder+"/"+each,"output/"+each+"_out/"+each)
+        os.chdir("output/"+each+"_out")
+        print "---------------------------"
+        print cmd,"this will run"
+        print "---------------------------"
+        processes.append(subprocess.Popen(cmd))
+        os.chdir(startingdir)
+    for each in processes:
+        each.wait()
+else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
+    #2. Run crux percolator for the aggregated data
+    #3. Read in the outputs [psms:[targets, decoys],peptides:[targets,decoys] as a single dataframes, and then split them by file and output them to proper folders]
+    #4. Copy the XML files and other outputs to each folder for completeness.
+    os.mkdir("output/combined_out")
+    first_file=True
+    with open("output/combined_out/combined_input.pin",'wb') as pin_writer:
+        for each in onlyfiles:
+            line_ctr=0
+            with open(folder+"/"+each,'rb') as pin_reader:
+                for each_line in pin_reader:
+                    if line_ctr <2 and first_file:
+                        pin_writer.write(each_line)
+                    elif line_ctr >=2:
+                        pin_writer.write(each_line)
+
+                    if line_ctr == 1 and first_file:
+                        first_file=False #no more headers!
+                    line_ctr+=1
+
+                #We only want the header from the first file, top two lines.  Everything else we should just write in...
+                #Then we'll execute percolator on the aggregate data
+                #Then we'll split it and divy it up between all the different folders per file input
+
+
+
+            os.mkdir("output/"+each+"_out") # We'll make the folders into which we'll end up sticking the final split outputs
+            os.rename(folder+"/"+each,"output/"+each+"_out/"+each) #Move each separate pin file into its own folder, too
+    cmd=arguments[:]
+    cmd.append("--fileroot")
+    cmd.append("combined_analysis")
+    cmd.append("combined_input.pin")
+    os.chdir("output/combined_out")
+    print "Running....",cmd
+    percolator_process=subprocess.Popen(cmd)
+    percolator_process.wait()
+    combined_out_folder=os.getcwd()
+    files_to_filter=['combined_analysis.percolator.decoy.peptides.txt','combined_analysis.percolator.target.peptides.txt','combined_analysis.percolator.target.psms.txt','combined_analysis.percolator.decoy.psms.txt']
+    for each in onlyfiles:
+        os.chdir(combined_out_folder)
+        shutil.copytree("crux-output",startingdir+"/output/"+each+"_out/crux-output")
+        os.chdir(startingdir+"/output/"+each+"_out/crux-output")
+        #Now we'll load each of the following files and filter them out, and rename them....
+        for each_filter_file in files_to_filter:
+            this_pin_df=pandas.read_csv(each_filter_file,sep='\t')
+            this_pin_df=this_pin_df[this_pin_df['file_idx']==run_dict_reverse[each.rsplit(".",1)[0]+".mzML"]]
+            this_pin_df.to_csv(each.rsplit(".",1)[0]+'.'+'.'.join(each_filter_file.rsplit(".",4)[1:]),sep='\t',index=False)
+            os.remove(each_filter_file)
+    os.chdir(startingdir)
+    #cleanup
+    os.chdir("output/")
+    os.system("tar -cvf - combined_out/ 2>/dev/null | pigz -9 -p 24 > combined_perco.tar.gz")
+    shutil.rmtree("combined_out/")
+    os.chdir(startingdir)
+    #sys.exit(2)
+
+    #First, we'll combine all the pin files together.
+    #for each in onlyfiles:
+
+
+
+
 ################ To prepare for percolator file output, we're going to read in the percolator pin files
 ################ Once they're read in, we'll have to generate a unique ID of file_idx+"_"+scan to merge the pin sequence on
 ################ We're only going to bring in the sequence from the percolator input file.
-################ ===== As of crux version 3.1, we will also begin to fix the charge column...
+################ ===== As of crux version 3.1, we will also begin to fix the charge column...  We also correct the spectral m/z column
 os.chdir(startingdir)
 pin_list=[]
 
@@ -133,6 +199,8 @@ for each in onlyfiles:
     new_in=new_in[new_in['label']==1]
     pin_list.append(new_in)
     os.chdir(startingdir)
+
+print "Done fixing pin files..."
 
 #target_1_58_58_2
 def makeUniqueID(x):

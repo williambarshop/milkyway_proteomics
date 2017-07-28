@@ -7,6 +7,7 @@
    cwd=`pwd`;
    tar -zxvf $pin_targz 2>&amp;1;
    python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_perco_wrapper.py
+   $separate_percolator
    newoutput/
    $exp_file 
    crux percolator 
@@ -40,6 +41,7 @@
 
   </command>
   <inputs>
+        <param name="separate_percolator" type="boolean" truevalue="T" falsevalue="F" checked="false" label="Run percolator independently for every acqusition?" help="Almost always best (and conservative) to leave this OFF." />
         <param name="pin_targz" type="data" label="tab pin files in tar.gz"/>
         <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
         <param name="trainFDR" type="float" value="0.01" label="Training FDR" help="False discovery rate threshold to define positive examples in training. Set by cross validation if 0. Default is 0.01." />
