@@ -24,5 +24,6 @@
     <tool file="wohl-proteomics/wohl_skyline/rdata_packaging.xml" />
     <tool file="wohl-proteomics/psm_extract/psm_extract.xml" />
     <tool file="wohl-proteomics/diaumpire/dia_umpire.xml" />
+    <tool file="wohl-proteomics/diaumpire/msconvert_demux.xml" />
   </section>
 </toolbox>
