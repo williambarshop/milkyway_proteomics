@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "06-21-17 Wohl-MSGF-PTMRS-Lumos", 
+    "name": "07-28-17 Wohl-MSGF-PTMRS-Lumos", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -300,7 +300,7 @@
             "post_job_actions": {}, 
             "tool_id": "milkyway_msgfplus_search", 
             "tool_state": "{\"protocol\": \"\\\"0\\\"\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"\\\"2\\\"\", \"__page__\": 0, \"fixed_mods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"variable_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
-            "tool_version": "1.2.6", 
+            "tool_version": "1.2.7", 
             "type": "tool", 
             "uuid": "e6beb055-1bfe-4cd4-b12e-7d79b1485e48", 
             "workflow_outputs": [
@@ -409,8 +409,8 @@
                 }
             ], 
             "position": {
-                "left": 1792.015625, 
-                "top": 649.5
+                "left": 1835.015625, 
+                "top": 605.5
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_crux_pin_fixer", 
@@ -478,7 +478,7 @@
                 }
             }, 
             "tool_id": "milkyway_crux_percolator", 
-            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"separate_percolator\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
             "tool_version": "0.9.00", 
             "type": "tool", 
             "uuid": "3b3ecca3-eba7-4d97-8ef7-e81729c870b2", 
@@ -1134,13 +1134,13 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "output_msstats", 
-                    "uuid": "318666fc-41c8-4bdb-8a9c-6274d3249ae7"
+                    "output_name": "output", 
+                    "uuid": "f5bb7b4c-b9ba-4815-88cc-552ada302268"
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output_boundaries", 
-                    "uuid": "0dc26dbe-95e2-4eb1-9d16-107ef1aa0785"
+                    "output_name": "output_msstats", 
+                    "uuid": "318666fc-41c8-4bdb-8a9c-6274d3249ae7"
                 }, 
                 {
                     "label": null, 
@@ -1149,8 +1149,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output", 
-                    "uuid": "f5bb7b4c-b9ba-4815-88cc-552ada302268"
+                    "output_name": "output_boundaries", 
+                    "uuid": "0dc26dbe-95e2-4eb1-9d16-107ef1aa0785"
                 }
             ]
         }, 
@@ -1386,6 +1386,10 @@
                     "id": 17, 
                     "output_name": "output_msstats"
                 }, 
+                "analysis_type|quant_experiment_map": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }, 
                 "analysis_type|saint_table": {
                     "id": 18, 
                     "output_name": "SAINT_simple_raw_output"
@@ -1397,10 +1401,6 @@
                 "analysis_type|skyline_chromatograms": {
                     "id": 17, 
                     "output_name": "output_chromatograms"
-                }, 
-                "experiment_map": {
-                    "id": 8, 
-                    "output_name": "map_file"
                 }, 
                 "fasta": {
                     "id": 2, 
@@ -1430,6 +1430,10 @@
                     "id": 16, 
                     "output_name": "output_table"
                 }, 
+                "qual_experiment_map": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }, 
                 "spc_table": {
                     "id": 15, 
                     "output_name": "outputraw"
@@ -1450,10 +1454,6 @@
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "experiment_map"
-                }, 
-                {
-                    "description": "runtime parameter for tool Rdata packaging", 
                     "name": "analysis_type"
                 }, 
                 {
@@ -1479,6 +1479,14 @@
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
                     "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "qual_experiment_map"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
@@ -1523,7 +1531,7 @@
             }, 
             "post_job_actions": {}, 
             "tool_id": "RdataPackaging", 
-            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"msstats_comparison\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_chromatograms\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"lfq\\\", \\\"msstats_quantification\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_boundaries\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"filter_decoys\\\": \\\"true\\\", \\\"msstats_condition\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"msstats_skyline_input\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}}\", \"saint_table\": \"null\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"msstats_comparison\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_chromatograms\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"lfq\\\", \\\"quant_experiment_map\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"msstats_quantification\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_boundaries\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"filter_decoys\\\": \\\"true\\\", \\\"msstats_condition\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"msstats_skyline_input\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}}\", \"saint_table\": \"null\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.5.0a", 
             "type": "tool", 
             "uuid": "63be5fc4-6ba6-4a66-acbe-04879d283027", 
@@ -1546,5 +1554,5 @@
             ]
         }
     }, 
-    "uuid": "221d23df-d3de-461d-bb21-0c08b2590684"
+    "uuid": "4d146813-240d-4989-818e-020a3c78f08f"
 }

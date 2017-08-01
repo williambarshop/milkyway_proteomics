@@ -2,11 +2,12 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "05-02-17 Qualitative-Analysis-Lumos-mzML-input", 
+    "name": "07-28-17 Qualitative-Analysis-Lumos-mzML-input", 
     "steps": {
         "0": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 0, 
             "input_connections": {}, 
             "inputs": [
@@ -15,14 +16,13 @@
                     "name": "Input mzML Collection"
                 }
             ], 
-            "label": null, 
+            "label": "Input mzML Collection", 
             "name": "Input dataset collection", 
             "outputs": [], 
             "position": {
                 "left": 427.890625, 
                 "top": 379.5
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"collection_type\": \"list\", \"name\": \"Input mzML Collection\"}", 
             "tool_version": null, 
@@ -39,6 +39,7 @@
         "1": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 1, 
             "input_connections": {}, 
             "inputs": [
@@ -47,14 +48,13 @@
                     "name": "FASTA Database Input (fwd only)"
                 }
             ], 
-            "label": null, 
+            "label": "FASTA Database Input (fwd only)", 
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
                 "left": 199.6875, 
                 "top": 861.453125
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"FASTA Database Input (fwd only)\"}", 
             "tool_version": null, 
@@ -71,6 +71,7 @@
         "2": {
             "annotation": "", 
             "content_id": null, 
+            "errors": null, 
             "id": 2, 
             "input_connections": {}, 
             "inputs": [
@@ -79,14 +80,13 @@
                     "name": "Experimental Design File"
                 }
             ], 
-            "label": null, 
+            "label": "Experimental Design File", 
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
                 "left": 1314.046875, 
                 "top": 269.203125
             }, 
-            "tool_errors": null, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Experimental Design File\"}", 
             "tool_version": null, 
@@ -103,6 +103,7 @@
         "3": {
             "annotation": "", 
             "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/openms_decoydatabase/DecoyDatabase/2.1.0", 
+            "errors": null, 
             "id": 3, 
             "input_connections": {
                 "param_in": {
@@ -110,7 +111,12 @@
                     "output_name": "output"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool DecoyDatabase", 
+                    "name": "param_in"
+                }
+            ], 
             "label": null, 
             "name": "DecoyDatabase", 
             "outputs": [
@@ -132,9 +138,14 @@
                     "output_name": "param_out"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/openms_decoydatabase/DecoyDatabase/2.1.0", 
-            "tool_state": "{\"__page__\": 0, \"param_append\": \"\\\"false\\\"\", \"adv_opts\": \"{\\\"adv_opts_selector\\\": \\\"basic\\\", \\\"__current_case__\\\": 0}\", \"__rerun_remap_job_id__\": null, \"param_method\": \"\\\"reverse\\\"\", \"param_decoy_string\": \"\\\"Reverse_\\\"\", \"param_decoy_string_position\": \"\\\"prefix\\\"\", \"param_in\": \"null\"}", 
+            "tool_shed_repository": {
+                "changeset_revision": "8ced1ef014ae", 
+                "name": "openms_decoydatabase", 
+                "owner": "galaxyp", 
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            }, 
+            "tool_state": "{\"__page__\": 0, \"param_append\": \"\\\"false\\\"\", \"adv_opts\": \"{\\\"adv_opts_selector\\\": \\\"basic\\\", \\\"__current_case__\\\": 0}\", \"__rerun_remap_job_id__\": null, \"param_method\": \"\\\"reverse\\\"\", \"param_decoy_string\": \"\\\"Reverse_\\\"\", \"param_decoy_string_position\": \"\\\"prefix\\\"\", \"param_in\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "2.1.0", 
             "type": "tool", 
             "uuid": "2860e12b-f4a7-4f25-9bfc-d4470d03a076", 
@@ -149,6 +160,7 @@
         "4": {
             "annotation": "", 
             "content_id": "milkyway_msgfplus_search", 
+            "errors": null, 
             "id": 4, 
             "input_connections": {
                 "database|decoy_fasta_file": {
@@ -180,6 +192,18 @@
                 {
                     "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
                     "name": "variable_mods"
+                }, 
+                {
+                    "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
+                    "name": "input_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
+                    "name": "database"
+                }, 
+                {
+                    "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
+                    "name": "database"
                 }
             ], 
             "label": null, 
@@ -195,10 +219,9 @@
                 "top": 683.328125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_msgfplus_search", 
-            "tool_state": "{\"protocol\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"fixed_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"variable_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"null\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"False\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"False\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": null, \\\"target_fasta_file\\\": null, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
-            "tool_version": "1.2.6", 
+            "tool_state": "{\"protocol\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"fixed_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"variable_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
+            "tool_version": "1.2.7", 
             "type": "tool", 
             "uuid": "e6beb055-1bfe-4cd4-b12e-7d79b1485e48", 
             "workflow_outputs": [
@@ -212,6 +235,7 @@
         "5": {
             "annotation": "", 
             "content_id": "milkyway_msgf2pin_converter", 
+            "errors": null, 
             "id": 5, 
             "input_connections": {
                 "fraction_file": {
@@ -223,7 +247,16 @@
                     "output_name": "output_targz"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool silac msgf2pin for fractionated data", 
+                    "name": "fraction_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool silac msgf2pin for fractionated data", 
+                    "name": "targz_input"
+                }
+            ], 
             "label": null, 
             "name": "silac msgf2pin for fractionated data", 
             "outputs": [
@@ -241,9 +274,8 @@
                 "top": 392.65625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_msgf2pin_converter", 
-            "tool_state": "{\"__page__\": 0, \"ptm\": \"\\\"True\\\"\", \"pngasef\": \"\\\"False\\\"\", \"ppm\": \"{\\\"ppm_bool\\\": \\\"True\\\", \\\"ppm_fix\\\": {\\\"ppm_fix_bool\\\": \\\"False\\\", \\\"__current_case__\\\": 1}, \\\"__current_case__\\\": 0}\", \"fraction_file\": \"null\", \"matches\": \"\\\"1\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"isotope\": \"\\\"True\\\"\", \"enzyme\": \"\\\"trypsin\\\"\", \"aafreq\": \"\\\"True\\\"\", \"diaumpire\": \"\\\"False\\\"\", \"targz_input\": \"null\", \"silac\": \"\\\"False\\\"\"}", 
+            "tool_state": "{\"isotope\": \"\\\"true\\\"\", \"__page__\": 0, \"ptm\": \"\\\"true\\\"\", \"pngasef\": \"\\\"false\\\"\", \"fraction_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"matches\": \"\\\"1\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"ppm\": \"{\\\"ppm_bool\\\": \\\"true\\\", \\\"ppm_fix\\\": {\\\"ppm_fix_bool\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"__current_case__\\\": 0}\", \"enzyme\": \"\\\"trypsin\\\"\", \"aafreq\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"silac\": \"\\\"false\\\"\"}", 
             "tool_version": "3.0.0", 
             "type": "tool", 
             "uuid": "c1de469d-bdb6-4b54-8444-58590d22c130", 
@@ -263,6 +295,7 @@
         "6": {
             "annotation": "", 
             "content_id": "milkyway_crux_pin_fixer", 
+            "errors": null, 
             "id": 6, 
             "input_connections": {
                 "fraction_groups": {
@@ -274,7 +307,16 @@
                     "output_name": "output_tar"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool milkyway_crux_pin_fixer", 
+                    "name": "fraction_groups"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_crux_pin_fixer", 
+                    "name": "pin_tar"
+                }
+            ], 
             "label": null, 
             "name": "milkyway_crux_pin_fixer", 
             "outputs": [
@@ -288,13 +330,12 @@
                 }
             ], 
             "position": {
-                "left": 1792.015625, 
-                "top": 649.515625
+                "left": 1777.015625, 
+                "top": 530.515625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_crux_pin_fixer", 
-            "tool_state": "{\"__page__\": 0, \"seleno\": \"\\\"False\\\"\", \"__rerun_remap_job_id__\": null, \"fraction_groups\": \"null\", \"pin_tar\": \"null\"}", 
+            "tool_state": "{\"__page__\": 0, \"seleno\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"fraction_groups\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.1.7", 
             "type": "tool", 
             "uuid": "f4f899d3-e8f4-4915-8a84-2b1c853dccb4", 
@@ -314,6 +355,7 @@
         "7": {
             "annotation": "", 
             "content_id": "milkyway_crux_percolator", 
+            "errors": null, 
             "id": 7, 
             "input_connections": {
                 "exp_file": {
@@ -325,7 +367,16 @@
                     "output_name": "out_pin_tar"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool milkyway_crux_percolator", 
+                    "name": "exp_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_crux_percolator", 
+                    "name": "pin_targz"
+                }
+            ], 
             "label": null, 
             "name": "milkyway_crux_percolator", 
             "outputs": [
@@ -347,9 +398,8 @@
                     "output_name": "crux_tar_gz"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "milkyway_crux_percolator", 
-            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"False\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"False\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"False\\\"\", \"exp_file\": \"null\", \"pin_targz\": \"null\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"False\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"False\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"separate_percolator\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
             "tool_version": "0.9.00", 
             "type": "tool", 
             "uuid": "3b3ecca3-eba7-4d97-8ef7-e81729c870b2", 
@@ -364,6 +414,7 @@
         "8": {
             "annotation": "", 
             "content_id": "milkyway_percolator_to_fido", 
+            "errors": null, 
             "id": 8, 
             "input_connections": {
                 "decoydatabase": {
@@ -379,7 +430,20 @@
                     "output_name": "output"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool milkyway_percolator_to_fido", 
+                    "name": "pout_tar"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_percolator_to_fido", 
+                    "name": "targetdatabase"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_percolator_to_fido", 
+                    "name": "decoydatabase"
+                }
+            ], 
             "label": null, 
             "name": "milkyway_percolator_to_fido", 
             "outputs": [
@@ -397,9 +461,8 @@
                 "top": 587.5625
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "milkyway_percolator_to_fido", 
-            "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"null\", \"fct\": \"{\\\"fidoCT\\\": \\\"True\\\", \\\"decoy_str\\\": \\\"Reverse_\\\", \\\"__current_case__\\\": 0}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"True\\\"\", \"pout_tar\": \"null\", \"decoydatabase\": \"null\"}", 
+            "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fct\": \"{\\\"fidoCT\\\": \\\"true\\\", \\\"decoy_str\\\": \\\"Reverse_\\\", \\\"__current_case__\\\": 0}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"true\\\"\", \"pout_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoydatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.2.1", 
             "type": "tool", 
             "uuid": "3f0c14fe-64df-4030-8271-fe9f5185d927", 
@@ -419,6 +482,7 @@
         "9": {
             "annotation": "", 
             "content_id": "fidoCT", 
+            "errors": null, 
             "id": 9, 
             "input_connections": {
                 "fidoin": {
@@ -430,7 +494,16 @@
                     "output_name": "target_decoy"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool FidoCT", 
+                    "name": "fidoin"
+                }, 
+                {
+                    "description": "runtime parameter for tool FidoCT", 
+                    "name": "fidotd"
+                }
+            ], 
             "label": null, 
             "name": "FidoCT", 
             "outputs": [
@@ -467,9 +540,8 @@
                     "output_name": "stdout"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "fidoCT", 
-            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"fidoin\": \"null\", \"fidotd\": \"null\"}", 
+            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"fidoin\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fidotd\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "74803514-b006-48a6-be8a-f6182157c723", 
@@ -489,6 +561,7 @@
         "10": {
             "annotation": "", 
             "content_id": "fido_q_values", 
+            "errors": null, 
             "id": 10, 
             "input_connections": {
                 "crux_perco_targz": {
@@ -511,7 +584,19 @@
                 }, 
                 {
                     "description": "runtime parameter for tool Fido q-value converter", 
+                    "name": "fidoout"
+                }, 
+                {
+                    "description": "runtime parameter for tool Fido q-value converter", 
                     "name": "clean_spectra"
+                }, 
+                {
+                    "description": "runtime parameter for tool Fido q-value converter", 
+                    "name": "targz_input"
+                }, 
+                {
+                    "description": "runtime parameter for tool Fido q-value converter", 
+                    "name": "crux_perco_targz"
                 }
             ], 
             "label": null, 
@@ -535,9 +620,8 @@
                 "top": 761.84375
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "fido_q_values", 
-            "tool_state": "{\"__page__\": 0, \"fidoCT\": \"\\\"True\\\"\", \"add_peptide_indicies\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoout\": \"null\", \"clean_spectra\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"clip_zero\": \"\\\"True\\\"\", \"diaumpire\": \"\\\"False\\\"\", \"targz_input\": \"null\", \"crux_perco_targz\": \"null\"}", 
+            "tool_state": "{\"__page__\": 0, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"add_peptide_indicies\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoCT\": \"\\\"true\\\"\", \"clean_spectra\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "76094b8c-5b3c-4cb4-9128-e9c77b34023e", 
@@ -562,6 +646,7 @@
         "11": {
             "annotation": "", 
             "content_id": "milkyway_spectral_counts", 
+            "errors": null, 
             "id": 11, 
             "input_connections": {
                 "crux_perco_tar_gz": {
@@ -584,11 +669,27 @@
             "inputs": [
                 {
                     "description": "runtime parameter for tool milkyway_spectral_counts", 
+                    "name": "cruxmap"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_spectral_counts", 
                     "name": "protein_qvalue"
                 }, 
                 {
                     "description": "runtime parameter for tool milkyway_spectral_counts", 
+                    "name": "fido_output"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_spectral_counts", 
                     "name": "psm_qvalue"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_spectral_counts", 
+                    "name": "fasta"
+                }, 
+                {
+                    "description": "runtime parameter for tool milkyway_spectral_counts", 
+                    "name": "crux_perco_tar_gz"
                 }
             ], 
             "label": null, 
@@ -643,9 +744,8 @@
                     "output_name": "outputraw"
                 }
             }, 
-            "tool_errors": null, 
             "tool_id": "milkyway_spectral_counts", 
-            "tool_state": "{\"cruxmap\": \"null\", \"protein_qvalue\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"null\", \"psm_qvalue\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fasta\": \"null\", \"crux_perco_tar_gz\": \"null\", \"groupquant\": \"\\\"True\\\"\", \"saint_outputs\": \"\\\"True\\\"\", \"localization_filter\": \"{\\\"__current_case__\\\": 3, \\\"localization_type\\\": \\\"none\\\"}\"}", 
+            "tool_state": "{\"cruxmap\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"protein_qvalue\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"psm_qvalue\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"localization_filter\": \"{\\\"__current_case__\\\": 3, \\\"localization_type\\\": \\\"none\\\"}\", \"groupquant\": \"\\\"true\\\"\", \"saint_outputs\": \"\\\"true\\\"\", \"crux_perco_tar_gz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.9c", 
             "type": "tool", 
             "uuid": "8486ded8-4aa0-48b4-bee6-592074aaccef", 
@@ -705,6 +805,7 @@
         "12": {
             "annotation": "", 
             "content_id": "psm_extract", 
+            "errors": null, 
             "id": 12, 
             "input_connections": {
                 "exp_file": {
@@ -716,7 +817,16 @@
                     "output_name": "crux_tar_gz"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool psm_extraction", 
+                    "name": "exp_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool psm_extraction", 
+                    "name": "tar_gz_file"
+                }
+            ], 
             "label": null, 
             "name": "psm_extraction", 
             "outputs": [
@@ -730,9 +840,8 @@
                 "top": 779.453125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "psm_extract", 
-            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"tar_gz_file\": \"null\", \"q_threshold\": \"\\\"1.0\\\"\", \"exp_file\": \"null\", \"fido_q_threshold\": \"\\\"1.0\\\"\"}", 
+            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"tar_gz_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"q_threshold\": \"\\\"1.0\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fido_q_threshold\": \"\\\"1.0\\\"\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "8acd1c0d-c1bc-4039-8f35-1b3abd8f3d88", 
@@ -747,6 +856,7 @@
         "13": {
             "annotation": "", 
             "content_id": "SAINT_express", 
+            "errors": null, 
             "id": 13, 
             "input_connections": {
                 "bait_raw": {
@@ -765,7 +875,19 @@
             "inputs": [
                 {
                     "description": "runtime parameter for tool SAINT_express", 
+                    "name": "interact_raw"
+                }, 
+                {
+                    "description": "runtime parameter for tool SAINT_express", 
+                    "name": "prey_raw"
+                }, 
+                {
+                    "description": "runtime parameter for tool SAINT_express", 
                     "name": "filter"
+                }, 
+                {
+                    "description": "runtime parameter for tool SAINT_express", 
+                    "name": "bait_raw"
                 }
             ], 
             "label": null, 
@@ -785,9 +907,8 @@
                 "top": 974.828125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "SAINT_express", 
-            "tool_state": "{\"__page__\": 0, \"prey_nsaf\": \"null\", \"interact_raw\": \"null\", \"__rerun_remap_job_id__\": null, \"prey_raw\": \"null\", \"filter\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"bait_nsaf\": \"null\", \"interact_nsaf\": \"null\", \"bait_raw\": \"null\"}", 
+            "tool_state": "{\"__page__\": 0, \"prey_nsaf\": \"null\", \"interact_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"prey_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"bait_nsaf\": \"null\", \"interact_nsaf\": \"null\", \"bait_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.1.0a", 
             "type": "tool", 
             "uuid": "9a256c02-428e-477a-84f3-d622411d9ec0", 
@@ -817,15 +938,12 @@
         "14": {
             "annotation": "", 
             "content_id": "RdataPackaging", 
+            "errors": null, 
             "id": 14, 
             "input_connections": {
                 "analysis_type|saint_table": {
                     "id": 13, 
                     "output_name": "SAINT_simple_raw_output"
-                }, 
-                "experiment_map": {
-                    "id": 6, 
-                    "output_name": "map_file"
                 }, 
                 "fasta": {
                     "id": 1, 
@@ -855,12 +973,57 @@
                     "id": 12, 
                     "output_name": "output_table"
                 }, 
+                "qual_experiment_map": {
+                    "id": 6, 
+                    "output_name": "map_file"
+                }, 
                 "spc_table": {
                     "id": 11, 
                     "output_name": "outputraw"
                 }
             }, 
-            "inputs": [], 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "peptide_spc_table"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "peptide_nsaf_table"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "mzml"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "qual_experiment_map"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "psm_table"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "fasta"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "spc_table"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "fido_roc"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "nsaf_table"
+                }
+            ], 
             "label": null, 
             "name": "Rdata packaging", 
             "outputs": [
@@ -882,9 +1045,8 @@
                 "top": 1142.203125
             }, 
             "post_job_actions": {}, 
-            "tool_errors": null, 
             "tool_id": "RdataPackaging", 
-            "tool_state": "{\"peptide_spc_table\": \"null\", \"__page__\": 0, \"peptide_nsaf_table\": \"null\", \"mzml\": \"null\", \"experiment_map\": \"null\", \"renameType\": \"\\\"accToGene\\\"\", \"__rerun_remap_job_id__\": null, \"analysis_type\": \"{\\\"saint_table\\\": null, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"psm_table\": \"null\", \"fasta\": \"null\", \"spc_table\": \"null\", \"fido_roc\": \"null\", \"nsaf_table\": \"null\"}", 
+            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"null\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.5.0a", 
             "type": "tool", 
             "uuid": "63be5fc4-6ba6-4a66-acbe-04879d283027", 
@@ -907,5 +1069,5 @@
             ]
         }
     }, 
-    "uuid": "84d4947c-5a28-4b02-b6a3-832acc31a2df"
+    "uuid": "b45df11b-149f-4f45-88e0-4f6c49ab8203"
 }

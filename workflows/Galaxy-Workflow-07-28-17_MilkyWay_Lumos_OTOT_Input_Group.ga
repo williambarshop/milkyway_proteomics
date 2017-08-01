@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "07-27-17 MilkyWay Lumos OTOT Input Group", 
+    "name": "07-28-17 MilkyWay Lumos OTOT Input Group", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -409,8 +409,8 @@
                 }
             ], 
             "position": {
-                "left": 1953.4375, 
-                "top": 774.65625
+                "left": 1983.4375, 
+                "top": 718.65625
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_crux_pin_fixer", 
@@ -478,7 +478,7 @@
                 }
             }, 
             "tool_id": "milkyway_crux_percolator", 
-            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"separate_percolator\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
             "tool_version": "0.9.00", 
             "type": "tool", 
             "uuid": "3b3ecca3-eba7-4d97-8ef7-e81729c870b2", 
@@ -1067,13 +1067,13 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "output_boundaries", 
-                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
+                    "output_name": "output", 
+                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output", 
-                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
+                    "output_name": "output_msstats", 
+                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
                 }, 
                 {
                     "label": null, 
@@ -1082,8 +1082,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output_msstats", 
-                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
+                    "output_name": "output_boundaries", 
+                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
                 }
             ]
         }, 
@@ -1367,8 +1367,8 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "RScriptOutput", 
-                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
+                    "output_name": "comparisonPlotOutput", 
+                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
                 }, 
                 {
                     "label": null, 
@@ -1382,8 +1382,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "comparisonPlotOutput", 
-                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
+                    "output_name": "RScriptOutput", 
+                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
                 }
             ]
         }, 
@@ -1577,5 +1577,5 @@
             ]
         }
     }, 
-    "uuid": "283629e3-b388-41e7-bc40-14294a4b29d4"
+    "uuid": "62216b9a-cedc-43ec-b4ec-407f7edb1020"
 }
