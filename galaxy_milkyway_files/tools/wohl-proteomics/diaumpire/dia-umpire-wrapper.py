@@ -97,7 +97,7 @@ def DIA_Umpire_parameter_generator(paraName = "DIA_Umpire_params.txt",
         print "Writing the window settings from the input provided!"
         with open(WindowSetting,'rb') as windowReader:
             for each_line in windowReader:
-                paraFile.write(each_line+"\n")
+                paraFile.write(each_line)
     	#print WindowSetting
     paraFile.write("==window setting end")
     paraFile.close()

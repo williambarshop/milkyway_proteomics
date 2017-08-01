@@ -1,4 +1,4 @@
-<tool id="milkyway_dia_umpire" name="DIA Umpire" version="1.0.0">
+<tool id="milkyway_dia_umpire" name="DIA Umpire" version="1.0.1">
     <description>Run a DIA Umpire to generate a pseudo MS2 mzML</description>
     <command>
     mkdir mzML_input_folder/ &amp;&amp;
@@ -44,8 +44,9 @@
     -MaxPrecursorMass $SE_MaxPrecursorMass
     -WindowType $WindowType
     -WindowSize $WindowSize
-    #if $manual
-    -WindowSetting "$WindowSetting"
+    #set $window_file=$str($WindowSetting)
+    #if $window_file != "0" and $window_file !="None"
+    -WindowSetting $window_file
     #end if
     -paraOutput $output_params
     </command>
@@ -88,10 +89,15 @@
         <param name="SE_MinMZ" type="integer" label="SE_MinMZ" value="200" min="1" max="10000" />
         <param name="SE_MinPrecursorMass" type="integer" label="SE_MinPrecursorMass" value="600" min="1" max="10000" />
         <param name="SE_MaxPrecursorMass" type="integer" label="SE_MaxPrecursorMass" value="6000" min="1" max="10000" />
-        <param name="WindowType" size="30" type="text" value="V_SWATH" label="WindowType"/>
+        <param name="WindowType" type="select" label="DIA Acquisition Window Type">
+            <option value="SWATH">SWATH</option>
+        <option value="V_SWATH">V_SWATH</option>
+        <option value="V_SWATH">MSX</option>
+        <option value="V_SWATH">MSE</option>
+        <option value="V_SWATH">pSMART</option>
+        </param>
         <param name="WindowSize" type="integer" label="WindowSize" value="10" min="1" max="100" />
-        <param name="manual" type="boolean" value="false" label="Use manual isolation window input"/>
-        <param name="WindowSetting" type="text" area="True" size="5x25" value="399.75\t410.55\n410.05\t420.45\n419.95\t429.05\n428.55\t436.85\n436.35\t443.95\n443.45\t450.35\n449.85\t456.75\n456.25\t463.15\n462.65\t469.55\n469.05\t475.85\n475.35\t482.25\n481.75\t488.65\n488.15\t495.05\n494.55\t502.15\n501.65\t508.55\n508.05\t515.65\n515.15\t522.05\n521.55\t528.45\n527.95\t535.55\n535.05\t541.95\n541.45\t549.05\n548.55\t556.15\n555.65\t563.25\n562.75\t570.35\n569.85\t578.25\n577.75\t586.05\n585.55\t593.15\n592.65\t601.65\n601.15\t608.75\n608.25\t616.55\n616.05\t625.15\n624.65\t633.65\n633.15\t642.15\n641.65\t651.35\n650.85\t662.05\n661.55\t671.95\n671.45\t682.65\n682.15\t694.05\n693.55\t705.35\n704.85\t718.15\n717.65\t733.05\n732.55\t748.05\n747.55\t764.35\n763.85\t782.15\n781.65\t801.35\n800.85\t823.35\n822.85\t846.05\n845.55\t869.55\n869.05\t896.55\n896.05\t926.35\n925.85\t961.85\n961.35\t1012.35\n1011.85\t1091.95\n1091.45\t1217.65\n1217.15\t1543.75\n"/>
+        <param name="WindowSetting" type="data" optional="true" help="This should be a tab delimited file with the first column being the mz start and the second being the mz end for each window of the DIA method, as per the DIAUmpire parameters configuration file." />
     </inputs>
     <outputs>
         <data name="output_mzml" label="$input_file.display_name" format="mzml">
