@@ -25,8 +25,8 @@
         </param>
 
         <param name="optimization" type="select" label="Enable Demux Optimization Type?">
-        <option value="overlap_only">Overlap Only</option>
         <option value="none">None</option>
+        <option value="overlap_only">Overlap Only</option>
         </param>
     </inputs>
     <outputs>
