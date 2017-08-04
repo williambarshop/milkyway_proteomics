@@ -43,7 +43,7 @@ def DIA_Umpire_parameter_generator(paraName = "DIA_Umpire_params.txt",
                                    SE_MinPrecursorMass = 600,
                                    SE_MaxPrecursorMass = 6000,
                                    WindowType = "V_SWATH",
-                                   WindowSize = 10,
+                                   WindowSize = 10.0,
                                    WindowSetting = None):
     paraFile = open(paraName, 'w')
     paraFile.write("Thread = " + str(Thread) + "\n")
@@ -86,20 +86,24 @@ def DIA_Umpire_parameter_generator(paraName = "DIA_Umpire_params.txt",
     paraFile.write("WindowType = " + WindowType + "\n")
     if WindowSetting == "SWATH":
         paraFile.write("WindowSize = " + str(WindowSize) + "\n")
-    paraFile.write("==window setting begin\n")
-    if WindowSetting == None and WindowType=="V_SWATH":
-        #DEFAULT 55WINDOW SETTING
-        paraFile.write("399.75	410.55\n410.05	420.45\n419.95	429.05\n428.55	436.85\n436.35	443.95\n443.45	450.35\n449.85	456.75\n456.25	463.15\n462.65	469.55\n469.05	475.85\n475.35	482.25\n481.75	488.65\n488.15	495.05\n494.55	502.15\n501.65	508.55\n508.05	515.65\n515.15	522.05\n521.55	528.45\n527.95	535.55\n535.05	541.95\n541.45	549.05\n548.55	556.15\n555.65	563.25\n562.75	570.35\n569.85	578.25\n577.75	586.05\n585.55	593.15\n592.65	601.65\n601.15	608.75\n608.25	616.55\n616.05	625.15\n624.65	633.65\n633.15	642.15\n641.65	651.35\n650.85	662.05\n661.55	671.95\n671.45	682.65\n682.15	694.05\n693.55	705.35\n704.85	718.15\n717.65	733.05\n732.55	748.05\n747.55	764.35\n763.85	782.15\n781.65	801.35\n800.85	823.35\n822.85	846.05\n845.55	869.55\n869.05	896.55\n896.05	926.35\n925.85	961.85\n961.35	1012.35\n1011.85	1091.95\n1091.45	1217.65\n1217.15	1543.75\n")
-    elif WindowSetting == None:
+        #pass
+    #if WindowSetting == None and WindowType=="V_SWATH":
+    #    #DEFAULT 55WINDOW SETTING
+    #    #paraFile.write("399.75	410.55\n410.05	420.45\n419.95	429.05\n428.55	436.85\n436.35	443.95\n443.45	450.35\n449.85	456.75\n456.25	463.15\n462.65	469.55\n469.05	475.85\n475.35	482.25\n481.75	488.65\n488.15	495.05\n494.55	502.15\n501.65	508.55\n508.05	515.65\n515.15	522.05\n521.55	528.45\n527.95	535.55\n535.05	541.95\n541.45	549.05\n548.55	556.15\n555.65	563.25\n562.75	570.35\n569.85	578.25\n577.75	586.05\n585.55	593.15\n592.65	601.65\n601.15	608.75\n608.25	616.55\n616.05	625.15\n624.65	633.65\n633.15	642.15\n641.65	651.35\n650.85	662.05\n661.55	671.95\n671.45	682.65\n682.15	694.05\n693.55	705.35\n704.85	718.15\n717.65	733.05\n732.55	748.05\n747.55	764.35\n763.85	782.15\n781.65	801.35\n800.85	823.35\n822.85	846.05\n845.55	869.55\n869.05	896.55\n896.05	926.35\n925.85	961.85\n961.35	1012.35\n1011.85	1091.95\n1091.45	1217.65\n1217.15	1543.75\n")
+    #    pass
+    if WindowSetting == None:
         print "Leaving window settings blank..."
         paraFile.write("\n\n")
     else:
         print "Writing the window settings from the input provided!"
+        paraFile.write("==window setting begin\n")
         with open(WindowSetting,'rb') as windowReader:
             for each_line in windowReader:
+                each_line=each_line.replace(",","\t")
                 paraFile.write(each_line)
+        paraFile.write("==window setting end")
+
     	#print WindowSetting
-    paraFile.write("==window setting end")
     paraFile.close()
     print("DIA-Umpire parameter has been generated!")
 
@@ -171,7 +175,7 @@ parser.add_argument('-MinPrecursorMass', action='store', dest='MinPrecursorMass'
 parser.add_argument('-MaxPrecursorMass', action='store', dest='MaxPrecursorMass', default=60000, type=int, help="Signal extraction: other")
 #Isolation window setting
 parser.add_argument('-WindowType', action='store', dest='WindowType', default="V_SWATH", help="Isolation window setting")
-parser.add_argument('-WindowSize', action='store', dest='WindowSize', default=10, type=int, help="Isolation window setting")
+parser.add_argument('-WindowSize', action='store', dest='WindowSize', default=10.0, type=float, help="Isolation window setting")
 parser.add_argument('-WindowSetting', action='store', dest='WindowSetting', default=None, help="Window setting")
 # DIA-Umpire running associated setting
 parser.add_argument('-inputFolder', action='store', dest='inputFolder', default=None, help="Set up the path of mzML file(s) location")

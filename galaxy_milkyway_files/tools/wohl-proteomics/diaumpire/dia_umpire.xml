@@ -96,7 +96,7 @@
         <option value="V_SWATH">MSE</option>
         <option value="V_SWATH">pSMART</option>
         </param>
-        <param name="WindowSize" type="integer" label="WindowSize" value="10" min="1" max="100" />
+        <param name="WindowSize" type="float" label="WindowSize" value="10" min="1" max="50" />
         <param name="WindowSetting" type="data" optional="true" help="This should be a tab delimited file with the first column being the mz start and the second being the mz end for each window of the DIA method, as per the DIAUmpire parameters configuration file." />
     </inputs>
     <outputs>
