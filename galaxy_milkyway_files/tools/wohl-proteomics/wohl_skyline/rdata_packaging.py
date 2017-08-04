@@ -74,7 +74,7 @@ parser.add_option("--analysis_type",action="store",type="string",dest="analysis_
 
 print "Now we're going to prepare the R script for Rdata image generation"
 
-group_information = pandas.read_csv(options.experiment_file,sep='\t')
+#group_information = pandas.read_csv(options.qual_experiment_file,sep='\t')
 
 
 arguments=['python','/galaxy-central/tools/wohl-proteomics/wohl_skyline/job_history_runner.py','--job_id',str(options.job_id),"--output_file","job_history.json"]
