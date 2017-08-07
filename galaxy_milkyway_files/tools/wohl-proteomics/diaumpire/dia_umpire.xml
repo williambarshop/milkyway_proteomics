@@ -1,9 +1,9 @@
 <tool id="milkyway_dia_umpire" name="DIA Umpire" version="1.0.1">
     <description>Run a DIA Umpire to generate a pseudo MS2 mzML</description>
     <command>
-    mkdir mzML_input_folder/ &amp;&amp;
-    ln -s $input_file mzML_input_folder/${input_file.display_name} &amp;&amp;
-    python $__tool_directory__/dia-umpire-wrapper.py -inputFolder mzML_input_folder/ -mzMLoutput $output_mzml
+    mkdir input_folder/ &amp;&amp;
+    ln -s $input_file input_folder/${input_file.display_name} &amp;&amp;
+    python $__tool_directory__/dia-umpire-wrapper.py -inputFolder input_folder/ -mzMLoutput $output_mzml
     -tooldir $__tool_directory__
     -Thread $threads
     -RPmax $RPmax
@@ -51,7 +51,7 @@
     -paraOutput $output_params
     </command>
     <inputs>
-        <param name="input_file" type="data" format="mzml" multiple="false" label="MSMS File" help="An mzML file with MS/MS data"/>
+        <param name="input_file" type="data" multiple="false" label="MSMS File" help="An mzXML file with MS/MS data"/>
         <param name="threads" type="integer" label="threads" value="32" min="1" max="128" />
         <param name="RPmax" type="integer" label="RPmax" value="25" min="1" max="1000" />
         <param name="RFmax" type="integer" label="RFmax" value="300" min="1" max="1000" />

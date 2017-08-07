@@ -178,7 +178,7 @@ parser.add_argument('-WindowType', action='store', dest='WindowType', default="V
 parser.add_argument('-WindowSize', action='store', dest='WindowSize', default=10.0, type=float, help="Isolation window setting")
 parser.add_argument('-WindowSetting', action='store', dest='WindowSetting', default=None, help="Window setting")
 # DIA-Umpire running associated setting
-parser.add_argument('-inputFolder', action='store', dest='inputFolder', default=None, help="Set up the path of mzML file(s) location")
+parser.add_argument('-inputFolder', action='store', dest='inputFolder', default=None, help="Set up the path of mzML/mzXML file(s) location")
 
 
 # DIA-Umpire parameter generator execution based on given parameters from commandline
@@ -243,7 +243,7 @@ current_dir=os.getcwd()
 # Iteration of each file: file conversion and DIA-Umpire execution
 print "Working on folders: ",input_folder_list
 for input_folder in input_folder_list: #tqdm(input_folder_list):
-    raw_input=[current_dir+"/"+input_folder+f for f in os.listdir(input_folder) if f.endswith('.mzML')]
+    raw_input=[current_dir+"/"+input_folder+f for f in os.listdir(input_folder) if f.endswith('.mzML') or f.endswith('.mzXML')]
     #filtered_list = [x.rsplit(".",1)[0] for x in raw_input]
     #print filtered_list
     for each_file in raw_input:
