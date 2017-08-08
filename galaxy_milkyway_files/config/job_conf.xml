@@ -91,6 +91,7 @@
         <tool id="msconvert_win" destination="win_pulsar" />
         <tool id="fidoCT" destination="win_pulsar" />
         <tool id="skylinerunner" destination="win_pulsar" />
+        <tool id="msconvert_dia_demux" destination="win_pulsar" />
     </tools>
 
     <limits>
