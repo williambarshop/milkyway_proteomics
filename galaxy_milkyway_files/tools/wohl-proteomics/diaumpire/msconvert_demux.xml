@@ -1,22 +1,12 @@
 <tool id="msconvert_dia_demux" name="DIA Demultiplexing (msconvert)" version="1.0.0">
     <description>Demultiplex DIA file via msconvert</description>
     <command>
-    mkdir input_folder/ &amp;&amp;
-    mkdir output_folder/ &amp;&amp;
-    ln -s $input_file input_folder/${input_file.display_name} &amp;&amp;
     #set $output_name = $input_file.display_name.rsplit(".",1)[0]+"."+str($output_format)
-    msconvert --${output_format} --outdir output_folder/ --outfile ${output_name} --zlib --mz64 --inten64
+    msconvert --${output_format} --outfile $output --zlib --mz64 --inten64
     --filter "peakPicking vendor msLevel=1-"
-    --filter "demultiplex
-    massError=${massError}${massErrorUnits}
-    optimization=$optimization
-<!--    padScanTimes=true
-    minWindowSize=0.4
-    useMultithreading=true -->
-    <!--unimplemented: nnlsMaxIter=<int (50)> nnlsEps=<real (1e-10)> noWeighting=<bool (false)> demuxBlockExtra=<real (0)> variableFill=<bool (false)> noSumNormalize=<bool (false)> -->
-    <!-- UsageInfo usage_demux = { "massError=<tolerance and units, eg 0.5Da (default 10ppm)> nnlsMaxIter=<int (50)> nnlsEps=<real (1e-10)> noWeighting=<bool (false)> demuxBlockExtra=<real (0)> variableFill=<bool (false)> noSumNormalize=<bool (false)> optimization=<(none)|overlap_only> padScanTimes=<bool (false)> interpolateRT=<bool (true)> threadLimit=<int (0)> useMultithreading=<bool (false)> minWindowSize=<real (0.2)> -->
-    " input_folder/${input_file.display_name} &amp;&amp;
-    mv output_folder/$output_name $output
+    --filter "demultiplex massError=${massError}${massErrorUnits} optimization=$optimization"
+    $input_file &amp;&amp;
+    sleep 5 
     </command>
     <inputs>
         <param name="input_file" type="data" multiple="false" label="DIA Mass Spec File (RAW or mzML or mzXML)" help="A raw, mzXML or mzML file with DIA data"/>
@@ -42,7 +32,6 @@
     </outputs>
     <help>
     This wrapper will convert RAW to mzXML or mzML, centroided, zlib compressed, 64bit encodings.
-     <!-- removed metadata_source="input_file" from the output...-->
     </help>
 </tool>
 
