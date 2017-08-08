@@ -1,10 +1,12 @@
 <tool id="msconvert_dia_demux" name="DIA Demultiplexing (msconvert)" version="1.0.0">
     <description>Demultiplex DIA file via msconvert</description>
     <command>
-    mkdir mzML_input_folder/ &amp;&amp;
-    mkdir mzML_output_folder/ &amp;&amp;
-    ln -s $input_file mzML_input_folder/${input_file.display_name} &amp;&amp;
-    msconvert --mzML --outdir mzML_output_folder/ --outfile ${input_file.display_name}
+    mkdir input_folder/ &amp;&amp;
+    mkdir output_folder/ &amp;&amp;
+    ln -s $input_file input_folder/${input_file.display_name} &amp;&amp;
+    #set $output_name = $input_file.display_name.rsplit(".",1)[0]+"."+str($output_format)
+    msconvert --${output_format} --outdir output_folder/ --outfile ${output_name} --zlib --mz64 --inten64
+    --filter "peakPicking vendor msLevel=1-"
     --filter "demultiplex
     massError=${massError}${massErrorUnits}
     optimization=$optimization
@@ -13,11 +15,16 @@
     useMultithreading=true -->
     <!--unimplemented: nnlsMaxIter=<int (50)> nnlsEps=<real (1e-10)> noWeighting=<bool (false)> demuxBlockExtra=<real (0)> variableFill=<bool (false)> noSumNormalize=<bool (false)> -->
     <!-- UsageInfo usage_demux = { "massError=<tolerance and units, eg 0.5Da (default 10ppm)> nnlsMaxIter=<int (50)> nnlsEps=<real (1e-10)> noWeighting=<bool (false)> demuxBlockExtra=<real (0)> variableFill=<bool (false)> noSumNormalize=<bool (false)> optimization=<(none)|overlap_only> padScanTimes=<bool (false)> interpolateRT=<bool (true)> threadLimit=<int (0)> useMultithreading=<bool (false)> minWindowSize=<real (0.2)> -->
-    " mzML_input_folder/${input_file.display_name} &amp;&amp;
-    mv mzML_output_folder/${input_file.display_name} $output_mzml
+    " input_folder/${input_file.display_name} &amp;&amp;
+    mv output_folder/$output_name $output
     </command>
     <inputs>
-        <param name="input_file" type="data" format="mzml" multiple="false" label="DIA mzML" help="An mzML file with DIA data"/>
+        <param name="input_file" type="data" multiple="false" label="DIA Mass Spec File (RAW or mzML or mzXML)" help="A raw, mzXML or mzML file with DIA data"/>
+        <param name="output_format" type="select" label="Output Format">
+        <option value="mzXML">mzXML</option>
+        <option value="mzML">mzML</option>
+        </param>
+
         <param name="massError" type="float" label="Mass Error" value="8.0" min="0.00" max="100.0" />
         <param name="massErrorUnits" type="select" label="Mass Error Units">
         <option value="ppm">ppm</option>
@@ -30,10 +37,11 @@
         </param>
     </inputs>
     <outputs>
-        <data name="output_mzml" label="$input_file.display_name" format="mzml">
+        <data name="output" label="${input_file.display_name} demultiplexed $output_format">
         </data>
     </outputs>
     <help>
+    This wrapper will convert RAW to mzXML or mzML, centroided, zlib compressed, 64bit encodings.
      <!-- removed metadata_source="input_file" from the output...-->
     </help>
 </tool>
