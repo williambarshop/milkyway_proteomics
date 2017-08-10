@@ -12,10 +12,10 @@ from natsort import natsorted, ns
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.999995B
-version="0.999995B"
-#DATE: 2/16/2017
-date="2/16/2017"
+#VERSION 0.999996B
+version="0.999996B"
+#DATE: 8/10/2017
+date="8/10/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -199,6 +199,7 @@ if options.remove_proteins_by_text is not None and options.remove_proteins_by_te
     for each_protein in proteins_to_remove:
         each_protein=each_protein.strip()
         print "Removing protein",each_protein,"from the analysis."
+        combined_results=combined_results.copy(deep=True)
         combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
 
 
@@ -382,7 +383,8 @@ if options.mprophet_q is not None:
 
 
 if options.remove_truncated_peaks:
-    combined_results['Area']
+    combined_results.loc[combined_results['Truncated']==True,'Area']=numpy.nan
+    #combined_results['Area']
 
 
 

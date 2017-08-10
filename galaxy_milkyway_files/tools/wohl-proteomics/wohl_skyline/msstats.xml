@@ -29,6 +29,7 @@ $noimpute
 #if $remove_proteins_by_text!=""
 --removeProteinsByText "$remove_proteins_by_text"
 #end if
+$remove_truncated_peaks
 --normalization $normalization
       #if $normalization=="globalStandards"
       --normalization_protein "${norm_protein}"
