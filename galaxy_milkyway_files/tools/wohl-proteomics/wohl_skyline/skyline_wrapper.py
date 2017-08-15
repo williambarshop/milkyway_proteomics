@@ -16,10 +16,22 @@ import uniprot as uni
 import os.path
 import xmltodict
 import collections
+import warnings
 from random import randint
 from copy import deepcopy
 from xml.etree import ElementTree
 
+
+###### Redirection of Pandas warning messages to STDOUT instead of STDERR for Galaxy's sake...  ######
+def customwarn(message, category, filename, lineno, file=None, line=None):
+    sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
+
+warnings.showwarning = customwarn
+#####                CODE IMPLEMENTED FROM STACK OVERFLOW ANSWER #858916                        ######
+
+
+
+#warnings.filterwarnings('ignore')
 
 #import subprocesswin32 as subprocess
 #import time
@@ -1301,7 +1313,7 @@ if options.msstats is not None:
     else:
         os.chdir(basedir)
         if options.exp_file is not None:
-            msstats_df=pandas.read_csv("MSstats_input.csv",low_memory=False)
+            msstats_df=pandas.read_csv("MSstats_input.csv")
             exp_structure=pandas.read_csv(options.exp_file,sep="\t",low_memory=False)
             exp_structure['Original File Name']=exp_structure['Original File Name']+".mzML"
             exp_structure.set_index(keys='Original File Name',inplace=True)
@@ -1314,13 +1326,14 @@ if options.msstats is not None:
                 name_to_biocond[index]=each['Biological Condition']
                 group_to_biorep[each['Fractionation Group ID String']]=each['BioReplicate']
                 #k+=1
-
+            print "name to biocond",name_to_biocond
             #for eachkey in name_to_biocond:
             #    msstats_df.loc[msstats_df['File Name'] == eachkey, 'Condition'] = name_to_biocond[eachkey]
             msstats_df['Condition']=msstats_df['File Name'].map(name_to_biocond)
             #    #filter=msstats_df[msstats_df['File Name']==eachkey]
             #    #filter['Condition']=name_to_biocond[eachkey]
             #msstats_df['BioReplicate']=msstats_df['File Name'].map(group_to_biorep)
+            print "group to biorep",group_to_biorep
             for eachgroup in group_to_biorep:
                 msstats_df.loc[msstats_df['File Name'].str.contains(eachgroup), 'BioReplicate'] = group_to_biorep[eachgroup]
             #    #filter=msstats_df[msstats_df['File Name'].str.contains(eachgroup)]

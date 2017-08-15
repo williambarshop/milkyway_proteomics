@@ -7,6 +7,16 @@ import gc
 import subprocess
 import uniprot as uni
 from natsort import natsorted, ns
+import warnings
+
+##### TAKEN FROM STACK OVERFLOW ##### (to redirect Pandas warnings to STDOUT instead of STDERR for Galaxy...)
+def customwarn(message, category, filename, lineno, file=None, line=None):
+    sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
+
+warnings.showwarning = customwarn
+#####################################
+
+
 
 #####################################
 #This is a script to combine the output reports from
@@ -78,7 +88,7 @@ def peptide_level_fixer(x):
 
 
 if options.quant_level!="protein":    
-    input_data=pandas.read_csv(options.input_file,sep=',',index_col=False,low_memory=False)
+    input_data=pandas.read_csv(options.input_file,sep=',',index_col=False)
 
     input_data.rename(columns={'Protein Name':'ProteinName'},inplace=True)
     combined_results=input_data[numpy.invert(input_data.ProteinName.str.contains("Decoys"))]
@@ -201,7 +211,7 @@ elif options.quant_level=="fragment":
     combined_results.rename(columns={'Protein Name':'Protein'},inplace=True)
 
 elif options.quant_level=="protein":
-    combined_results=pandas.read_csv(options.input_file,sep=',',index_col=0,low_memory=False)
+    combined_results=pandas.read_csv(options.input_file,sep=',',index_col=0)
     #combined_results=combined_results
     combined_results.update(combined_results[combined_results.select_dtypes(include=['number']).columns].applymap(numpy.exp2),overwrite=True)
     combined_results.fillna(value=0.0,inplace=True)

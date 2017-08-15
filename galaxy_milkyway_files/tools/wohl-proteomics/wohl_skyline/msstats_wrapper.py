@@ -7,15 +7,23 @@ import gc
 import subprocess
 import uniprot as uni
 from natsort import natsorted, ns
+import warnings
+
+#From stack overflow, to redirect pandas stderr warnings to stdout for Galaxy's sake....#
+def customwarn(message, category, filename, lineno, file=None, line=None):
+    sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
+
+warnings.showwarning = customwarn
+#####################################
 
 #####################################
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.999996B
-version="0.999996B"
-#DATE: 8/10/2017
-date="8/10/2017"
+#VERSION 0.9C
+version="0.9C"
+#DATE: 8/15/2017
+date="8/15/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -153,16 +161,16 @@ for file in os.listdir(options.operation_folder):
 #    for eachfile in files:
 #        if '.csv' in eachfile[-4:]:#We'll only look for files which end with ".csv", which is the expected file format for the MSstats input files!
 #            infiles.append(str(os.path.join(root,eachfile)))
-
+print "about to read csv..."
 dataframe_vector=[]
 os.chdir(options.operation_folder)
 for eachfile in infiles:
-    newdf=pandas.read_csv(eachfile,sep=',',index_col=False,low_memory=False)
+    newdf=pandas.read_csv(eachfile,sep=',',index_col=False)#Used to have low_memory=False)
     dataframe_vector.append(newdf)
     del newdf
     gc.collect()
 os.chdir(basedir)
-
+print "done reading csvs..."
 #Peptide Modified Sequence <----- This will be the column to edit... and it'll be based on "File Name".split(".")[0].rsplit("-",1)[1] which should be like "F1" or "F2", etc...
 combined_results=pandas.concat(dataframe_vector)
 if options.remove_decoys:
@@ -193,13 +201,12 @@ if options.normalization=="globalStandards":
         else:
             for each_peptide in this_pep_list:
                 combined_results.loc[combined_results['Protein Name'].str.contains(each_protein) & combined_results['Peptide Modified Sequence']==each_peptide,"Standard Type"]="globalStandard"
-        
+print "about to remove proteins by text..."
 if options.remove_proteins_by_text is not None and options.remove_proteins_by_text is not "":
     proteins_to_remove=options.remove_proteins_by_text.split(",")
     for each_protein in proteins_to_remove:
         each_protein=each_protein.strip()
         print "Removing protein",each_protein,"from the analysis."
-        combined_results=combined_results.copy(deep=True)
         combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
 
 
@@ -383,8 +390,7 @@ if options.mprophet_q is not None:
 
 
 if options.remove_truncated_peaks:
-    combined_results.loc[combined_results['Truncated']==True,'Area']=numpy.nan
-    #combined_results['Area']
+    combined_results['Area']
 
 
 
