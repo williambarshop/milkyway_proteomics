@@ -20,10 +20,10 @@ warnings.showwarning = customwarn
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.9C
-version="0.9C"
-#DATE: 8/15/2017
-date="8/15/2017"
+#VERSION 0.91C
+version="0.91C"
+#DATE: 8/17/2017
+date="8/17/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -50,6 +50,7 @@ parser.add_option("--folder",action="store",type="string",dest="operation_folder
 parser.add_option("--galaxy-csv",action="store",type="string",dest="galaxy_csv")
 parser.add_option("--experiment_file",action="store",type="string",dest="experiment_file")
 parser.add_option("--remove_decoys",action="store_true",dest="remove_decoys")
+parser.add_option("--remove_precursors",action="store_true",dest="remove_precursors")
 parser.add_option("--rename",action="store_true",dest="rename") #Rename columns.
 parser.add_option("--renameProteinType",action="store",type="string",default="accToGene",dest="renameProteinType") #Rename proteins from accToGene, accToProtein, geneToProtein (for TGGT/ToxoDB)
 parser.add_option("--remove_empty",action="store_true",dest="remove_empty") 
@@ -178,6 +179,11 @@ if options.remove_decoys:
     mask=combined_results[numpy.invert(combined_results.ProteinName.str.contains("Decoys"))]
     combined_results=mask
     combined_results.rename(columns={'ProteinName':'Protein Name'},inplace=True)
+if options.remove_precursors:
+    combined_results.rename(columns={'Fragment Ion':'FragmentIon'},inplace=True)
+    mask=combined_results[numpy.invert(combined_results.FragmentIon.str.contains("precursor"))]
+    combined_results=mask
+    combined_results.rename(columns={'FragmentIon':'Fragment Ion'},inplace=True)
 if options.fractionated:
     fixed_peptide_names=combined_results.apply(appendFraction,axis=1)    
     fixed_file_names=combined_results.apply(fixFileName,axis=1)   
@@ -399,10 +405,10 @@ if options.merge_isotopes:
     combined_results['unique_name']=combined_results['Peptide Modified Sequence']+"_"+combined_results['Precursor Charge']+"_"+combined_results['File Name']+"_"+combined_results['Protein Name']
     combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(int)
     groups=combined_results.groupby(by=['unique_name'],as_index=False).agg({'Area':numpy.sum})
+    #ADD MASK HERE TO SUM PRECURSOR AREAS IN A FUTURE UPDATE TO ALLOW FOR DIA DATA
     combined_results.drop('Area',1,inplace=True)
     merged_results=pandas.merge(combined_results,groups,on=['unique_name'])
-    #merged_results.drop_duplicates(cols='unique_name',inplace=True)#change cols to subset for newer pandas...
-    merged_results.drop_duplicates(subset='unique_name',inplace=True)#change cols to subset for newer pandas...
+    merged_results.drop_duplicates(subset='unique_name',inplace=True)
     merged_results['Fragment Ion']="sum"
     combined_results=merged_results
     column_list=combined_results.columns.tolist()
@@ -601,6 +607,7 @@ group_information = pandas.read_csv(options.experiment_file,sep='\t')
 
 with open("MSstats_Script.R",'wb') as script_writer:
     script_writer.write("library(MSstats)\n")
+    script_writer.write("library(preprocessCore)\n")
     if os.name=="nt":
         script_writer.write(str("setwd(\""+str(os.path.join(basedir,options.operation_folder))+"\")\n").replace("\\","\\\\"))   #We're going to set the current directory...
         script_writer.write(str("raw<-read.csv(\""+str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv"+"\")\n").replace("\\","\\\\"))   #We will load in the input CSV file! (In this case by absolute path, though that's not necessary...)

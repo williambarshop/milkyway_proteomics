@@ -9,6 +9,7 @@
 --mprophet_q ${q_threshold}
 --rename
 $remove_decoys
+$remove_precursors
 $remove_repeated_peptides
 $peptide_level
 $merge_isotopes
@@ -29,7 +30,6 @@ $noimpute
 #if $remove_proteins_by_text!=""
 --removeProteinsByText "$remove_proteins_by_text"
 #end if
-$remove_truncated_peaks
 --normalization $normalization
       #if $normalization=="globalStandards"
       --normalization_protein "${norm_protein}"
@@ -59,6 +59,7 @@ $remove_truncated_peaks
         <param name="experiment_map" type="data" label="Experiment Map File"/>
         <param name="q_threshold" type="float" value="0.01" min="0.00" max="1.00" label="mProphet Q-Value Threshold"/>
         <param name="remove_decoys" type="boolean" truevalue="--remove_decoys" falsevalue="" checked="true" label="Remove Decoy Peptides?" />
+        <param name="remove_precursors" type="boolean" truevalue="--remove_precursors" falsevalue="" checked="false" label="Remove precursor peak areas? (For MS2 quant only)" />
 
                <param name="normalization" type="select" label="What type of normalization?" >
                    <option value="equalizeMedians">Equalize Medians</option>
