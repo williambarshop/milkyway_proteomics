@@ -1,9 +1,10 @@
 <tool id="phosphoRS" version="0.1.5" name="RSmax" >
 
   <description>
-     PhosphoRS algorithm for PTM localization
+     PhosphoRS algorithm for Phospho-site localization
   </description>
   <command>
+   #set $tmp_unscored_modstr = str($unscoredmods).replace("___,","___")
    #set $mzml_list = ""
    #for $each in $mzml_files:
        #set $mzml_list+= "\""
@@ -24,8 +25,10 @@
    #if $variablemods!=""
    --variable "$variablemods"
    #end if
-   --target "$targetmods"
-   --nl "$neutrallosses"
+   --target "STY 79.966331 H3PO4"
+   --nl "ST -97.97690 H3PO4"
+  <!-- --target "$targetmods"
+   --nl "$neutrallosses" -->
    $scoreneutrallosses
    --mp $maxnumperm
    --nt $numthreads
@@ -42,9 +45,16 @@
         <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
         <param name="ms2tol" type="float" value="0.02" label="MS2 Fragment Ion Tolerance" help="Units given as Daltons" />
         <param name="filter" type="float" value="0.01" label="Percolator q-value threshold" help="Given as MAXIMUM percolator q-value (ie all PSMs lower than or equal to this q-value are scored)" />
-        <param name="variablemods" type="text" value="C 57.021464" label="UNSCORED Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915,KR 14.015650 --using commas to separate mods." />
+        <!-- <param name="unscoredmods" format="text" type="select" multiple="true" label="UNSCORED Modifications" help="Multiple Selection Allowed. You must select all the mods that you searched for, but aren't scoring.">
+            <options from_file="msgfplus_mods.loc">
+                <column name="name" index="0" />
+                <column name="value" index="2" />
+            </options>
+        </param> -->
+
+        <!-- <param name="variablemods" type="text" value="C 57.021464" label="UNSCORED Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915,KR 14.015650 --using commas to separate mods." />
         <param name="targetmods" type="text" value="STY 79.966331 H3PO4" label="Variable Modifications for Scoring" />
-        <param name="neutrallosses" type="text" value="ST -97.97690 H3PO4" label="Neutral loss for scoring" help="List the types of neutral losses that you want to consider..." />
+        <param name="neutrallosses" type="text" value="ST -97.97690 H3PO4" label="Neutral loss for scoring" help="List the types of neutral losses that you want to consider..." /> -->
         <param name="scoreneutrallosses" type="boolean" truevalue="--scorenl" falsevalue="" label="Use NL for scoring?" />
         <param name="maxnumperm" type="integer" value="65536" help="Maximum number of permutations per sequence. Default is 16384" label="Maximum permutations per sequence" />
         <param name="numthreads" type="integer" value="8" min="0" max="32" label="Number of threads" help="0 uses all available cores." />

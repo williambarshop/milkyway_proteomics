@@ -24,9 +24,10 @@ import time
 #input file for running of RSMax to help localize PTMs on
 #identified modified peptides, and ultimately producing an estimate of
 #confidence of PTM localization for the peptides
+#Now automatically adds unscored mods!
 #
-#VERSION 0.90A
-version="0.90A"
+#VERSION 0.95A
+version="0.95A"
 #DATE: 08/10/2016
 date="08/10/2016"
 #####################################
@@ -310,36 +311,10 @@ target_mod_NL_mass = str(math.fabs(float(target_mod_NL_split[1])))
 target_mod_NL_elements = target_mod_NL_split[2]
 
 
-
-if options.variable_mods:
-    unscored_mod_split = options.variable_mods.split(",")
-    unscored_mod_dict={}#key is mass(as str), value is AAs (as str)
-    for each_mod in unscored_mod_split:
-        unscored_mod_dict[each_mod.split()[1]]=each_mod.split()[0]
-
-#modId,ScoredmodMassDouble,NLmassDouble,ScoredModificationName,ScoredShortModName,ScoredModSiteAAs,ScoredElementalModificationStr
-
-
-#We're going to make a reference dictionary to convert the mass (as str) to the modid... which we'll go ahead and assign now!
-#First, we'll make the modId 1 (scored modification)
-massStr_to_modID = {str(target_mod_mass) : '1'}
-#Now, we'll go ahead and iterate over all the other mods...
-id_itr=2
-for each_mod in unscored_mod_dict:
-    massStr_to_modID[str(each_mod)]=str(id_itr)
-    id_itr+=1
-unscored_mod_str=""
-for each_mod in unscored_mod_dict:
-    unscored_mod_str+=massStr_to_modID[str(each_mod)]+","+str(each_mod)+","+"0.0"+","+"unscored"+massStr_to_modID[str(each_mod)]+","+"mod"+massStr_to_modID[str(each_mod)]+","+unscored_mod_dict[each_mod]+","+"XXXXX "
-
-
+#We'll set up symlinks for each file...
 for eachrun in run_to_group:
-    #print eachrun,"we're dealing with this run..."
     thislink=os.readlink(eachrun)
     shutil.copy(thislink,options.operation_folder+run_to_group[eachrun]+".pin_out/crux-output/"+eachrun)
-
-
-
 
 global target_mass_conversion
 target_mass_conversion={}
@@ -368,6 +343,20 @@ rounded_target_masses=str(target_mod_mass)
 
 print target_mass_conversion,"this is target mass conv."
 regex = re.compile('[^a-zA-Z]')
+
+
+#We'll set up the mass conversions before we get started on anything else...
+#We're going to make a reference dictionary to convert the mass (as str) to the modid... which we'll go ahead and assign now!
+#First, we'll make the modId 1 (scored modification)
+massStr_to_modID = {str(target_mod_mass) : '1'}
+#And we'll iterate that value up one for the next modification we introduce...
+id_itr=2
+
+#We're going to make an unscored_mod_dict, which will store key is mass(as str), value is AAs (as [str,str,str])
+unscored_mod_dict={}
+
+
+
 for each_idx in group_information['Crux File Integer']:
 
     file = MzMLFile()
@@ -434,7 +423,7 @@ for each_idx in group_information['Crux File Integer']:
             elif thispep[i]=="[":
                 #Now we know we're in a mod.
                 mod_start_pos=i
-                mod_end_pos=i#changed these from actualindex...
+                mod_end_pos=i #changed these from actualindex...
                 actualindex-=1 #Because we're seeing a mod for the AA right before this.
                 i-=1
                 while thispep[mod_end_pos]!="]":
@@ -448,7 +437,23 @@ for each_idx in group_information['Crux File Integer']:
                 #print thispep, "AFTER"
                 modmap=modmap[:-1]#We'll remove the last 0 of modmap to place in the correct modificaiton info...
                 #print massStr_to_modID,"this is the dictionary of interest..."
-                modmap+=massStr_to_modID[mod[2:-1]]
+                try:
+                    modmap+=massStr_to_modID[mod[2:-1]]
+                    if massStr_to_modID[mod[2:-1]]!='1':
+                        if thispep[i-1] in unscored_mod_dict[mod[2:-1]]:
+                            pass #The AA is already known for this modification.
+                        else:
+                            unscored_mod_dict[mod[2:-1]].append(thispep[i-1])
+                            print "Adding the AA "+thispep[i-1]+" to the modification of mass "+mod[2:-1]
+                except: #Mod not yet in dict... let's add it!
+                    unscored_mod_dict[mod[2:-1]]=[thispep[i-1]]
+                    #And we'll add it to the modID dict, too, and iterate the id_itr for the next possible mod...
+                    massStr_to_modID[str(each_mod)]=str(id_itr)
+                    id_itr+=1
+
+                    modmap+=massStr_to_modID[mod[2:-1]]
+                    print "We've added the unscored mod of mass "+mod[2:-1]+" for the AA "+thispep[i-1]
+                    pass #Add mod here!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 if massStr_to_modID[mod[2:-1]] == '1':
                     target_modsites.append(str(len(modmap)-3))
                     #target_modsites.append(str(actualindex))
@@ -495,6 +500,15 @@ for each_idx in group_information['Crux File Integer']:
     del experiment
     gc.collect()
 #mask = combined_results
+
+
+#And finally, we'll make the mod strings for running pRS via rsmax.exe
+unscored_mod_str=""
+for each_mod in unscored_mod_dict:
+    unscored_mod_str+=massStr_to_modID[str(each_mod)]+","+str(each_mod)+","+"0.0"+","+"unscored"+massStr_to_modID[str(each_mod)]+","+"mod"+massStr_to_modID[str(each_mod)]+","+"".join(unscored_mod_dict[each_mod])+","+"XXXXX "
+
+
+
 
 
 os.chdir(basedir)
