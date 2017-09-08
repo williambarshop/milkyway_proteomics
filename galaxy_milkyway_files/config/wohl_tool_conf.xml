@@ -14,7 +14,8 @@
     <tool file="wohl-proteomics/MSGFcrux/crux_psm_splitter_fractionated.xml" />
     <tool file="wohl-proteomics/MSGFcrux/mzml_mass_corrector.xml" />
     <tool file="wohl-proteomics/luciphor2/luciphor2.xml" />
-    <tool file="wohl-proteomics/ptmRSmax/ptmrsmax.xml" />
+    <!-- <tool file="wohl-proteomics/ptmRSmax/ptmrsmax.xml" /> -->
+    <tool file="wohl-proteomics/RSmax/rsmax.xml" />
     <tool file="wohl-proteomics/ssl_converter/ssl_converter.xml" />
     <tool file="wohl-proteomics/SAINTexpress/saintexpress.xml" />
     <tool file="wohl-proteomics/SAINTq/saintq.xml" />

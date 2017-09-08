@@ -22,9 +22,9 @@
    /nfs/galaxy/galaxy/tools/wohl-proteomics/RSmax/RSmax.exe 
    --pout output/
    --ms2tol $ms2tol
-   #if $variablemods!=""
+   <!--#if $variablemods!=""
    --variable "$variablemods"
-   #end if
+   #end if-->
    --target "STY 79.966331 H3PO4"
    --nl "ST -97.97690 H3PO4"
   <!-- --target "$targetmods"

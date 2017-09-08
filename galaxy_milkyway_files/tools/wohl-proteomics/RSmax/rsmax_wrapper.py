@@ -162,7 +162,7 @@ parser = optparse.OptionParser()
 parser.add_option("--pout",action="store",type="string",dest="operation_folder")
 parser.add_option("--ms2tol",action="store", type="float", dest="ms2tol")
 parser.add_option("--target",action="store",type="string",dest="target_mods")
-parser.add_option("--variable",action="store",type="string",dest="variable_mods")
+#parser.add_option("--variable",action="store",type="string",dest="variable_mods")
 parser.add_option("--nl",action="store",type="string",dest="neutral_loss")
 parser.add_option("--nt",action="store",type="int",dest="num_threads")
 parser.add_option("--mzml",action="store",type="string",dest="mzml_files")
@@ -316,32 +316,15 @@ for eachrun in run_to_group:
     thislink=os.readlink(eachrun)
     shutil.copy(thislink,options.operation_folder+run_to_group[eachrun]+".pin_out/crux-output/"+eachrun)
 
-global target_mass_conversion
-target_mass_conversion={}
-
-
-#target_mass_conversion[str(round(float(target_mod_mass),2))]=str(target_mod_mass)
-#We're also going to actually put the rest of our mod masses in there, too...
-
-for eachmod in options.variable_mods.split(","):
-    mod_aa=eachmod.split()[0]
-    mod_mass=eachmod.split()[1]
-    target_mass_conversion[str(mod_mass)]=str(mod_mass)
 
 
 
-if options.variable_mods is not None:
-    for each in unscored_mod_dict.keys():
-        if each is not "":
-            target_mass_conversion[str(non_decimal.sub('',each))]=str(non_decimal.sub('',each))
 
-
-
-rounded_target_masses=str(target_mod_mass)
+#rounded_target_masses=str(target_mod_mass)
 #print "These are the rounded targets...",rounded_target_masses
 
 
-print target_mass_conversion,"this is target mass conv."
+#print target_mass_conversion,"this is target mass conv."
 regex = re.compile('[^a-zA-Z]')
 
 
@@ -387,7 +370,7 @@ for each_idx in group_information['Crux File Integer']:
 
     mask = combined_results[(combined_results['file_idx'] == str(each_idx))]
     #print '|'.join(target_masses),"This is target masses...."
-    mask2=mask[(mask['sequence'].str.contains(rounded_target_masses))] #numpy.any(mods in mask.sequence for mods in target_masses)]
+    mask2=mask[(mask['sequence'].str.contains('|'.join(target_masses)))] #numpy.any(mods in mask.sequence for mods in target_masses)]
     mask3=mask2[(mask2['percolator q-value'] <= filter)]
     #print mask3,"THIS WAS THE FILTERED FINAL MASK FOR THIS RUN..."
     #sorted_mask2=mask2.sort_values('scan',ascending=True)
@@ -613,21 +596,6 @@ groups_output={}
 for each_group in group_to_files:
     groups_output[each_group]=output_results[(output_results['file'].str.contains('|'.join(group_to_files[each_group])))]
     
-def replaceMods(input):
-    modDict=target_mass_conversion
-    #print "input",input
-    output=input
-    #print modDict,"This is modDict!"
-    for eachmod in modDict:
-        if str(eachmod) in output and str(modDict[eachmod]) not in output:
-            if float(eachmod)>0.0:
-                output=output.replace(str(eachmod),"+"+str(modDict[eachmod]))
-            else:
-                output=output.replace(str(eachmod),str(modDict[eachmod]))
-    #print "output",output
-    return output
-
-
 
 ##### We'll use this dict to convert fileidx to file names
 fileidx_to_file={}
@@ -735,7 +703,6 @@ merged_df['pRS_numPPS']=0
 merged_df=merged_df.drop_duplicates(subset='unique_name')
 #print merged_df,"THIS IS THE MERGED DATAFRAME."
 #merge_numPPS_mask=merged_df[merged_df['numPPS']>=1]
-print target_mass_conversion,"this is the mass conv dict"
 
 merged_df['pRS_sequence']=merged_df['sequence']
 #filtered_frame=merged_df[merged_df['sequence'].str.contains(']')]
