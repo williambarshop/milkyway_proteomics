@@ -160,6 +160,7 @@ def fix_modification_parallel(group):
 
 parser = optparse.OptionParser()
 parser.add_option("--pout",action="store",type="string",dest="operation_folder")
+parser.add_option("--tool_dir",action="store",type="string",dest="tool_dir")
 parser.add_option("--ms2tol",action="store", type="float", dest="ms2tol")
 parser.add_option("--target",action="store",type="string",dest="target_mods")
 #parser.add_option("--variable",action="store",type="string",dest="variable_mods")
@@ -227,7 +228,7 @@ for root, subFolders, files in os.walk(options.operation_folder):
 
 dataframe_vector=[]
 for eachfile in infiles:
-    newdf=pandas.DataFrame.from_csv(eachfile,sep='\t',index_col=False)
+    newdf=pandas.read_csv(eachfile,sep='\t',index_col=False)
     dataframe_vector.append(newdf)
     del newdf
 
@@ -518,7 +519,7 @@ with open(os.devnull, "w") as fnull:
         os.chdir(options.operation_folder+eachgroup+".pin_out/crux-output/")
         #processes.append(subprocess.Popen(command,shell=True)
         ###command = "mono /nfs/galaxy/galaxy/tools/wohl-proteomics/RSmax/RSmax.exe "+os.getcwd()+" "+eachgroup+" "+score_neutrals+" "+str(options.ms2tol)+" "+target_modstr+" "+unscored_mod_str
-        command = "mono /home/galaxy/wohl-proteomics-backups/2016-07-25/wohl-proteomics/RSmax/RSmax.exe "+os.getcwd()+" "+eachgroup+" "+score_neutrals+" "+str(options.ms2tol)+" "+target_modstr+" "+unscored_mod_str
+        command = "mono "+options.tool_dir+"/RSmax.exe "+os.getcwd()+" "+eachgroup+" "+score_neutrals+" "+str(options.ms2tol)+" "+target_modstr+" "+unscored_mod_str
         print "running command... ",command
         #processes.append(subprocess.Popen(command.split()))
         #proc=subprocess.Popen(command.split())
