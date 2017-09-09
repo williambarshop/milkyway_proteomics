@@ -22,13 +22,8 @@
    /nfs/galaxy/galaxy/tools/wohl-proteomics/RSmax/RSmax.exe 
    --pout output/
    --ms2tol $ms2tol
-   <!--#if $variablemods!=""
-   --variable "$variablemods"
-   #end if-->
    --target "STY 79.966331 H3PO4"
    --nl "ST -97.97690 H3PO4"
-  <!-- --target "$targetmods"
-   --nl "$neutrallosses" -->
    $scoreneutrallosses
    --mp $maxnumperm
    --nt $numthreads
@@ -45,16 +40,6 @@
         <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
         <param name="ms2tol" type="float" value="0.02" label="MS2 Fragment Ion Tolerance" help="Units given as Daltons" />
         <param name="filter" type="float" value="0.01" label="Percolator q-value threshold" help="Given as MAXIMUM percolator q-value (ie all PSMs lower than or equal to this q-value are scored)" />
-        <!-- <param name="unscoredmods" format="text" type="select" multiple="true" label="UNSCORED Modifications" help="Multiple Selection Allowed. You must select all the mods that you searched for, but aren't scoring.">
-            <options from_file="msgfplus_mods.loc">
-                <column name="name" index="0" />
-                <column name="value" index="2" />
-            </options>
-        </param> -->
-
-        <!-- <param name="variablemods" type="text" value="C 57.021464" label="UNSCORED Modifications used in Search" help="Format is given as: C 57.021464,M 15.994915,KR 14.015650 --using commas to separate mods." />
-        <param name="targetmods" type="text" value="STY 79.966331 H3PO4" label="Variable Modifications for Scoring" />
-        <param name="neutrallosses" type="text" value="ST -97.97690 H3PO4" label="Neutral loss for scoring" help="List the types of neutral losses that you want to consider..." /> -->
         <param name="scoreneutrallosses" type="boolean" truevalue="--scorenl" falsevalue="" label="Use NL for scoring?" />
         <param name="maxnumperm" type="integer" value="65536" help="Maximum number of permutations per sequence. Default is 16384" label="Maximum permutations per sequence" />
         <param name="numthreads" type="integer" value="8" min="0" max="32" label="Number of threads" help="0 uses all available cores." />
@@ -63,6 +48,5 @@
     <data name="crux_tar_gz" />
   </outputs>
   <help>
-
   </help>
 </tool>
