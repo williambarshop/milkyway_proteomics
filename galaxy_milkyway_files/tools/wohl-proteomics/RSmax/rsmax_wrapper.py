@@ -26,10 +26,10 @@ import time
 #confidence of PTM localization for the peptides
 #Now automatically adds unscored mods!
 #
-#VERSION 0.95A
-version="0.95A"
-#DATE: 08/10/2016
-date="08/10/2016"
+#VERSION 0.96A
+version="0.96A"
+#DATE: 09/11/2016 ### never forget
+date="09/11/2016"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the RSmax wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -291,7 +291,6 @@ non_decimal = re.compile(r'[^\d.]+')
 for eachmod in options.target_mods.split(","):
     if eachmod is not "":
         target_masses.append(non_decimal.sub('',eachmod.split()[1]))
-        #print "appended",non_decimal.sub('',eachmod),"from the input",eachmod.split()[1]
 target_masses=list(set(target_masses))
 
 
@@ -373,7 +372,6 @@ for each_idx in group_information['Crux File Integer']:
     mask = combined_results[(combined_results['file_idx'] == str(each_idx))]
     #print '|'.join(target_masses),"This is target masses...."
     mask2=mask[(mask['sequence'].str.contains('|'.join(target_masses)))] #numpy.any(mods in mask.sequence for mods in target_masses)]
-    #print mask2,"this is before the q-value filter..."
     mask3=mask2[(mask2['percolator q-value'] <= filter)]
     #print mask3,"THIS WAS THE FILTERED FINAL MASK FOR THIS RUN..."
     #sorted_mask2=mask2.sort_values('scan',ascending=True)
@@ -424,22 +422,21 @@ for each_idx in group_information['Crux File Integer']:
                 modmap=modmap[:-1]#We'll remove the last 0 of modmap to place in the correct modificaiton info...
                 #print massStr_to_modID,"this is the dictionary of interest..."
                 try:
-                    #print "Handling mod",mod[2:-1]
                     modmap+=massStr_to_modID[mod[2:-1]]
                     if massStr_to_modID[mod[2:-1]]!='1':
                         if thispep[i] in unscored_mod_dict[mod[2:-1]]:
                             pass #The AA is already known for this modification.
                         else:
-                            unscored_mod_dict[mod[2:-1]].append(thispep[i])
-                            print "Adding the AA "+thispep[i]+" to the modification of mass "+mod[2:-1],"from the peptide",thispep
+                            unscored_mod_dict[mod[2:-1]].append(thispep[i-1])
+                            print "Adding the AA "+thispep[i]+" to the modification of mass "+mod[2:-1]
                 except: #Mod not yet in dict... let's add it!
                     unscored_mod_dict[mod[2:-1]]=[thispep[i]]
                     #And we'll add it to the modID dict, too, and iterate the id_itr for the next possible mod...
-                    massStr_to_modID[str(mod[2:-1])]=str(id_itr)
+                    massStr_to_modID[mod[2:-1]]=str(id_itr)
                     id_itr+=1
 
                     modmap+=massStr_to_modID[mod[2:-1]]
-                    print "We've added the unscored mod of mass "+mod[2:-1]+" for the AA "+thispep[i],"from the peptide",thispep
+                    print "We've added the unscored mod of mass "+mod[2:-1]+" for the AA "+thispep[i]
                     pass #Add mod here!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 if massStr_to_modID[mod[2:-1]] == '1':
                     target_modsites.append(str(len(modmap)-3))
@@ -491,7 +488,6 @@ for each_idx in group_information['Crux File Integer']:
 
 #And finally, we'll make the mod strings for running pRS via rsmax.exe
 unscored_mod_str=""
-print "This is the unscored mod dict...",unscored_mod_dict
 for each_mod in unscored_mod_dict:
     unscored_mod_str+=massStr_to_modID[str(each_mod)]+","+str(each_mod)+","+"0.0"+","+"unscored"+massStr_to_modID[str(each_mod)]+","+"mod"+massStr_to_modID[str(each_mod)]+","+"".join(unscored_mod_dict[each_mod])+","+"XXXXX "
 
