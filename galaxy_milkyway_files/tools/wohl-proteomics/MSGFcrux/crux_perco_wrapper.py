@@ -1,4 +1,4 @@
-version=".85A"
+version=".88A"
 date="7/27/2017"
 
 import sys, os, subprocess, shutil
@@ -186,8 +186,7 @@ for each in onlyfiles:
                     
                     if this_run not in spectral_expmz:
                         spectral_expmz[this_run]={}
-                    else:
-                        spectral_expmz[this_run][int(thisline[scan_index])]=str((float(thisline[expmass_index])+((float(charge)-1)*proton_mass))/float(charge))
+                    spectral_expmz[this_run][int(thisline[scan_index])]=str((float(thisline[expmass_index])+((float(charge)-1)*proton_mass))/float(charge))
 
                     filewriter.write(thisline[specID_index]+"\t"+thisline[label_index]+"\t"+thisline[scan_index]+"\t"+peptide+"\t"+str(charge)+"\n")
                 linectr+=1
