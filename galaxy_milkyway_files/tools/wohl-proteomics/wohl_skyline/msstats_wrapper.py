@@ -729,7 +729,13 @@ with open("MSstats_Script.R",'wb') as script_writer:
     #Let's go ahead and make strings to describe our comparison matrix for MSstats!  Let's grab all of the biological conditions from group_information dataframe!
 
     #groups_abet=sorted(group_information['Biological Condition'].unique().tolist())  #This should be the same order that MSstats sees! -- it appears that it is not...
-    groups_abet=natsorted(group_information['Biological Condition'].unique().tolist(),alg=ns.IGNORECASE)  #This should be the same order that MSstats sees! -- it appears that it is not... alphabetical ignore case
+    #groups_abet=natsorted(group_information['Biological Condition'].unique().tolist(),alg=ns.IGNORECASE | ns.REAL)  #This should be the same order that MSstats sees! -- it appears that it is not... alphabetical ignore case
+    #Natsort fails when numbers come into play, so we'll just put this to bed and use R to sort.
+    with open("R_sorter.Rscript",'wb') as sorter_script_writer:
+        sorter_script_writer.write("sort(c(\""+"\",\"".join(group_information['Biological Condition'].unique().tolist())+"\"))")
+    groups_abet_cmdout=subprocess.check_output(["Rscript","R_sorter.Rscript"])
+    print groups_abet_cmdout,"\nACTUALOUTPUT==================="
+    groups_abet=[x.strip("\"").rstrip("\"") for x in groups_abet_cmdout.split()[1:]]
     print groups_abet,"This should be alphabetical!"
     num_groups=len(groups_abet)
 
