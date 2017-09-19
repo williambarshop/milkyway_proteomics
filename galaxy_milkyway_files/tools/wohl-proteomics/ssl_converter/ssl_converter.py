@@ -315,7 +315,7 @@ results_per_run={} # KEY IS FILE_IDX
 #    for each_file in set(mask['file_idx']):
 #        each_file_mask=mask[(mask.file_idx == each_file)]
 #        results_per_run[str(each_file)]=each_file_mask # results by run
-print group_to_file_name,"these are the groups of new interest"
+#print group_to_file_name,"these are the groups of new interest"
 for each_group in group_to_file_name:
     #print "-------------------------------------------------------------"
     #print "working on",each_group
@@ -330,9 +330,9 @@ for each_group in group_to_file_name:
     for each_file in set(mask['file']):
         each_file_mask=mask[(mask.file.str.contains(each_file))]
         results_per_run[str(rev_run_dict[each_file])]=each_file_mask # results by run
-        print each_file,str(rev_run_dict[each_file])
-        print len(each_file_mask)
-        print "---------------------"
+        #print each_file,str(rev_run_dict[each_file])
+        #print len(each_file_mask)
+        #print "---------------------"
 #print combined_results
 #sys.exit(2)
 ####################################################
@@ -356,7 +356,7 @@ if not fractions: #This is for all times when we have 1-D runs to compare.
         if not fractions:
             for eachrun in group_to_run_dict[eachgroup]:
                 #print "-----------------------------------------------"
-                print results_per_run.keys()
+                #print results_per_run.keys()
                 this_run_results=results_per_run[eachrun]
                 this_run_results['protein q-values']=this_run_results['protein q-values'].astype(str)
 
@@ -487,7 +487,8 @@ if not fractions: #This is for all times when we have 1-D runs to compare.
             this_ssl=pandas.read_csv(file,index_col=False,sep='\t')
             this_ssl_with_MS2=pandas.merge(this_ssl,merged_pins[['file','ScanNr','lnMS2IonCurrent']],left_on=['file','scan'],right_on=['file','ScanNr'])
             this_ssl_with_MS2=this_ssl_with_MS2.drop_duplicates()
-            this_ssl_with_MS2_filtered=this_ssl_with_MS2.loc[this_ssl_with_MS2.groupby(['file','sequence'])["lnMS2IonCurrent"].idxmax()]
+            this_ssl_with_MS2_filtered=this_ssl_with_MS2.loc[this_ssl_with_MS2.groupby(['file','sequence','charge'])["lnMS2IonCurrent"].idxmax()]
+            this_ssl_with_MS2_filtered.drop(labels=['lnMS2IonCurrent','ScanNr'],axis=1,inplace=True)
             os.rename(file,file.rsplit(".",1)[0]+".redundant_library")
             this_ssl_with_MS2_filtered.to_csv(path_or_buf=file,sep="\t",index=False,header=True)
         print "We're stripped down the ssl files to only the highest explained MS2 Ion Current per peptide ID per run."

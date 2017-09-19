@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "07-27-17 Qualitative-Analysis-PTMRS-Lumos", 
+    "name": "2017-09-19 MilkyWay phosphoRS", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -20,8 +20,8 @@
             "name": "Input dataset collection", 
             "outputs": [], 
             "position": {
-                "left": 577.8472900390625, 
-                "top": 387.48265075683594
+                "left": 577.8126220703125, 
+                "top": 387.5173645019531
             }, 
             "tool_id": null, 
             "tool_state": "{\"collection_type\": \"list\", \"name\": \"Input Dataset Collection\"}", 
@@ -45,6 +45,38 @@
             "inputs": [
                 {
                     "description": "", 
+                    "name": "Skyline File"
+                }
+            ], 
+            "label": "Skyline File", 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 781.076416015625, 
+                "top": 275.26043701171875
+            }, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"Skyline File\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "cd4aebc3-6eef-489e-9535-a98b37996d5c", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "output", 
+                    "uuid": "0cd2d410-fcc4-4f86-81e7-f51e389070a7"
+                }
+            ]
+        }, 
+        "2": {
+            "annotation": "", 
+            "content_id": null, 
+            "errors": null, 
+            "id": 2, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
                     "name": "FASTA Database Input (fwd only)"
                 }
             ], 
@@ -52,8 +84,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 199.6007080078125, 
-                "top": 861.4236450195312
+                "left": 199.6875, 
+                "top": 861.4062843322754
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"FASTA Database Input (fwd only)\"}", 
@@ -68,11 +100,11 @@
                 }
             ]
         }, 
-        "2": {
+        "3": {
             "annotation": "", 
             "content_id": null, 
             "errors": null, 
-            "id": 2, 
+            "id": 3, 
             "input_connections": {}, 
             "inputs": [
                 {
@@ -84,8 +116,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 1150.9375915527344, 
-                "top": 251.1979217529297
+                "left": 1313.9931640625, 
+                "top": 269.16668701171875
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Experimental Design File\"}", 
@@ -100,11 +132,11 @@
                 }
             ]
         }, 
-        "3": {
+        "4": {
             "annotation": "", 
             "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
             "errors": null, 
-            "id": 3, 
+            "id": 4, 
             "input_connections": {
                 "input": {
                     "id": 0, 
@@ -130,8 +162,8 @@
                 }
             ], 
             "position": {
-                "left": 704.791748046875, 
-                "top": 546.7708587646484
+                "left": 758.7501220703125, 
+                "top": 507.8125305175781
             }, 
             "post_job_actions": {
                 "HideDatasetActionoutput_refinement": {
@@ -150,23 +182,23 @@
             "tool_state": "{\"__page__\": 0, \"filtering\": \"{\\\"scan_numbers\\\": [], \\\"polarity\\\": \\\"false\\\", \\\"activation\\\": \\\"false\\\", \\\"filter_ms_levels\\\": {\\\"do_ms_level_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"analyzer\\\": \\\"false\\\", \\\"indices\\\": [], \\\"strip_it\\\": \\\"false\\\"}\", \"settings\": \"{\\\"binary_compression\\\": \\\"zlib\\\", \\\"intensity_encoding\\\": \\\"64\\\", \\\"mz_encoding\\\": \\\"64\\\", \\\"gzip_compression\\\": \\\"false\\\"}\", \"__rerun_remap_job_id__\": null, \"data_processing\": \"{\\\"precursor_refinement\\\": {\\\"__current_case__\\\": 0, \\\"use_mzrefinement\\\": \\\"false\\\"}, \\\"etd_filtering\\\": {\\\"do_etd_filtering\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"ms2deisotope\\\": \\\"false\\\", \\\"ms2denoise\\\": {\\\"denoise\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"thresholds\\\": [], \\\"filter_mz_windows\\\": {\\\"do_mzwindow_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"charge_state_calculation\\\": {\\\"charge_state_calculation_method\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"peak_picking\\\": {\\\"pick_peaks\\\": \\\"true\\\", \\\"pick_peaks_algorithm\\\": \\\"vendor\\\", \\\"pick_peaks_ms_levels\\\": \\\"1-\\\", \\\"__current_case__\\\": 1}}\", \"output_type\": \"\\\"mzML\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "3.0.0", 
             "type": "tool", 
-            "uuid": "1ac6ff0d-f9c2-433e-801d-8b535f52ac7a", 
+            "uuid": "f83c75e6-17dd-4091-a6f7-c4034934567c", 
             "workflow_outputs": [
                 {
                     "label": null, 
                     "output_name": "output", 
-                    "uuid": "e2d4eab1-9468-443a-9b5c-52ff8796c0b3"
+                    "uuid": "b6594b4a-802c-4b08-9793-ce9fb467f3c9"
                 }
             ]
         }, 
-        "4": {
+        "5": {
             "annotation": "", 
             "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/openms_decoydatabase/DecoyDatabase/2.1.0", 
             "errors": null, 
-            "id": 4, 
+            "id": 5, 
             "input_connections": {
                 "param_in": {
-                    "id": 1, 
+                    "id": 2, 
                     "output_name": "output"
                 }
             }, 
@@ -185,8 +217,8 @@
                 }
             ], 
             "position": {
-                "left": 714.8438110351562, 
-                "top": 1047.9688110351562
+                "left": 714.8438720703125, 
+                "top": 1047.9687957763672
             }, 
             "post_job_actions": {
                 "RenameDatasetActionparam_out": {
@@ -216,30 +248,26 @@
                 }
             ]
         }, 
-        "5": {
+        "6": {
             "annotation": "", 
             "content_id": "milkyway_msgfplus_search", 
             "errors": null, 
-            "id": 5, 
+            "id": 6, 
             "input_connections": {
                 "database|decoy_fasta_file": {
-                    "id": 4, 
+                    "id": 5, 
                     "output_name": "param_out"
                 }, 
                 "database|target_fasta_file": {
-                    "id": 1, 
+                    "id": 2, 
                     "output_name": "output"
                 }, 
                 "input_file": {
-                    "id": 3, 
+                    "id": 4, 
                     "output_name": "output"
                 }
             }, 
             "inputs": [
-                {
-                    "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
-                    "name": "protocol"
-                }, 
                 {
                     "description": "runtime parameter for tool SILAC TD MSGF+ MSMS Search", 
                     "name": "variable_mods"
@@ -266,12 +294,12 @@
                 }
             ], 
             "position": {
-                "left": 1112.8125915527344, 
-                "top": 682.326416015625
+                "left": 1114.8438720703125, 
+                "top": 683.3333587646484
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_msgfplus_search", 
-            "tool_state": "{\"protocol\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"\\\"2\\\"\", \"__page__\": null, \"fixed_mods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"variable_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
+            "tool_state": "{\"protocol\": \"\\\"0\\\"\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"\\\"2\\\"\", \"__page__\": 0, \"fixed_mods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"variable_mods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
             "tool_version": "1.2.7", 
             "type": "tool", 
             "uuid": "e6beb055-1bfe-4cd4-b12e-7d79b1485e48", 
@@ -283,18 +311,18 @@
                 }
             ]
         }, 
-        "6": {
+        "7": {
             "annotation": "", 
             "content_id": "milkyway_msgf2pin_converter", 
             "errors": null, 
-            "id": 6, 
+            "id": 7, 
             "input_connections": {
                 "fraction_file": {
-                    "id": 2, 
+                    "id": 3, 
                     "output_name": "output"
                 }, 
                 "targz_input": {
-                    "id": 5, 
+                    "id": 6, 
                     "output_name": "output_targz"
                 }
             }, 
@@ -321,8 +349,8 @@
                 }
             ], 
             "position": {
-                "left": 1451.7014923095703, 
-                "top": 392.63890075683594
+                "left": 1451.7362060546875, 
+                "top": 392.65625
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_msgf2pin_converter", 
@@ -343,18 +371,18 @@
                 }
             ]
         }, 
-        "7": {
+        "8": {
             "annotation": "", 
             "content_id": "milkyway_crux_pin_fixer", 
             "errors": null, 
-            "id": 7, 
+            "id": 8, 
             "input_connections": {
                 "fraction_groups": {
-                    "id": 2, 
+                    "id": 3, 
                     "output_name": "output"
                 }, 
                 "pin_tar": {
-                    "id": 6, 
+                    "id": 7, 
                     "output_name": "output_tar"
                 }
             }, 
@@ -381,8 +409,8 @@
                 }
             ], 
             "position": {
-                "left": 1688.8369140625, 
-                "top": 696.4930725097656
+                "left": 1835.0001220703125, 
+                "top": 605.4861297607422
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_crux_pin_fixer", 
@@ -393,28 +421,28 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "out_pin_tar", 
-                    "uuid": "fd21af84-bc3b-423b-959d-1706b449384b"
+                    "output_name": "map_file", 
+                    "uuid": "be1cee8f-531a-4b9d-bced-570a4bf7ebb3"
                 }, 
                 {
                     "label": null, 
-                    "output_name": "map_file", 
-                    "uuid": "be1cee8f-531a-4b9d-bced-570a4bf7ebb3"
+                    "output_name": "out_pin_tar", 
+                    "uuid": "fd21af84-bc3b-423b-959d-1706b449384b"
                 }
             ]
         }, 
-        "8": {
+        "9": {
             "annotation": "", 
             "content_id": "milkyway_crux_percolator", 
             "errors": null, 
-            "id": 8, 
+            "id": 9, 
             "input_connections": {
                 "exp_file": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "map_file"
                 }, 
                 "pin_targz": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "out_pin_tar"
                 }
             }, 
@@ -437,8 +465,8 @@
                 }
             ], 
             "position": {
-                "left": 2186.5278930664062, 
-                "top": 674.5312805175781
+                "left": 2186.5279235839844, 
+                "top": 674.4791870117188
             }, 
             "post_job_actions": {
                 "RenameDatasetActioncrux_tar_gz": {
@@ -450,7 +478,7 @@
                 }
             }, 
             "tool_id": "milkyway_crux_percolator", 
-            "tool_state": "{\"__page__\": null, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"separate_percolator\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"trainFDR\": \"\\\"0.01\\\"\", \"testFDR\": \"\\\"0.01\\\"\", \"testeachiteration\": \"\\\"false\\\"\", \"separate_percolator\": \"\\\"false\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"klammer\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"maxiter\": \"\\\"10\\\"\", \"unitnorm\": \"\\\"false\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"topmatch\": \"\\\"1\\\"\", \"protein\": \"{\\\"protein_mode\\\": \\\"false\\\", \\\"__current_case__\\\": 0, \\\"onlypsms\\\": \\\"false\\\"}\"}", 
             "tool_version": "0.9.00", 
             "type": "tool", 
             "uuid": "3b3ecca3-eba7-4d97-8ef7-e81729c870b2", 
@@ -462,22 +490,22 @@
                 }
             ]
         }, 
-        "9": {
+        "10": {
             "annotation": "", 
             "content_id": "milkyway_percolator_to_fido", 
             "errors": null, 
-            "id": 9, 
+            "id": 10, 
             "input_connections": {
                 "decoydatabase": {
-                    "id": 4, 
+                    "id": 5, 
                     "output_name": "param_out"
                 }, 
                 "pout_tar": {
-                    "id": 8, 
+                    "id": 9, 
                     "output_name": "crux_tar_gz"
                 }, 
                 "targetdatabase": {
-                    "id": 1, 
+                    "id": 2, 
                     "output_name": "output"
                 }
             }, 
@@ -508,12 +536,12 @@
                 }
             ], 
             "position": {
-                "left": 2530.5904541015625, 
-                "top": 587.5520935058594
+                "left": 2530.625160217285, 
+                "top": 587.5521087646484
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_percolator_to_fido", 
-            "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fct\": \"{\\\"fidoCT\\\": \\\"true\\\", \\\"decoy_str\\\": \\\"Reverse_\\\", \\\"__current_case__\\\": 0}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"true\\\"\", \"pout_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoydatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fct\": \"{\\\"fidoCT\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"true\\\"\", \"pout_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoydatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.2.1", 
             "type": "tool", 
             "uuid": "3f0c14fe-64df-4030-8271-fe9f5185d927", 
@@ -530,18 +558,18 @@
                 }
             ]
         }, 
-        "10": {
+        "11": {
             "annotation": "", 
             "content_id": "fido_wohl", 
             "errors": null, 
-            "id": 10, 
+            "id": 11, 
             "input_connections": {
                 "fidoin": {
-                    "id": 9, 
+                    "id": 10, 
                     "output_name": "fido_input"
                 }, 
                 "fidotd": {
-                    "id": 9, 
+                    "id": 10, 
                     "output_name": "target_decoy"
                 }
             }, 
@@ -564,54 +592,46 @@
                 }
             ], 
             "position": {
-                "left": 2850.98974609375, 
-                "top": 470.9895935058594
+                "left": 2930.0001831054688, 
+                "top": 556.9965515136719
             }, 
             "post_job_actions": {}, 
             "tool_id": "fido_wohl", 
             "tool_state": "{\"groupinference\": \"\\\"false\\\"\", \"__page__\": 0, \"fidoin\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"cleannames\": \"\\\"false\\\"\", \"allpsms\": \"\\\"true\\\"\", \"fidotd\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"griddepth\": \"\\\"1\\\"\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
-            "uuid": "23e63733-65f6-4937-bef0-381130148cf2", 
+            "uuid": "09473094-0e4a-4d12-b663-71ff00f548ee", 
             "workflow_outputs": [
                 {
                     "label": null, 
                     "output_name": "fidoout", 
-                    "uuid": "fb03822f-4bcf-4bb2-8d95-6d0fc0954cff"
+                    "uuid": "9c2ecfb2-0c92-4e29-a10e-632e11782c94"
                 }
             ]
         }, 
-        "11": {
+        "12": {
             "annotation": "", 
             "content_id": "fido_q_values", 
             "errors": null, 
-            "id": 11, 
+            "id": 12, 
             "input_connections": {
                 "crux_perco_targz": {
-                    "id": 8, 
+                    "id": 9, 
                     "output_name": "crux_tar_gz"
                 }, 
                 "fidoout": {
-                    "id": 10, 
+                    "id": 11, 
                     "output_name": "fidoout"
                 }, 
                 "targz_input": {
-                    "id": 5, 
+                    "id": 6, 
                     "output_name": "output_targz"
                 }
             }, 
             "inputs": [
                 {
                     "description": "runtime parameter for tool Fido q-value converter", 
-                    "name": "add_peptide_indicies"
-                }, 
-                {
-                    "description": "runtime parameter for tool Fido q-value converter", 
                     "name": "fidoout"
-                }, 
-                {
-                    "description": "runtime parameter for tool Fido q-value converter", 
-                    "name": "clean_spectra"
                 }, 
                 {
                     "description": "runtime parameter for tool Fido q-value converter", 
@@ -639,12 +659,12 @@
                 }
             ], 
             "position": {
-                "left": 3044.409912109375, 
-                "top": 761.8403015136719
+                "left": 3047.4828186035156, 
+                "top": 760.7812805175781
             }, 
             "post_job_actions": {}, 
             "tool_id": "fido_q_values", 
-            "tool_state": "{\"__page__\": 0, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"add_peptide_indicies\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoCT\": \"\\\"true\\\"\", \"clean_spectra\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"__page__\": 0, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"add_peptide_indicies\": \"\\\"true\\\"\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoCT\": \"\\\"false\\\"\", \"clean_spectra\": \"\\\"true\\\"\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "76094b8c-5b3c-4cb4-9128-e9c77b34023e", 
@@ -666,45 +686,41 @@
                 }
             ]
         }, 
-        "12": {
+        "13": {
             "annotation": "", 
-            "content_id": "ptmRSmax", 
+            "content_id": "phosphoRS", 
             "errors": null, 
-            "id": 12, 
+            "id": 13, 
             "input_connections": {
                 "exp_file": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "map_file"
                 }, 
                 "mzml_files": {
-                    "id": 3, 
+                    "id": 4, 
                     "output_name": "output"
                 }, 
                 "perco_out": {
-                    "id": 11, 
+                    "id": 12, 
                     "output_name": "crux_tar_gz"
                 }
             }, 
             "inputs": [
                 {
-                    "description": "runtime parameter for tool ptmRSmax", 
+                    "description": "runtime parameter for tool RSmax", 
                     "name": "perco_out"
                 }, 
                 {
-                    "description": "runtime parameter for tool ptmRSmax", 
-                    "name": "scoredmods"
-                }, 
-                {
-                    "description": "runtime parameter for tool ptmRSmax", 
+                    "description": "runtime parameter for tool RSmax", 
                     "name": "exp_file"
                 }, 
                 {
-                    "description": "runtime parameter for tool ptmRSmax", 
+                    "description": "runtime parameter for tool RSmax", 
                     "name": "mzml_files"
                 }
             ], 
-            "label": null, 
-            "name": "ptmRSmax", 
+            "label": "phosphoRS", 
+            "name": "RSmax", 
             "outputs": [
                 {
                     "name": "crux_tar_gz", 
@@ -712,43 +728,144 @@
                 }
             ], 
             "position": {
-                "left": 2578.4029541015625, 
-                "top": 1190.1563110351562
+                "left": 2203.472381591797, 
+                "top": 1178.9931030273438
             }, 
             "post_job_actions": {}, 
-            "tool_id": "ptmRSmax", 
-            "tool_state": "{\"xml\": \"{\\\"provided\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"unscoredmods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"scoreneutrallosses\": \"\\\"false\\\"\", \"__page__\": 0, \"numthreads\": \"\\\"32\\\"\", \"__rerun_remap_job_id__\": null, \"perco_out\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"scoredmods\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter\": \"\\\"0.1\\\"\", \"maxnumperm\": \"\\\"16384\\\"\", \"ms2tol\": \"\\\"0.02\\\"\", \"silac\": \"{\\\"__current_case__\\\": 1, \\\"usesilac\\\": \\\"false\\\"}\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml_files\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
-            "tool_version": "0.1.7", 
+            "tool_id": "phosphoRS", 
+            "tool_state": "{\"__page__\": null, \"scoreneutrallosses\": \"\\\"false\\\"\", \"numthreads\": \"\\\"12\\\"\", \"__rerun_remap_job_id__\": null, \"perco_out\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter\": \"\\\"0.1\\\"\", \"maxnumperm\": \"\\\"65536\\\"\", \"ms2tol\": \"\\\"0.02\\\"\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml_files\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_version": "0.1.5", 
             "type": "tool", 
-            "uuid": "98d081dd-899c-41b2-b6b1-9da705cc772a", 
+            "uuid": "1ea9af2a-f5bf-4bda-a4cb-c1bd0e312538", 
             "workflow_outputs": [
                 {
                     "label": null, 
                     "output_name": "crux_tar_gz", 
-                    "uuid": "eea27434-a1fe-4d28-b195-35aba3b2c107"
+                    "uuid": "f39e5753-5106-414a-9bf0-2279a4f8262f"
                 }
             ]
         }, 
-        "13": {
+        "14": {
+            "annotation": "", 
+            "content_id": "ssl_converter", 
+            "errors": null, 
+            "id": 14, 
+            "input_connections": {
+                "blibbuild|corrected_mzml_files": {
+                    "id": 4, 
+                    "output_name": "output"
+                }, 
+                "exp_file": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }, 
+                "fido_q_raw": {
+                    "id": 12, 
+                    "output_name": "p_to_q"
+                }, 
+                "fwd_fasta_file": {
+                    "id": 2, 
+                    "output_name": "output"
+                }, 
+                "mzml_files": {
+                    "id": 4, 
+                    "output_name": "output"
+                }, 
+                "perco_out": {
+                    "id": 13, 
+                    "output_name": "crux_tar_gz"
+                }
+            }, 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "highest_intensity"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "fwd_fasta_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "perco_out"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "fido_q_raw"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "blibbuild"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "exp_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool SSL Converter", 
+                    "name": "mzml_files"
+                }
+            ], 
+            "label": null, 
+            "name": "SSL Converter", 
+            "outputs": [
+                {
+                    "name": "ssl_files_with_mzml_tar_gz", 
+                    "type": "data"
+                }, 
+                {
+                    "name": "fido_fasta", 
+                    "type": "fasta"
+                }
+            ], 
+            "position": {
+                "left": 3056.753662109375, 
+                "top": 1150.0000610351562
+            }, 
+            "post_job_actions": {}, 
+            "tool_id": "ssl_converter", 
+            "tool_state": "{\"fractions\": \"\\\"false\\\"\", \"__page__\": null, \"highest_intensity\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"localization\": \"{\\\"one_pps\\\": \\\"true\\\", \\\"only_mod\\\": \\\"false\\\", \\\"__current_case__\\\": 1, \\\"algorithm\\\": \\\"phosphoRS\\\", \\\"prs_prob_threshold\\\": \\\"0.95\\\"}\", \"fwd_fasta_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml_files\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"labels\": \"{\\\"filter\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"perco_out\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fido_q_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"q_threshold\": \"\\\"0.01\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"blibbuild\": \"{\\\"corrected_mzml_files\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"blib\\\": \\\"true\\\", \\\"__current_case__\\\": 0}\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fido_q_threshold\": \"\\\"0.01\\\"\", \"no_mzml\": \"\\\"true\\\"\"}", 
+            "tool_version": "3.0.0", 
+            "type": "tool", 
+            "uuid": "d9c24206-ac00-47f5-a9de-5bb32b1c94f4", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "ssl_files_with_mzml_tar_gz", 
+                    "uuid": "e789ecd3-a330-47cb-8adb-12332caca599"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "fido_fasta", 
+                    "uuid": "931b1cd2-bc2a-46fd-9637-68dfbf7b3d7f"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "crux_tar_gz", 
+                    "uuid": "fdeadf8c-5684-4902-995a-95ec0f5a0999"
+                }
+            ]
+        }, 
+        "15": {
             "annotation": "", 
             "content_id": "milkyway_spectral_counts", 
             "errors": null, 
-            "id": 13, 
+            "id": 15, 
             "input_connections": {
                 "crux_perco_tar_gz": {
-                    "id": 12, 
+                    "id": 13, 
                     "output_name": "crux_tar_gz"
                 }, 
                 "cruxmap": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "map_file"
                 }, 
                 "fasta": {
-                    "id": 1, 
+                    "id": 2, 
                     "output_name": "output"
                 }, 
                 "fido_output": {
-                    "id": 11, 
+                    "id": 12, 
                     "output_name": "fidoout_q"
                 }
             }, 
@@ -803,8 +920,8 @@
                 }
             ], 
             "position": {
-                "left": 3403.0037841796875, 
-                "top": 1008.0035400390625
+                "left": 3402.048828125, 
+                "top": 1008.0035095214844
             }, 
             "post_job_actions": {
                 "RenameDatasetActionoutputnsaf": {
@@ -823,7 +940,7 @@
                 }
             }, 
             "tool_id": "milkyway_spectral_counts", 
-            "tool_state": "{\"cruxmap\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"protein_qvalue\": \"\\\"0.01\\\"\", \"__page__\": 0, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"psm_qvalue\": \"\\\"0.01\\\"\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"localization_filter\": \"{\\\"ptmRS_threshold\\\": \\\"0.95\\\", \\\"__current_case__\\\": 0, \\\"localization_type\\\": \\\"ptmRS\\\"}\", \"groupquant\": \"\\\"true\\\"\", \"saint_outputs\": \"\\\"true\\\"\", \"crux_perco_tar_gz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"cruxmap\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"protein_qvalue\": \"\\\"0.01\\\"\", \"__page__\": null, \"__rerun_remap_job_id__\": null, \"decoy_str\": \"\\\"Reverse_\\\"\", \"fido_output\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"psm_qvalue\": \"\\\"0.01\\\"\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"localization_filter\": \"{\\\"phosphoRS_threshold\\\": \\\"0.95\\\", \\\"__current_case__\\\": 1, \\\"localization_type\\\": \\\"phosphoRS\\\"}\", \"groupquant\": \"\\\"true\\\"\", \"saint_outputs\": \"\\\"true\\\"\", \"crux_perco_tar_gz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.9c", 
             "type": "tool", 
             "uuid": "8486ded8-4aa0-48b4-bee6-592074aaccef", 
@@ -880,18 +997,18 @@
                 }
             ]
         }, 
-        "14": {
+        "16": {
             "annotation": "", 
             "content_id": "psm_extract", 
             "errors": null, 
-            "id": 14, 
+            "id": 16, 
             "input_connections": {
                 "exp_file": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "map_file"
                 }, 
                 "tar_gz_file": {
-                    "id": 12, 
+                    "id": 13, 
                     "output_name": "crux_tar_gz"
                 }
             }, 
@@ -914,8 +1031,8 @@
                 }
             ], 
             "position": {
-                "left": 3816.7015380859375, 
-                "top": 779.4791870117188
+                "left": 3816.70166015625, 
+                "top": 779.4097557067871
             }, 
             "post_job_actions": {}, 
             "tool_id": "psm_extract", 
@@ -931,22 +1048,128 @@
                 }
             ]
         }, 
-        "15": {
+        "17": {
+            "annotation": "", 
+            "content_id": "skylinerunner", 
+            "errors": null, 
+            "id": 17, 
+            "input_connections": {
+                "database": {
+                    "id": 14, 
+                    "output_name": "fido_fasta"
+                }, 
+                "exp_file": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }, 
+                "ms_level|skyline_file": {
+                    "id": 1, 
+                    "output_name": "output"
+                }, 
+                "protdb_upload|background_database": {
+                    "id": 2, 
+                    "output_name": "output"
+                }, 
+                "ssl_and_mzml": {
+                    "id": 14, 
+                    "output_name": "ssl_files_with_mzml_tar_gz"
+                }
+            }, 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "protdb_upload"
+                }, 
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "protdb_upload"
+                }, 
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "database"
+                }, 
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "exp_file"
+                }, 
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "ms_level"
+                }, 
+                {
+                    "description": "runtime parameter for tool Skyline", 
+                    "name": "ssl_and_mzml"
+                }
+            ], 
+            "label": null, 
+            "name": "Skyline", 
+            "outputs": [
+                {
+                    "name": "output", 
+                    "type": "data"
+                }, 
+                {
+                    "name": "output_msstats", 
+                    "type": "data"
+                }, 
+                {
+                    "name": "output_chromatograms", 
+                    "type": "data"
+                }, 
+                {
+                    "name": "output_boundaries", 
+                    "type": "data"
+                }
+            ], 
+            "position": {
+                "left": 3805.52099609375, 
+                "top": 1366.3889770507812
+            }, 
+            "post_job_actions": {}, 
+            "tool_id": "skylinerunner", 
+            "tool_state": "{\"fractions\": \"\\\"false\\\"\", \"__page__\": 0, \"protdb_upload\": \"{\\\"missedcleave\\\": \\\"0\\\", \\\"enzyme\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"background_database\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 1, \\\"protdb\\\": \\\"false\\\"}\", \"ssl_and_mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"database\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"msstats\": \"\\\"true\\\"\", \"num_procs\": \"\\\"6\\\"\", \"add_mods\": \"\\\"false\\\"\", \"makeblib\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"ms_level\": \"{\\\"skyline_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 3, \\\"quant_type\\\": \\\"provided_file\\\"}\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"rt_tolerance\": \"\\\"2.0\\\"\", \"mprophet\": \"\\\"--mprophet decoy\\\"\"}", 
+            "tool_version": "0.1.0a", 
+            "type": "tool", 
+            "uuid": "1e7d926b-87d5-4c7c-b0e0-0f3b5fe8b9f7", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "output_boundaries", 
+                    "uuid": "0dc26dbe-95e2-4eb1-9d16-107ef1aa0785"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "output", 
+                    "uuid": "f5bb7b4c-b9ba-4815-88cc-552ada302268"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "output_chromatograms", 
+                    "uuid": "619e404c-aaa3-4efb-af89-c667055f3d6e"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "output_msstats", 
+                    "uuid": "318666fc-41c8-4bdb-8a9c-6274d3249ae7"
+                }
+            ]
+        }, 
+        "18": {
             "annotation": "", 
             "content_id": "SAINT_express", 
             "errors": null, 
-            "id": 15, 
+            "id": 18, 
             "input_connections": {
                 "bait_raw": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "saint_bait_raw"
                 }, 
                 "interact_raw": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "saint_interact_raw"
                 }, 
                 "prey_raw": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "saint_prey_raw"
                 }
             }, 
@@ -978,7 +1201,7 @@
             ], 
             "position": {
                 "left": 3850.4342041015625, 
-                "top": 974.8438110351562
+                "top": 974.8437957763672
             }, 
             "post_job_actions": {}, 
             "tool_id": "SAINT_express", 
@@ -1009,50 +1232,210 @@
                 }
             ]
         }, 
-        "16": {
+        "19": {
+            "annotation": "", 
+            "content_id": "MSstats", 
+            "errors": null, 
+            "id": 19, 
+            "input_connections": {
+                "csv_input": {
+                    "id": 17, 
+                    "output_name": "output_msstats"
+                }, 
+                "experiment_map": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }
+            }, 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool MSstats", 
+                    "name": "csv_input"
+                }, 
+                {
+                    "description": "runtime parameter for tool MSstats", 
+                    "name": "experiment_map"
+                }
+            ], 
+            "label": null, 
+            "name": "MSstats", 
+            "outputs": [
+                {
+                    "name": "comparisonOutput", 
+                    "type": "csv"
+                }, 
+                {
+                    "name": "quantificationOutput", 
+                    "type": "csv"
+                }, 
+                {
+                    "name": "quantificationConditionOutput", 
+                    "type": "csv"
+                }, 
+                {
+                    "name": "conditionPlotCSVOutput", 
+                    "type": "csv"
+                }, 
+                {
+                    "name": "RDataOutput", 
+                    "type": "data"
+                }, 
+                {
+                    "name": "processedDataOutput", 
+                    "type": "csv"
+                }, 
+                {
+                    "name": "QCplotOutput", 
+                    "type": "pdf"
+                }, 
+                {
+                    "name": "ProfilePlotOutput", 
+                    "type": "pdf"
+                }, 
+                {
+                    "name": "ConditionPlotOutput", 
+                    "type": "pdf"
+                }, 
+                {
+                    "name": "RScriptOutput", 
+                    "type": "data"
+                }
+            ], 
+            "position": {
+                "left": 4202.500244140625, 
+                "top": 1423.8195190429688
+            }, 
+            "post_job_actions": {}, 
+            "tool_id": "MSstats", 
+            "tool_state": "{\"csv_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"featureSubset\": \"{\\\"subset\\\": \\\"all\\\", \\\"__current_case__\\\": 1}\", \"fillMissingFeatures\": \"\\\"true\\\"\", \"merge_isotopes\": \"\\\"false\\\"\", \"normalize\": \"{\\\"__current_case__\\\": 1, \\\"normalization\\\": \\\"equalizeMedians\\\"}\", \"remove_single_run\": \"\\\"false\\\"\", \"maxQuantileforCensored\": \"{\\\"censor\\\": \\\"NULL\\\", \\\"__current_case__\\\": 1}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noimpute\": \"\\\"false\\\"\", \"remove_truncated_peaks\": \"\\\"true\\\"\", \"norm_protein\": \"\\\"\\\"\", \"q_threshold\": \"\\\"0.01\\\"\", \"remove_repeated_peptides\": \"\\\"true\\\"\", \"__page__\": 0, \"remove50missing\": \"\\\"false\\\"\", \"censoredInt\": \"\\\"false\\\"\", \"peptide_level\": \"\\\"false\\\"\", \"normalization\": \"\\\"equalizeMedians\\\"\", \"remove_proteins_with_interference\": \"\\\"false\\\"\", \"remove_precursors\": \"\\\"false\\\"\", \"remove_decoys\": \"\\\"true\\\"\", \"MBimpute\": \"\\\"true\\\"\", \"cutoffCensored\": \"\\\"minFeature\\\"\", \"remove_empty\": \"\\\"false\\\"\", \"remove_proteins_by_text\": \"\\\"\\\"\"}", 
+            "tool_version": "0.3.0a", 
+            "type": "tool", 
+            "uuid": "26bc52fe-c50b-420b-ab54-749a581bacf0", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "quantificationOutput", 
+                    "uuid": "59594b3a-dc19-4caf-b912-f1eef2c53af0"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "RScriptOutput", 
+                    "uuid": "db0ae62c-7a24-48df-9b91-32963d51d42a"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "ConditionPlotOutput", 
+                    "uuid": "1dc2f5d4-1ae2-44e8-9b85-bc264d862e18"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "quantificationConditionOutput", 
+                    "uuid": "b3cf7a50-fa1d-4d8e-a266-c08d1dc80f6d"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "RDataOutput", 
+                    "uuid": "20c47d19-6e4c-48c2-861c-9cd002aeb24d"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "ProfilePlotOutput", 
+                    "uuid": "0983d023-5979-4afc-8930-c31f48adb1e5"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "comparisonOutput", 
+                    "uuid": "10b00143-a7a6-4114-8233-a7be0ee1623a"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "conditionPlotCSVOutput", 
+                    "uuid": "4699b94a-e291-4d70-8223-01bd641dbbba"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "processedDataOutput", 
+                    "uuid": "a41e831f-2e15-4a11-a548-af513100cfa0"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "QCplotOutput", 
+                    "uuid": "be457215-5eb4-4f36-963c-49b48b225651"
+                }
+            ]
+        }, 
+        "20": {
             "annotation": "", 
             "content_id": "RdataPackaging", 
             "errors": null, 
-            "id": 16, 
+            "id": 20, 
             "input_connections": {
+                "analysis_type|msstats_comparison": {
+                    "id": 19, 
+                    "output_name": "comparisonOutput"
+                }, 
+                "analysis_type|msstats_condition": {
+                    "id": 19, 
+                    "output_name": "conditionPlotCSVOutput"
+                }, 
+                "analysis_type|msstats_quantification": {
+                    "id": 19, 
+                    "output_name": "quantificationOutput"
+                }, 
+                "analysis_type|msstats_skyline_input": {
+                    "id": 17, 
+                    "output_name": "output_msstats"
+                }, 
+                "analysis_type|quant_experiment_map": {
+                    "id": 8, 
+                    "output_name": "map_file"
+                }, 
                 "analysis_type|saint_table": {
-                    "id": 15, 
+                    "id": 18, 
                     "output_name": "SAINT_simple_raw_output"
                 }, 
+                "analysis_type|skyline_boundaries": {
+                    "id": 17, 
+                    "output_name": "output_boundaries"
+                }, 
+                "analysis_type|skyline_chromatograms": {
+                    "id": 17, 
+                    "output_name": "output_chromatograms"
+                }, 
                 "fasta": {
-                    "id": 1, 
+                    "id": 2, 
                     "output_name": "output"
                 }, 
                 "fido_roc": {
-                    "id": 11, 
+                    "id": 12, 
                     "output_name": "p_to_q"
                 }, 
                 "mzml": {
-                    "id": 3, 
+                    "id": 4, 
                     "output_name": "output"
                 }, 
                 "nsaf_table": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "outputnsaf"
                 }, 
                 "peptide_nsaf_table": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "peptideoutputnsaf"
                 }, 
                 "peptide_spc_table": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "peptideoutputraw"
                 }, 
                 "psm_table": {
-                    "id": 14, 
+                    "id": 16, 
                     "output_name": "output_table"
                 }, 
                 "qual_experiment_map": {
-                    "id": 7, 
+                    "id": 8, 
                     "output_name": "map_file"
                 }, 
                 "spc_table": {
-                    "id": 13, 
+                    "id": 15, 
                     "output_name": "outputraw"
                 }
             }, 
@@ -1068,6 +1451,34 @@
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
                     "name": "mzml"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
+                }, 
+                {
+                    "description": "runtime parameter for tool Rdata packaging", 
+                    "name": "analysis_type"
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
@@ -1115,12 +1526,12 @@
                 }
             ], 
             "position": {
-                "left": 4753.6981201171875, 
+                "left": 4753.750244140625, 
                 "top": 1142.1875610351562
             }, 
             "post_job_actions": {}, 
             "tool_id": "RdataPackaging", 
-            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"msstats_comparison\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_chromatograms\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"lfq\\\", \\\"quant_experiment_map\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"msstats_quantification\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"skyline_boundaries\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"filter_decoys\\\": \\\"true\\\", \\\"msstats_condition\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"msstats_skyline_input\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}}\", \"saint_table\": \"null\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.5.0a", 
             "type": "tool", 
             "uuid": "63be5fc4-6ba6-4a66-acbe-04879d283027", 
@@ -1143,5 +1554,5 @@
             ]
         }
     }, 
-    "uuid": "8d311802-1ee9-4917-8257-6ccb77644385"
+    "uuid": "a7dded4d-0d6a-41a2-b278-6d96362b4634"
 }
