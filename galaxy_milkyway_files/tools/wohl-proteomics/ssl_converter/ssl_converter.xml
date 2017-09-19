@@ -41,6 +41,7 @@
    --fido_q_raw $fido_q_raw
    --qthresh $q_threshold
    --fidoq $fido_q_threshold
+   $highest_intensity
    $diaumpire
    #if $blibbuild.blib
    --blib
@@ -81,6 +82,7 @@
   <inputs>
         <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
         <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
+        <param name="highest_intensity" type="boolean" truevalue="--highest_intensity" falsevalue="" checked="false" label="Only keep highest spectral with highest MS2 intensity per run?" help="Experimental feature to help with peak picking" />
     <conditional name="blibbuild">
         <param name="blib" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Construct blib libraries?" help="If used with ptm localization, will only include type1 PSMs."/>
         <when value="true">

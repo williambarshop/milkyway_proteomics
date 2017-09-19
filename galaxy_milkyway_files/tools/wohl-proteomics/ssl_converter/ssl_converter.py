@@ -19,8 +19,8 @@ import glob
 #
 #VERSION 1.8.0
 version="1.8.0"
-#DATE: 11/09/2016
-date="11/09/2016"
+#DATE: 9/18/2017
+date="9/18/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SSL file converter for Galaxy, Wohlschlegel Lab UCLA"
@@ -136,6 +136,7 @@ parser.add_option("--ssl",action="store",type="string",dest="ssl_output_folder")
 parser.add_option("--fractions",action="store_true",dest="fractions")
 parser.add_option("--OnePPS",action="store_true",dest="one_pps")
 parser.add_option("--only_mod",action="store_true",dest="only_mod")
+parser.add_option("--highest_intensity",action="store_true",dest="highest_intensity")
 parser.add_option("--diaumpire",action="store_true",dest="diaumpire")
 parser.add_option("--no_mzml",action="store_true",dest="no_mzml")
 #parser.add_option("--saint",action="store",type="string",dest="saint_outputs")
@@ -465,6 +466,33 @@ if not fractions: #This is for all times when we have 1-D runs to compare.
                         ssl_df_type2_filtered.rename(columns={'percolator qvalue':'score'}, inplace=True)
                         ssl_df_type2_filtered['score-type']="PERCOLATOR QVALUE"
                         ssl_df_type2_filtered.to_csv(path_or_buf=type2_ssl_writer,sep="\t",index=False,header=True)
+
+    if options.highest_intensity:
+        #We'll need the pin files for this...
+        os.chdir(basedir)
+        pin_files=[]
+        for root,dirs,files in os.walk(basedir):
+            for file in files:
+                if file.endswith(".pin"):
+                    pin_files.append(os.path.join(root,file))
+        cols = pandas.read_csv(pin_files[0], nrows=1,sep="\t",index_col=False).columns.tolist()[:-1]
+        pins_df=[]
+        for each_pin in pin_files:
+            pins_df.append(pandas.read_csv(each_pin,usecols=cols,index_col=False,sep="\t",skiprows=[1]))
+        merged_pins=pandas.concat(pins_df)
+        merged_pins['file_idx']=merged_pins['SpecId'].str.split("_").str.get(1)
+        merged_pins['file']=merged_pins['file_idx'].map(run_dict)
+        os.chdir(basedir+"/"+options.ssl_output_folder)
+        for file in glob.glob("*.ssl"):
+            this_ssl=pandas.read_csv(file,index_col=False,sep='\t')
+            this_ssl_with_MS2=pandas.merge(this_ssl,merged_pins[['file','ScanNr','lnMS2IonCurrent']],left_on=['file','scan'],right_on=['file','ScanNr'])
+            this_ssl_with_MS2=this_ssl_with_MS2.drop_duplicates()
+            this_ssl_with_MS2_filtered=this_ssl_with_MS2.loc[this_ssl_with_MS2.groupby(['file','sequence'])["lnMS2IonCurrent"].idxmax()]
+            os.rename(file,file.rsplit(".",1)[0]+".redundant_library")
+            this_ssl_with_MS2_filtered.to_csv(path_or_buf=file,sep="\t",index=False,header=True)
+        print "We're stripped down the ssl files to only the highest explained MS2 Ion Current per peptide ID per run."
+
+
     if options.blib:
         print "Let's build some blib files..."
         os.chdir(basedir)
