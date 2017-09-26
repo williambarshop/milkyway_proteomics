@@ -497,6 +497,59 @@ else: #silac isn't true....
 #    print "RUNNING COMMAND",tmp_msgf2pin_cmd
 #    #processes.append(subprocess.Popen(tmp_msgf2pin_cmd,shell=True))
 #    processes.append(subprocess.Popen(tmp_msgf2pin_cmd,shell=True))
+#We're going to line up all the charge max's per run to equal the max of all the runs...
+
+parsed_max_charge=0
+for eachfile in output_list:
+    with open(eachfile,'rb') as chargereader:
+        for eachline in chargereader:
+            header=eachline.split("\t")
+            for each_item in header:
+                if "Charge" in each_item:
+                    this_charge=int(each_item.replace("Charge",""))
+                    if this_charge > parsed_max_charge:
+                        parsed_max_charge=this_charge
+            break #We only need the first line for the headers right now.
+
+for eachfile in output_list:
+    with open(eachfile,'rb') as filereader:
+        with open(eachfile+"_chgfix",'wb') as filewriter:
+            linectr=0
+            last_charge=0
+            last_charge_index=0
+            new_reconstructed_lines=[]
+            for eachline in filereader:
+                if linectr==0:
+                    header=eachline.split("\t")
+                    header_index=0
+                    for each_item in header:
+                        if "Charge" in each_item:
+                            run_max_charge=int(each_item.replace("Charge","")) #Charges are always increasing... the last one we come across *should* be the max in this run!
+                            last_charge_index=header_index
+                        header_index+=1
+
+                    until_maxcharge=header[:last_charge_index+1]
+                    after_maxcharge=header[last_charge_index+1:]
+                    if run_max_charge<parsed_max_charge:
+                        for each_charge in xrange(run_max_charge+1,parsed_max_charge+1):
+                            until_maxcharge.append("Charge{0}".format(each_charge))
+                    until_maxcharge.extend(after_maxcharge)
+                    new_reconstructed_lines.append(until_maxcharge)#Header is now fixed and all included in 'until maxcharge' object...
+                else:
+                    this_line=eachline.split("\t")
+
+                    until_maxcharge=this_line[:last_charge_index+1]
+                    after_maxcharge=this_line[last_charge_index+1:]
+                    for each_charge in xrange(run_max_charge+1,parsed_max_charge+1):
+                        until_maxcharge.append("0")
+                    until_maxcharge.extend(after_maxcharge)
+                    new_reconstructed_lines.append(until_maxcharge)#Line is now fixed and all included in 'until maxcharge' object...
+
+                linectr+=1
+            for each_newline in new_reconstructed_lines:
+                filewriter.write("\t".join(each_newline))
+    os.rename(eachfile,eachfile+"_before_charge_fix")
+    shutil.copy(eachfile+"_chgfix",eachfile)
 
 
 if options.diaumpire:
