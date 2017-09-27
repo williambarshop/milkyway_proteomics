@@ -303,7 +303,7 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
             combined_results.loc[each_key,'Gene ID']=combined_results.loc[each_key,'backup']
 
 
-elif "norename" in options.renameProteinType:
+elif "norename" in options.renameProteinType and options.analysis_type=="lfq":
     combined_results['Gene ID']=combined_results['uniprot_acc']
     print "Not renaming proteins... leaving as is!"
 

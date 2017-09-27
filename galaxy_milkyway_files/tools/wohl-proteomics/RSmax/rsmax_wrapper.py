@@ -609,7 +609,6 @@ modsite_to_modmass={}
 modsite_to_modmass_fixed={}
 modsite_to_modmass_variable={}
 print options.target_mods,"target mods!"
-print options.variable_mods,"unscored mods!"
 
 #for eachmod in options.target_mods.split():
 #    modsite_to_modmass[eachmod[:1]]=non_decimal.sub('',eachmod)
@@ -620,11 +619,6 @@ for each_aa in tmod_aa:
     modsite_to_modmass[each_aa]=tmod_mass
 
 
-for eachmod in options.variable_mods.split(","):
-    mod_aa=eachmod.split()[0]
-    mod_mass=eachmod.split()[1]
-    for each_aa in mod_aa:
-        modsite_to_modmass[each_aa]=mod_mass
 print "This is the modsite dict!",modsite_to_modmass
 
 
