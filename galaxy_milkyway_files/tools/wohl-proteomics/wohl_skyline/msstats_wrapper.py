@@ -736,6 +736,13 @@ with open("MSstats_Script.R",'wb') as script_writer:
     groups_abet_cmdout=subprocess.check_output(["Rscript","R_sorter.Rscript"])
     print groups_abet_cmdout,"\nACTUALOUTPUT==================="
     groups_abet=[x.strip("\"").rstrip("\"") for x in groups_abet_cmdout.split()[1:]]
+    new_abet=[]
+    for each_group in groups_abet:
+        if each_group.startswith('[') and each_group.endswith(']'):  #These groups are actually just line information from the R output.  We'll remove them.
+            print "Group ",each_group," is not a real group... dropping..."
+        else:
+            new_abet.append(each_group)
+    groups_abet=new_abet
     print groups_abet,"This should be alphabetical!"
     num_groups=len(groups_abet)
 
