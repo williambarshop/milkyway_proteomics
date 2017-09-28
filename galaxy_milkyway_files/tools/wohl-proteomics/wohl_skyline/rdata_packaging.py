@@ -232,7 +232,7 @@ if "accToGene" in options.renameProteinType or options.renameProteinType is None
 
 
 elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH ProteinS
-    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern)
+    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern,expand=False)
     #uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='ACC',t='ID')
     try:
         uni_mapping_dict_combined=uni.map(list(protein_extracted),f='ACC',t='ID')
@@ -268,7 +268,7 @@ elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND R
 elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH PROTEIN NAMES
     #protein_full_name_series_list.apply(pd.Series).stack().reset_index(drop=True)
     #protein_full_name_series_collapsed=protein_full_name_series_list.apply(pandas.Series).stack().reset_index(drop=True)
-    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern)
+    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern,expand=False)
 #    uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='GENENAME',t='ID')
     try:
         uni_mapping_dict_combined=uni.map(list(protein_extracted),f='GENENAME',t='ID')
@@ -304,7 +304,7 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
 
 
 elif "norename" in options.renameProteinType:
-    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern)
+    combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern,expand=False)
     combined_results['Gene ID']=combined_results['uniprot_acc']
     print "Not renaming proteins... leaving as is!"
 
