@@ -26,6 +26,6 @@
     <tool file="wohl-proteomics/psm_extract/psm_extract.xml" />
     <tool file="wohl-proteomics/diaumpire/dia_umpire.xml" />
     <tool file="wohl-proteomics/diaumpire/msconvert_demux.xml" />
-    <tool file="wohl-proteomics/msplit-dia/mssplit_dia.xml" />
+    <tool file="wohl-proteomics/msplit-dia/msplit_dia.xml" />
   </section>
 </toolbox>
