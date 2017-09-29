@@ -50,7 +50,7 @@
         <param name="filterbyrt" type="boolean" truevalue="--filterbyrt" falsevalue="" checked="false" label="Filter confident identifications by RT?" help="Retention time filter is determined by the regression" />
         <param name="ms2daltons" type="float" label="Spectral Library MS2 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
         <param name="cyclescans" type="integer" label="Number of scans per cycle" value="0" min="0" help="Zero will have the algorithm autoset.  Otherwise, this is (1 MS1 scan)+(n MS2 scans)."/>
-        <param name="maxgigsmemory" type="float" label="Maximum Gigs of Memory per run" value="2" min="1.00" max="8.00"/>
+        <param name="maxgigsmemory" type="integer" label="Maximum Gigs of Memory per run" value="2" min="1" max="8"/>
         <param name="ms2searchppm" type="float" label="Search MS2 Mass Accuracy (ppm)" value="15" min="0.00"/>
         <param name="daltonparenttolerance" type="float" label="Search MS1 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
         <param name="ms2daltons" type="float" label="Spectral Library MS2 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>

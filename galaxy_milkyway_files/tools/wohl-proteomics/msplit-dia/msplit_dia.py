@@ -41,7 +41,7 @@ parser.add_option("--diafiles",action="store",type="string",dest="diafiles")
 parser.add_option("--psmtsv",action="store",type="string",dest="psm_tsv")
 parser.add_option("--ms2daltons",action="store", type="float", dest="ms2daltons")
 parser.add_option("--cyclescans",action="store", type="int", dest="cyclescans")
-parser.add_option("--maxgigsmemory",action="store", type="float", dest="maxgigsmemory")
+parser.add_option("--maxgigsmemory",action="store", type="int", dest="maxgigsmemory")
 parser.add_option("--ms2searchppm",action="store", type="float", dest="ms2searchppm")
 parser.add_option("--daltonparenttolerance",action="store", type="float", dest="search_parent_mass_tolerance_da")
 parser.add_option("--diafolder",action="store",type="string",dest="diamzmlfolder")
@@ -144,7 +144,8 @@ fragment_mass_tolerance_in_da=options.ms2daltons
 decoy_libraries=[]
 for each_library in output_libraries:
     print "Processing ",each_library," to add decoys..."
-    print subprocess.check_output("java -cp "+os.path.join(jar_path,"MSPLIT-DIAv"+version+".jar")+" org.Spectrums.DecoySpectrumGenerator {0} {1} {2}".format(each_library,each_library.rsplit(".",1)[0]+"_wdecoys.mgf",str(fragment_mass_tolerance_in_da)))
+    print "running ","java -cp "+os.path.join(jar_path,"MSPLIT-DIAv"+version+".jar")+" org.Spectrums.DecoySpectrumGenerator {0} {1} {2}".format(each_library,each_library.rsplit(".",1)[0]+"_wdecoys.mgf",str(fragment_mass_tolerance_in_da))
+    print os.system("java -cp "+os.path.join(jar_path,"MSPLIT-DIAv"+version+".jar")+" org.Spectrums.DecoySpectrumGenerator {0} {1} {2}".format(each_library,each_library.rsplit(".",1)[0]+"_wdecoys.mgf",str(fragment_mass_tolerance_in_da)))
     decoy_libraries.append(each_library.rsplit(".",1)[0]+"_wdecoys.mgf")
 
 
@@ -178,13 +179,13 @@ with open(variable_windows_file,'rb') as freader:
     final_flines_fixed.extend(flines_fixed)
 
 variable_windows_final=variable_windows_file.rsplit('.',1)[0]+"_msplit_windows.tsv"
-with open(variable_windows_file.rsplit('.',1)[0]+"_msplit_windows.tsv",'wb') as fwriter:
+with open(variable_windows_file.rsplit("/",1)[1].rsplit('.',1)[0]+"_msplit_windows.tsv",'wb') as fwriter:
     for each_line in final_flines_fixed:
         fwriter.write(each_line)
 
 parallel_limit=8
 commands = ["java -Xmx{0}G -jar {1} {2} {3} {4} {5} {6} {7} {8}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),search_patent_mass_tolerance_da,search_fragment_mass_tolerance_in_ppm,num_scans_per_cycle,each_run,"final_msplit_lib.mgf",each_run.rsplit(".",1)[0]+"_msplit_search.out",str(variable_windows_final) if variable_windows_file!=None else "") for each_run in glob.glob("*.mzML")]
-groups = [(Popen(cmd, stderr=subprocess.STDOUT)
+groups = [(Popen(cmd, stderr=subprocess.STDOUT,shell=True)
           for cmd in commands)] * parallel_limit
 
 print "commands are:",commands
@@ -199,7 +200,7 @@ for each_msplit_output in glob.glob("*_msplit_search.out"):
     filtered_output=each_msplit_output.replace("_search.out","_filtered.out")
     print "running","java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0")
     
-    output_logs[each_msplit_output.replace("_msplit_search.out",".mzML")]=subprocess.check_output("java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0"))
+    output_logs[each_msplit_output.replace("_msplit_search.out",".mzML")]=os.system("java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0"))
 for each_key in output_logs:
     with open(each_key.replace(".mzML","_msplit_filter_log.txt"),'wb') as logwriter:
         logwriter.write(output_logs[each_key])
@@ -334,8 +335,8 @@ for each_run in msplit_df['#File'].unique():
 
 
 #print "{0} -a milkyway.auth *_msplit.ssl msplit_filtered.blib".format(os.path.join(jar_path,"blibbuild\\BlibBuild.exe"))
-subprocess.check_output("{0} -a milkyway-galaxy *_msplit.ssl combined_spectral_lib.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe"))
-subprocess.check_output("{0} combined_spectral_lib.blib filtered.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibFilter.exe"))
+os.system("{0} -a milkyway-galaxy *_msplit.ssl combined_spectral_lib.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe"))
+os.system("{0} combined_spectral_lib.blib filtered.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibFilter.exe"))
 
 print "All done!"
 sys.exit(0)
