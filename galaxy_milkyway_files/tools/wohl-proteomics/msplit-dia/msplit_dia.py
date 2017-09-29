@@ -57,7 +57,7 @@ version="02102015"
 (options,args) = parser.parse_args()
 
 
-jar_path="{0}\\MSPLIT-DIAv1.0".format(options.tool_path)
+jar_path="{0}".format(options.tool_path)
 variable_windows_file=options.variablewindowfile
 ms1_start=options.ms1start
 ms1_end=options.ms1end
