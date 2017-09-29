@@ -194,16 +194,16 @@ for processes in izip_longest(*groups):
         print "waiting..."
         p.wait()
 
-output_logs={}
+error_codes={}
 for each_msplit_output in glob.glob("*_msplit_search.out"):
     print "working on",each_msplit_output
     filtered_output=each_msplit_output.replace("_search.out","_filtered.out")
     print "running","java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0")
     
-    output_logs[each_msplit_output.replace("_msplit_search.out",".mzML")]=os.system("java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0"))
-for each_key in output_logs:
-    with open(each_key.replace(".mzML","_msplit_filter_log.txt"),'wb') as logwriter:
-        logwriter.write(output_logs[each_key])
+    error_codes[each_msplit_output.replace("_msplit_search.out",".mzML")]=os.system("java -Xmx{0}G -cp {1} UI.SWATHFilter -r {2} -o {3} -fdr {4} -rt {5}".format(max_gigs_mem_per_run,os.path.join(jar_path,"MSPLIT-DIAv"+search_version+".jar"),each_msplit_output,filtered_output,fdr_to_filter,"1" if filter_by_rt else "0"))
+#for each_key in error_codes:
+#    with open(each_key.replace(".mzML","_msplit_filter_log.txt"),'wb') as logwriter:
+#        logwriter.write(error_codes[each_key])
 
 final_rt_filtered=glob.glob("*rtFiltered.txt")
 
