@@ -36,6 +36,7 @@
    --variablewindowfile $variablewindowfile
    --ms1start $ms1start
    --ms1end $ms1end
+   --tool_path $__tool_directory__
    --fdrtofilter $fdrtofilter
    $filterbyrt ;
     tar -cvf - ssl_files/ 2>/dev/null | pigz -9 -p 32 > $ssl_output 2>&amp;1;
