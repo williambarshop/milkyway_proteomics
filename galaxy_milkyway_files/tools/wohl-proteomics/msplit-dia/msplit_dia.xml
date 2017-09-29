@@ -14,12 +14,8 @@
    #end for
    #set $mzml_list=mzml_list[:-1]
 
-   #set $dia_mzmls = "None"
-   #set $dia_mzmls = $str($blibbuild.corrected_mzml_files)
-   echo '$dia_mzmls';
-   #if $dia_mzmls != "0" and $dia_mzmls !="None"
    #set $dia_mzml_list = ""
-   #for $each in $blibbuild.corrected_mzml_files:
+   #for $each in $dia_files:
        #set $dia_mzml_list+= "\""
        ln -s '$each' '${each.display_name}';
        #set $dia_mzml_list+=$str($each.display_name)
@@ -27,17 +23,16 @@
        #set $dia_mzml_list+= ","
    #end for
    #set $dia_mzml_list=dia_mzml_list[:-1]
-   #end if
-
+   tar -xvf $ssl_gz &amp;&amp;
    python /galaxy-central/tools/wohl-proteomics/msplit-dia/msplit_dia.py
-   --sslgz $ssl_gz
    --psmtsv $psm_tsv
    --ms2daltons $ms2daltons
    --cyclescans $cyclescans
    --maxgigsmemory $maxgigsmemory
    --ms2searchppm $ms2searchppm
-   --daltonsparenttolerance $daltonparenttolerance
-   --diafiles $dia_mzmls
+   --daltonparenttolerance $daltonparenttolerance
+   --diafiles $dia_mzml_list
+   --mzmlfiles $mzml_list
    --variablewindowfile $variablewindowfile
    --ms1start $ms1start
    --ms1end $ms1end
@@ -46,63 +41,27 @@
     tar -cvf - ssl_files/ 2>/dev/null | pigz -9 -p 32 > $ssl_output 2>&amp;1;
   </command>
   <inputs>
-        <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
+        <param name="ssl_gz" type="data" label="SSL Converter Output in tar.gz"/>
+        <param name="psm_tsv" type="data" label="PSM Extraction Table"/>
+        <param name="variablewindowfile" type="data" label="DIA Window Definition File"/>
         <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
-        <param name="highest_intensity" type="boolean" truevalue="--highest_intensity" falsevalue="" checked="false" label="Only keep highest spectral with highest MS2 intensity per run?" help="Experimental feature to help with peak picking" />
-    <conditional name="blibbuild">
-        <param name="blib" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Construct blib libraries?" help="If used with ptm localization, will only include type1 PSMs."/>
-        <when value="true">
-        <param name="corrected_mzml_files" optional="true" value="0" type="data" multiple="true" label="mzML files to include in final package" help="if you want to download mass corrected mzML files, this is how to do it. Otherwise, just leave it blank! NB: mzML inclusion still requires flag below!!!!" />
-        </when>
-    </conditional>
-        <param name="no_mzml" type="boolean" truevalue="" falsevalue="--no_mzml" checked="false" label="Include mzML files in output?" help="This can make the outputs VERY large!!!" />
-        <param name="diaumpire" type="boolean" truevalue="--diaumpire" falsevalue="" checked="false" label="Are inputs are DIAUmpire search results?" help="We will shift the scan numbers to correctly match with the mzML file index!" />
-        <param name="fwd_fasta_file" type="data" label="Forward FASTA database"/>
-        <param name="fido_q_raw" type="data" label="FIDO q-value CSV file"/>
-        <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
-        <param name="q_threshold" type="float" label="maximum PSM q-value threshold" value="0.01" min="0.00" max="1.00"/>
-        <param name="fido_q_threshold" type="float" label="maximum Protein/FIDO q-value threshold" value="0.01" min="0.00" max="1.00"/>
-        <param name="fractions" type="boolean" truevalue="--fractions" falsevalue="" checked="false" label="Group SSL files by fractions" help="Organize by fractions... Check if doing fractionated experiments!" />
-
-    <conditional name="localization">
-        <param name="algorithm" type="select" label="Use results from PTM localization algorithm?" help="If not, the default localizations from the search algorithm are used.  Obviously, this won't work if the localization algorithm hasn't been run on the data..." >
-        <option value="">None</option>
-        <option value="ptmRS">ptmRS</option>
-        <option value="phosphoRS">PhosphoRS</option>
-        <option value="luciphor">LuciPHOr</option>
-        </param>
-        <when value="luciphor">
-            <param name="flr_threshold" type="float" value="0.05" min="0.00" max="1.00" label="LuciPHOr FLR threshold for Filtering" />
-            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
-            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
-            <param name="local_flr" type="boolean" truevalue="--LFLR" falsevalue="" checked="false" label="Filter by local FLR instead of global FLR?" />
-        </when>
-        <when value="phosphoRS">
-            <param name="prs_prob_threshold" type="float" value="0.95" min="0.00" max="1.00" label="pRS probability threshold for filtering" help="Anything below this will be excluded..." />
-            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
-            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
-        </when>
-        <when value="ptmRS">
-            <param name="ptmrs_prob_threshold" type="float" value="0.95" min="0.00" max="1.00" label="pRS probability threshold for filtering" help="Anything below this will be excluded..." />
-            <param name="one_pps" type="boolean" truevalue="--OnePPS" falsevalue="" checked="true" label="Allow All Unambiguous Localizations?" help="Unambiguous means the num of possible sites = 1, or num poss sites = num mods "/>
-            <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
-        </when>
-    </conditional>
-    <conditional name="labels">
-        <param name="filter" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Filter for SILAC aminoacids?" help="Only use if your experiment has heavy labeled AAs you care about... THIS WILL NOT WORK WITH AUTOMATIC BLIB EXPORT!" />
-        <when value="true">
-            <param name="labeled_aas" type="text" value="K,R" label="Heavy labelable amino acids" help="Multiple AAs can be specified by placing a comma between them. NO SPACES. CAUTION!!!! THIS WILL NOT WORK WITH AUTOMATIC BLIB EXPORT!!!" />
-            <param name="unlabelable" type="boolean" truevalue="True" falsevalue="False" checked="True" label="Remove unlabelable peptides" help="That means peptides with no amino acid which COULD be heavy..." />
-        </when>
-    </conditional>
+        <param name="dia_files" type="data" multiple="true" label="DIA mzML files to search"/>
+        <param name="filterbyrt" type="boolean" truevalue="--filterbyrt" falsevalue="" checked="false" label="Filter confident identifications by RT?" help="Retention time filter is determined by the regression" />
+        <param name="ms2daltons" type="float" label="Spectral Library MS2 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
+        <param name="cyclescans" type="integer" label="Number of scans per cycle" value="0" min="0" help="Zero will have the algorithm autoset.  Otherwise, this is (1 MS1 scan)+(n MS2 scans)."/>
+        <param name="maxgigsmemory" type="float" label="Maximum Gigs of Memory per run" value="2" min="1.00" max="8.00"/>
+        <param name="ms2searchppm" type="float" label="Search MS2 Mass Accuracy (ppm)" value="15" min="0.00"/>
+        <param name="daltonparenttolerance" type="float" label="Search MS1 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
+        <param name="ms2daltons" type="float" label="Spectral Library MS2 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
+        <param name="ms1start" type="float" label="MS1 DIA starting m/z" value="400.0" />
+        <param name="ms1end" type="float" label="MS1 DIA ending m/z" value="1600.0" />
+        <param name="fdrtofilter" type="float" label="q-value (FDR) to filter outputs" value="0.0001" />
+      
   </inputs>
   <outputs>
     <!--<data name="crux_tar_gz" />-->
-    <data name="ssl_files_with_mzml_tar_gz" />
-    <data name="fido_fasta" format="fasta" label="FIDO filtered FASTA"/>
+    <data name="ssl_output" />
   </outputs>
   <help>
-    tar -czvf $ssl_files_with_mzml_tar_gz ssl_files/
-
   </help>
 </tool>

@@ -1,21 +1,21 @@
-import os, sys, pandas, pyteomics, glob, numpy, subprocess, shutil, re
+import warnings
+warnings.filterwarnings('ignore') #because of plotly in pymzml
+import os, sys, pandas, pyteomics, glob, numpy, subprocess, shutil, re, optparse
 from itertools import izip_longest
 from subprocess import Popen, STDOUT
-from tqdm import tqdm_notebook
 from array import array
 import numpy
 import sqlite3, zlib
-import tqdm
-import pymzml
+from pymzml import run
 
 #####################################
 #This is the script to run MSPLIT-DIA on MilkyWay SSL converter outputs.
 #
 #
-#VERSION 0.01
-version="0.01"
-#DATE: 9/26/2017
-date="9/26/2017"
+#VERSION 0.05
+version="0.05"
+#DATE: 9/28/2017
+date="9/28/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSPLIT-DIA wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -35,26 +35,29 @@ print "Date: ",date
 ####################################
 
 parser = optparse.OptionParser()
-parser.add_option("--sslgz",action="store",type="string",dest="sslgz")
-parser.add_option("--psmtsv",action="store",type="string",dest="psmtsv")
+#parser.add_option("--sslgz",action="store",type="string",dest="sslgz")
+parser.add_option("--mzmlfiles",action="store",type="string",dest="dda_mzml_files")
+parser.add_option("--diafiles",action="store",type="string",dest="diafiles")
+parser.add_option("--psmtsv",action="store",type="string",dest="psm_tsv")
 parser.add_option("--ms2daltons",action="store", type="float", dest="ms2daltons")
 parser.add_option("--cyclescans",action="store", type="int", dest="cyclescans")
-parser.add_option("--maxgigsmemory",action="store", type="int", dest="maxgigsmemory")
+parser.add_option("--maxgigsmemory",action="store", type="float", dest="maxgigsmemory")
 parser.add_option("--ms2searchppm",action="store", type="float", dest="ms2searchppm")
 parser.add_option("--daltonparenttolerance",action="store", type="float", dest="search_parent_mass_tolerance_da")
 parser.add_option("--diafolder",action="store",type="string",dest="diamzmlfolder")
 parser.add_option("--variablewindowfile",action="store",type="string",dest="variablewindowfile")
-parser.add_option("--ms1start",action="store", type="int", dest="ms1start")
-parser.add_option("--ms1end",action="store", type="int", dest="ms1end")
+parser.add_option("--ms1start",action="store", type="float", dest="ms1start")
+parser.add_option("--ms1end",action="store", type="float", dest="ms1end")
 parser.add_option("--fdrtofilter",action="store", type="float", dest="fdrtofilter")
 parser.add_option("--filterbyrt",action="store_true", dest="filterbyrt")
+parser.add_option("--tool_path",action="store",type="string",dest="tool_path")
 
-jar_path="C:\\Users\\Administrator\\JUPYTER\\MSPLIT-Gen\\MSPLIT-DIAv1.0"
 search_version="07192015"
 version="02102015"
 (options,args) = parser.parse_args()
 
 
+jar_path="{0}\\MSPLIT-DIAv1.0".format(options.tool_path)
 variable_windows_file=options.variablewindowfile
 ms1_start=options.ms1start
 ms1_end=options.ms1end
@@ -75,10 +78,19 @@ basedir=os.getcwd()
 
 
 #Alright, we'll start by unzipping the ssl file tar.gz
-
-subprocess.check_output("tar xvf {0}".format(sslgz))
+#shutil.copy(options.sslgz,"ssl.tar.gz")
+#subprocess.check_output("tar xvf {0}".format("ssl.tar.gz"))
 
 os.chdir(os.path.join(basedir,"ssl_files"))
+dia_files=[]
+os.mkdir(os.path.join(basedir,"dia_temp"))
+dia_temp_folder=os.path.join(basedir,"dia_temp")
+for each_dia_file in glob.glob("*.mzML"):
+    os.rename(each_dia_file,os.path.join(dia_temp_folder,each_dia_file))
+    dia_files.append(os.path.join(dia_temp_folder,each_dia_file))
+for each_file in options.dda_mzml_files.split(","):
+    os.rename(os.path.join(basedir,each_file),os.path.join(os.getcwd(),each_file))
+
 ssl_files=glob.glob("*.ssl")
 ssl_dfs=[]
 for each_ssl in ssl_files:
@@ -99,9 +111,9 @@ for each_mzml in ssl_df['file'].unique():
     subset_psm=subset_psm[subset_psm['scan'].isin(ssl_df[ssl_df['file']==each_mzml]['scan'].tolist())]
     with open(each_mzml.rsplit(".",1)[0]+"_msplit.mgf",'wb') as mgf_writer:
         output_libraries.append(each_mzml.rsplit(".",1)[0]+"_msplit.mgf")
-        this_mzml=pymzml.run.Reader(os.path.join(basedir,"ssl_files",each_run))
+        this_mzml=run.Reader(os.path.join(basedir,"ssl_files",each_mzml))
         #with mzml.MzML(os.path.join(basedir,"ssl_files",each_mzml),build_id_cache=True,use_index=True,iterative=False,retrieve_refs=True) as this_mzml:
-        for index,each_scan in tqdm_notebook(subset_psm.iterrows()):
+        for index,each_scan in subset_psm.iterrows():
             this_spectrum = this_mzml[each_scan['scan']]
             psm_row=subset_psm[subset_psm['scan']==each_scan['scan']].iloc[0]
             psm_charge=psm_row['charge']
@@ -130,7 +142,7 @@ for each_mzml in ssl_df['file'].unique():
 
 fragment_mass_tolerance_in_da=options.ms2daltons
 decoy_libraries=[]
-for each_library in tqdm_notebook(output_libraries):
+for each_library in output_libraries:
     print "Processing ",each_library," to add decoys..."
     print subprocess.check_output("java -cp "+os.path.join(jar_path,"MSPLIT-DIAv"+version+".jar")+" org.Spectrums.DecoySpectrumGenerator {0} {1} {2}".format(each_library,each_library.rsplit(".",1)[0]+"_wdecoys.mgf",str(fragment_mass_tolerance_in_da)))
     decoy_libraries.append(each_library.rsplit(".",1)[0]+"_wdecoys.mgf")
@@ -141,7 +153,7 @@ os.system("cat *msplit_wdecoys.mgf > final_msplit_lib.mgf")
 
 
 #THIS IS WHEN WE BRING THE DIA MZML FILES IN!
-for each_run in tqdm_notebook(ssl_df['file'].unique()):
+for each_run in ssl_df['file'].unique():
     os.unlink(each_run)
 #
 #
@@ -149,9 +161,10 @@ for each_run in tqdm_notebook(ssl_df['file'].unique()):
 #
 #
 #
-for each_dia_mzml in glob.glob("{0}/*.mzML".format(dia_folder)):
-    os.rename(each_dia_mzml,each_dia_mzml.rsplit("/",1)[1])
-
+#for each_dia_mzml in options.diafiles.split(","):#glob.glob("{0}/*.mzML".format(dia_folder)):
+#    os.rename(os.path.join(basedir,each_dia_mzml),os.path.join(os.getcwd(),each_dia_mzml))
+for each_dia_mzml in dia_files:
+    os.rename(each_dia_mzml,os.path.join(os.getcwd(),each_dia_mzml.rsplit("/",1)[1]))
 with open(variable_windows_file,'rb') as freader:
     flines=freader.read().replace("\r","").split("\n")
     flines_fixed=[]
@@ -250,7 +263,7 @@ refSpectraPeaks=blib_cursor.fetchall()
     
     
 decompressed_spectra={}
-for i in tqdm_notebook(refSpectraPeaks):
+for i in refSpectraPeaks:
     this_pep=spec_mapping[i[0]]
     if this_pep not in run_pepcharges[each_run]:
         continue
@@ -278,13 +291,13 @@ for i in tqdm_notebook(refSpectraPeaks):
     
     
 
-for each_run in tqdm_notebook(msplit_df['#File'].unique()):
+for each_run in msplit_df['#File'].unique():
     this_run_df=msplit_df[msplit_df['#File']==each_run]
     z=0
     #with mzml.MzML(os.path.join(basedir,"ssl_files",each_run),use_index=True,iterative=False) as this_mzml: #build_id_cache=True ,retrieve_refs=True
     #with mzml.read(os.path.join(basedir,"ssl_files",each_run),use_index=False,iterative=False) as this_mzml: #build_id_cache=True ,retrieve_refs=True
     #with mzml.PreIndexedMzML(os.path.join(basedir,"ssl_files",use_index=True,each_run),iterative=False) as this_mzml: #build_id_cache=True ,retrieve_refs=True
-    mzml_reader=pymzml.run.Reader(os.path.join(basedir,"ssl_files",each_run))
+    mzml_reader=run.Reader(os.path.join(basedir,"ssl_files",each_run))
     #print mzml_reader[5].peaks
     print "Finished loading the mzML file:",each_run
     #tqdm.write("Finished loading the mzML file: "+each_run)
