@@ -12,10 +12,10 @@ from pymzml import run
 #This is the script to run MSPLIT-DIA on MilkyWay SSL converter outputs.
 #
 #
-#VERSION 0.05
-version="0.05"
-#DATE: 9/28/2017
-date="9/28/2017"
+#VERSION 0.06
+version="0.06"
+#DATE: 9/29/2017
+date="9/29/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSPLIT-DIA wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -102,7 +102,7 @@ del ssl_dfs
 #Read the psm table, but only the columns we need...
 psm_df=pandas.read_csv(options.psm_tsv,sep="\t",usecols=['file','scan','sequence','spectrum precursor m/z','charge','protein id'])
 
-#Let's load all the mzML files we need.  We'll do it one at a time so that we 
+#Let's load all the mzML files we need.
 output_libraries=[]
 for each_mzml in ssl_df['file'].unique():
     #print each_mzml
@@ -335,7 +335,7 @@ for each_run in msplit_df['#File'].unique():
 
 
 #print "{0} -a milkyway.auth *_msplit.ssl msplit_filtered.blib".format(os.path.join(jar_path,"blibbuild\\BlibBuild.exe"))
-os.system("{0} -a milkyway-galaxy *_msplit.ssl combined_spectral_lib.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe"))
+os.system("{0} -a milkyway-galaxy *_msplit.ssl combined_spectral_lib.blib 2>&1".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe"))
 os.system("{0} combined_spectral_lib.blib filtered.blib".format("wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibFilter.exe"))
 
 print "All done!"
