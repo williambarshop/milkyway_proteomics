@@ -184,7 +184,7 @@ psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=False)
 if options.analysis_type=="lfq":
     combined_results=pandas.read_csv(options.msstats_comparison,sep=',',low_memory=False)
     #combined_results=pandas.read_csv(options.msstats_comparison,sep=',',index_col=False)
-    print combined_results
+    #print combined_results
     combined_results['backup']=combined_results['Protein']
 
 protein_series=psm_table['protein id']
@@ -303,7 +303,7 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
             combined_results.loc[each_key,'Gene ID']=combined_results.loc[each_key,'backup']
 
 
-elif "norename" in options.renameProteinType:
+elif "norename" in options.renameProteinType and options.analysis_type=="lfq":#Must be LFQ to have MSstats results for combined_results...
     combined_results['uniprot_acc']=combined_results['Protein'].str.extract(uniprot_pattern,expand=False)
     combined_results['Gene ID']=combined_results['uniprot_acc']
     print "Not renaming proteins... leaving as is!"
