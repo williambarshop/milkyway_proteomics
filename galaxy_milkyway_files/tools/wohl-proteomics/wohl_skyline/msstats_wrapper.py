@@ -20,10 +20,10 @@ warnings.showwarning = customwarn
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.91C
-version="0.91C"
-#DATE: 8/17/2017
-date="8/17/2017"
+#VERSION 0.91D
+version="0.91D"
+#DATE: 10/01/2017
+date="10/01/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -695,8 +695,9 @@ with open("MSstats_Script.R",'wb') as script_writer:
         else:
             script_writer.write("remove50missing=FALSE,")
 
-    script_writer.write("logTrans=2,")
-    script_writer.write("skylineReport=TRUE)\n")
+    script_writer.write("logTrans=2)\n")
+    #script_writer.write("logTrans=2,")
+    #script_writer.write("skylineReport=TRUE)\n")
     ######################################################
     #Data is now stored in "TMP_result$ProcessedData"
     #TMP_result$RunlevelData
