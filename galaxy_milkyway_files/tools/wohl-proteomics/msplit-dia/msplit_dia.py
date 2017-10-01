@@ -205,7 +205,11 @@ for each_msplit_output in glob.glob("*_msplit_search.out"):
 #    with open(each_key.replace(".mzML","_msplit_filter_log.txt"),'wb') as logwriter:
 #        logwriter.write(error_codes[each_key])
 
-final_rt_filtered=glob.glob("*rtFiltered.txt")
+#final_rt_filtered=glob.glob("*rtFiltered.txt")
+if options.filterbyrt:
+    final_rt_filtered=glob.glob("*rtFiltered.txt")
+else:
+    final_rt_filtered=glob.glob("*_msplit_filtered.out")
 
 msplit_final_outputs=[]
 for each_file in final_rt_filtered:
