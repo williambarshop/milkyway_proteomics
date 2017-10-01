@@ -47,7 +47,7 @@
         <param name="variablewindowfile" type="data" label="DIA Window Definition File"/>
         <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
         <param name="dia_files" type="data" multiple="true" label="DIA mzML files to search"/>
-        <param name="filterbyrt" type="boolean" truevalue="--filterbyrt" falsevalue="" checked="false" label="Filter confident identifications by RT?" help="Retention time filter is determined by the regression" />
+        <param name="filterbyrt" type="boolean" truevalue="--filterbyrt" falsevalue="" checked="true" label="Filter confident identifications by RT?" help="Retention time filter is determined by the regression" />
         <param name="ms2daltons" type="float" label="Spectral Library MS2 Mass Accuracy (Daltons)" value="0.05" min="0.00" max="50.00"/>
         <param name="cyclescans" type="integer" label="Number of scans per cycle" value="0" min="0" help="Zero will have the algorithm autoset.  Otherwise, this is (1 MS1 scan)+(n MS2 scans)."/>
         <param name="maxgigsmemory" type="integer" label="Maximum Gigs of Memory per run" value="2" min="1" max="8"/>
