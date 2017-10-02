@@ -452,7 +452,6 @@ if options.minimum_peptide_count is not None and options.minimum_peptide_count >
     print "{0} proteins before filter...".format(len(combined_results['Protein Name'].unique()))
     combined_results=combined_results[combined_results["Protein Name"].isin(passing_proteins_list)]
     print "{0} proteins after filter....".format(len(combined_results['Protein Name'].unique()))
-    sys.exit(2)
 
 
 if options.remove_empty:
