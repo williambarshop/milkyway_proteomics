@@ -20,10 +20,10 @@ warnings.showwarning = customwarn
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.91D
-version="0.91D"
-#DATE: 10/01/2017
-date="10/01/2017"
+#VERSION 0.92
+version="0.92"
+#DATE: 10/02/2017
+date="10/02/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -64,6 +64,8 @@ parser.add_option("--mprophet_q",action="store",type="float",dest="mprophet_q") 
 parser.add_option("--fractionated",action="store_true",dest="fractionated")  # Using the final -??? as the fractionation identifier
 parser.add_option("--remove_repeated_peptides",action="store_true",dest="remove_repeated_peptides")
 parser.add_option("--removeProteinsByText",action="store",type="string",dest="remove_proteins_by_text")
+
+parser.add_option("--minPep",action="store",type="int",dest="minimum_peptide_count")   # Require at least "n" peptides for a protein.
 
 parser.add_option("--featureSubset",action="store",type="string",dest="feature_subset")
 parser.add_option("--featureSubsetN",action="store",type="int",dest="feature_subset_N")   # For use with "topN"
@@ -214,6 +216,10 @@ if options.remove_proteins_by_text is not None and options.remove_proteins_by_te
         each_protein=each_protein.strip()
         print "Removing protein",each_protein,"from the analysis."
         combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
+
+
+#Finally, we'll filter out any protein which doesn't have enough peptides based on the optional input.
+
 
 
 #combined_results.sort(columns='Protein Name',inplace=True)
@@ -437,6 +443,18 @@ if options.remove_repeated_peptides:
     combined_results.drop('unique_name',1,inplace=True)
 
     
+if options.minimum_peptide_count is not None and options.minimum_peptide_count > 0:
+    #unique_peps_only=combined_results.drop_duplicates(subset="Peptide Modified Sequence")
+    protein_groups=combined_results.groupby("Protein Name")
+    passing_proteins=protein_groups.filter(lambda x: len(x["Peptide Modified Sequence"].unique()) >= options.minimum_peptide_count)
+    passing_proteins_list=passing_proteins["Protein Name"].unique().tolist()
+    print "About to filter proteins to require at least {0} peptides".format(options.minimum_peptide_count)
+    print "{0} proteins before filter...".format(len(combined_results['Protein Name'].unique()))
+    combined_results=combined_results[combined_results["Protein Name"].isin(passing_proteins_list)]
+    print "{0} proteins after filter....".format(len(combined_results['Protein Name'].unique()))
+    sys.exit(2)
+
+
 if options.remove_empty:
     if options.merge_isotopes:
         #mask = combined_results['Area'].apply(lambda x: numpy.isnan(x))
