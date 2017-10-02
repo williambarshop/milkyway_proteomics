@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "2017-09-19 MilkyWay DDA HighRes", 
+    "name": "2017-10-02 MilkyWay DDA HighRes", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -20,8 +20,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 262.013916015625, 
-                "top": 229.30557250976562
+                "left": 262, 
+                "top": 229.296875
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"FASTA Database Input (fwd only)\"}", 
@@ -52,8 +52,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 287.013916015625, 
-                "top": 347.29168701171875
+                "left": 287, 
+                "top": 347.28125
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Skyline File Upload\"}", 
@@ -85,7 +85,7 @@
             "outputs": [], 
             "position": {
                 "left": 437.96875, 
-                "top": 734.4618525505066
+                "top": 734.453125
             }, 
             "tool_id": null, 
             "tool_state": "{\"collection_type\": \"list\", \"name\": \"Input RAW file collection\"}", 
@@ -116,8 +116,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 1342.204833984375, 
-                "top": 210.71185302734375
+                "left": 1342.203125, 
+                "top": 210.703125
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Input Experimental Design Data\"}", 
@@ -158,8 +158,8 @@
                 }
             ], 
             "position": {
-                "left": 875.8853759765625, 
-                "top": 524.9305877685547
+                "left": 875.875, 
+                "top": 524.921875
             }, 
             "post_job_actions": {
                 "RenameDatasetActionparam_out": {
@@ -219,8 +219,8 @@
                 }
             ], 
             "position": {
-                "left": 784.7916259765625, 
-                "top": 689.7743492126465
+                "left": 784.78125, 
+                "top": 689.765625
             }, 
             "post_job_actions": {
                 "HideDatasetActionoutput_refinement": {
@@ -294,8 +294,8 @@
                 }
             ], 
             "position": {
-                "left": 1175.642333984375, 
-                "top": 966.1111755371094
+                "left": 1175.640625, 
+                "top": 966.109375
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_msgfplus_search", 
@@ -350,7 +350,7 @@
             ], 
             "position": {
                 "left": 1612.03125, 
-                "top": 599.9306030273438
+                "top": 599.921875
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_msgf2pin_converter", 
@@ -410,7 +410,7 @@
             ], 
             "position": {
                 "left": 1983.4375, 
-                "top": 718.6458797454834
+                "top": 718.640625
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_crux_pin_fixer", 
@@ -465,8 +465,8 @@
                 }
             ], 
             "position": {
-                "left": 2311.9791870117188, 
-                "top": 741.649353146553
+                "left": 2311.96875, 
+                "top": 741.640625
             }, 
             "post_job_actions": {
                 "RenameDatasetActioncrux_tar_gz": {
@@ -536,8 +536,8 @@
                 }
             ], 
             "position": {
-                "left": 2791.892416000366, 
-                "top": 843.5938034057617
+                "left": 2791.890625, 
+                "top": 843.59375
             }, 
             "post_job_actions": {}, 
             "tool_id": "milkyway_percolator_to_fido", 
@@ -592,8 +592,8 @@
                 }
             ], 
             "position": {
-                "left": 3155.0000610351562, 
-                "top": 1020.0000610351562
+                "left": 3155, 
+                "top": 1020
             }, 
             "post_job_actions": {}, 
             "tool_id": "fido_wohl", 
@@ -659,8 +659,8 @@
                 }
             ], 
             "position": {
-                "left": 3289.791748046875, 
-                "top": 721.9618530273438
+                "left": 3289.78125, 
+                "top": 721.953125
             }, 
             "post_job_actions": {}, 
             "tool_id": "fido_q_values", 
@@ -760,8 +760,8 @@
                 }
             ], 
             "position": {
-                "left": 3578.0903930664062, 
-                "top": 1281.3021850585938
+                "left": 3578.078125, 
+                "top": 1281.296875
             }, 
             "post_job_actions": {}, 
             "tool_id": "ssl_converter", 
@@ -861,8 +861,8 @@
                 }
             ], 
             "position": {
-                "left": 3752.3438720703125, 
-                "top": 712.9687957763672
+                "left": 3752.34375, 
+                "top": 712.96875
             }, 
             "post_job_actions": {
                 "RenameDatasetActionoutputnsaf": {
@@ -972,8 +972,8 @@
                 }
             ], 
             "position": {
-                "left": 4043.663330078125, 
-                "top": 1454.6181640625
+                "left": 4043.65625, 
+                "top": 1454.609375
             }, 
             "post_job_actions": {}, 
             "tool_id": "psm_extract", 
@@ -1059,8 +1059,8 @@
                 }
             ], 
             "position": {
-                "left": 4403.4376220703125, 
-                "top": 1215.3993835449219
+                "left": 4403.4375, 
+                "top": 1215.390625
             }, 
             "post_job_actions": {}, 
             "tool_id": "skylinerunner", 
@@ -1071,13 +1071,13 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "output_msstats", 
-                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
+                    "output_name": "output", 
+                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output_boundaries", 
-                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
+                    "output_name": "output_msstats", 
+                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
                 }, 
                 {
                     "label": null, 
@@ -1086,8 +1086,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output", 
-                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
+                    "output_name": "output_boundaries", 
+                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
                 }
             ]
         }, 
@@ -1137,8 +1137,8 @@
                 }
             ], 
             "position": {
-                "left": 3982.8126220703125, 
-                "top": 1048.0556030273438
+                "left": 3982.8125, 
+                "top": 1048.046875
             }, 
             "post_job_actions": {}, 
             "tool_id": "SAINT_express", 
@@ -1196,6 +1196,10 @@
                 {
                     "description": "runtime parameter for tool MSstats", 
                     "name": "norm_protein"
+                }, 
+                {
+                    "description": "runtime parameter for tool MSstats", 
+                    "name": "minPep"
                 }
             ], 
             "label": null, 
@@ -1243,12 +1247,12 @@
                 }
             ], 
             "position": {
-                "left": 4782.70849609375, 
-                "top": 1382.62158203125
+                "left": 4782.703125, 
+                "top": 1382.609375
             }, 
             "post_job_actions": {}, 
             "tool_id": "MSstats", 
-            "tool_state": "{\"csv_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"featureSubset\": \"{\\\"subset\\\": \\\"all\\\", \\\"__current_case__\\\": 1}\", \"fillMissingFeatures\": \"\\\"true\\\"\", \"merge_isotopes\": \"\\\"false\\\"\", \"remove_single_run\": \"\\\"false\\\"\", \"maxQuantileforCensored\": \"{\\\"censor\\\": \\\"NULL\\\", \\\"__current_case__\\\": 1}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noimpute\": \"\\\"false\\\"\", \"remove_truncated_peaks\": \"\\\"true\\\"\", \"norm_protein\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"q_threshold\": \"\\\"0.01\\\"\", \"remove_repeated_peptides\": \"\\\"true\\\"\", \"__page__\": null, \"remove50missing\": \"\\\"false\\\"\", \"censoredInt\": \"\\\"false\\\"\", \"peptide_level\": \"\\\"false\\\"\", \"normalization\": \"\\\"equalizeMedians\\\"\", \"remove_proteins_with_interference\": \"\\\"false\\\"\", \"remove_precursors\": \"\\\"false\\\"\", \"remove_decoys\": \"\\\"true\\\"\", \"MBimpute\": \"\\\"true\\\"\", \"cutoffCensored\": \"\\\"minFeature\\\"\", \"remove_empty\": \"\\\"false\\\"\", \"remove_proteins_by_text\": \"\\\"\\\"\"}", 
+            "tool_state": "{\"csv_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"featureSubset\": \"{\\\"subset\\\": \\\"all\\\", \\\"__current_case__\\\": 1}\", \"fillMissingFeatures\": \"\\\"true\\\"\", \"q_threshold\": \"\\\"0.01\\\"\", \"merge_isotopes\": \"\\\"false\\\"\", \"remove_single_run\": \"\\\"false\\\"\", \"maxQuantileforCensored\": \"{\\\"censor\\\": \\\"NULL\\\", \\\"__current_case__\\\": 1}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noimpute\": \"\\\"false\\\"\", \"remove_truncated_peaks\": \"\\\"true\\\"\", \"norm_protein\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"minPep\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"remove_repeated_peptides\": \"\\\"true\\\"\", \"__page__\": null, \"remove50missing\": \"\\\"false\\\"\", \"censoredInt\": \"\\\"false\\\"\", \"peptide_level\": \"\\\"false\\\"\", \"normalization\": \"\\\"equalizeMedians\\\"\", \"remove_proteins_with_interference\": \"\\\"false\\\"\", \"remove_precursors\": \"\\\"false\\\"\", \"remove_decoys\": \"\\\"true\\\"\", \"MBimpute\": \"\\\"true\\\"\", \"cutoffCensored\": \"\\\"minFeature\\\"\", \"remove_empty\": \"\\\"false\\\"\", \"remove_proteins_by_text\": \"\\\"\\\"\"}", 
             "tool_version": "0.3.0a", 
             "type": "tool", 
             "uuid": "ae878a9f-f421-4e22-996c-c094ec568267", 
@@ -1359,8 +1363,8 @@
                 }
             ], 
             "position": {
-                "left": 5086.14599609375, 
-                "top": 1065.2084045410156
+                "left": 5086.140625, 
+                "top": 1065.203125
             }, 
             "post_job_actions": {}, 
             "tool_id": "MSstatsPlots", 
@@ -1371,8 +1375,8 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "comparisonPlotOutput", 
-                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
+                    "output_name": "RScriptOutput", 
+                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
                 }, 
                 {
                     "label": null, 
@@ -1386,8 +1390,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "RScriptOutput", 
-                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
+                    "output_name": "comparisonPlotOutput", 
+                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
                 }
             ]
         }, 
@@ -1553,8 +1557,8 @@
                 }
             ], 
             "position": {
-                "left": 5398.038330078125, 
-                "top": 1321.1285400390625
+                "left": 5398.03125, 
+                "top": 1321.125
             }, 
             "post_job_actions": {}, 
             "tool_id": "RdataPackaging", 
@@ -1581,5 +1585,5 @@
             ]
         }
     }, 
-    "uuid": "450538b0-6c35-462a-a7eb-bfb70d50c5af"
+    "uuid": "beebf3ed-e6ac-4e63-9ee8-6cbba9dd1f2b"
 }

@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "2017-09-19 DIAUmpire", 
+    "name": "2017-10-02 MSX-DIAUmpire", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -52,8 +52,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 286.796875, 
-                "top": 273.21875
+                "left": 286.75, 
+                "top": 273.203125
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Skyline File Upload\"}", 
@@ -158,7 +158,7 @@
                 }
             ], 
             "position": {
-                "left": 796.953125, 
+                "left": 796.921875, 
                 "top": 358.953125
             }, 
             "post_job_actions": {
@@ -191,95 +191,83 @@
         }, 
         "5": {
             "annotation": "", 
-            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
+            "content_id": "msconvert_dia_demux", 
             "errors": null, 
             "id": 5, 
             "input_connections": {
-                "input": {
+                "input_file": {
                     "id": 2, 
                     "output_name": "output"
                 }
             }, 
             "inputs": [
                 {
-                    "description": "runtime parameter for tool msconvert (vendor support)", 
-                    "name": "input"
+                    "description": "runtime parameter for tool DIA Demultiplexing (msconvert)", 
+                    "name": "input_file"
                 }
             ], 
-            "label": "DIA mzML conversion", 
-            "name": "msconvert (vendor support)", 
+            "label": "DIA mzML demultiplexing", 
+            "name": "DIA Demultiplexing (msconvert)", 
             "outputs": [
                 {
                     "name": "output", 
-                    "type": "mzml"
-                }, 
-                {
-                    "name": "output_refinement", 
-                    "type": "csv"
+                    "type": "data"
                 }
             ], 
             "position": {
-                "left": 786.8125, 
-                "top": 602.8125
+                "left": 723, 
+                "top": 607.515625
             }, 
             "post_job_actions": {
-                "HideDatasetActionoutput_refinement": {
-                    "action_arguments": {}, 
-                    "action_type": "HideDatasetAction", 
-                    "output_name": "output_refinement"
+                "RenameDatasetActionoutput": {
+                    "action_arguments": {
+                        "newname": "#{input_file|basename}.mzML"
+                    }, 
+                    "action_type": "RenameDatasetAction", 
+                    "output_name": "output"
                 }
             }, 
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
-            "tool_shed_repository": {
-                "changeset_revision": "f8cf3be564bb", 
-                "name": "msconvert_win", 
-                "owner": "galaxyp", 
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            }, 
-            "tool_state": "{\"__page__\": null, \"filtering\": \"{\\\"scan_numbers\\\": [], \\\"polarity\\\": \\\"false\\\", \\\"activation\\\": \\\"false\\\", \\\"filter_ms_levels\\\": {\\\"do_ms_level_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"analyzer\\\": \\\"false\\\", \\\"indices\\\": [], \\\"strip_it\\\": \\\"false\\\"}\", \"settings\": \"{\\\"binary_compression\\\": \\\"zlib\\\", \\\"intensity_encoding\\\": \\\"64\\\", \\\"mz_encoding\\\": \\\"64\\\", \\\"gzip_compression\\\": \\\"false\\\"}\", \"__rerun_remap_job_id__\": null, \"data_processing\": \"{\\\"precursor_refinement\\\": {\\\"__current_case__\\\": 0, \\\"use_mzrefinement\\\": \\\"false\\\"}, \\\"etd_filtering\\\": {\\\"do_etd_filtering\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"ms2deisotope\\\": \\\"false\\\", \\\"ms2denoise\\\": {\\\"denoise\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"thresholds\\\": [], \\\"filter_mz_windows\\\": {\\\"do_mzwindow_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"charge_state_calculation\\\": {\\\"charge_state_calculation_method\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"peak_picking\\\": {\\\"pick_peaks\\\": \\\"true\\\", \\\"pick_peaks_algorithm\\\": \\\"vendor\\\", \\\"pick_peaks_ms_levels\\\": \\\"1-\\\", \\\"__current_case__\\\": 1}}\", \"output_type\": \"\\\"mzML\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
-            "tool_version": "3.0.0", 
+            "tool_id": "msconvert_dia_demux", 
+            "tool_state": "{\"__page__\": null, \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"output_format\": \"\\\"mzML\\\"\", \"massError\": \"\\\"8.0\\\"\", \"massErrorUnits\": \"\\\"ppm\\\"\", \"optimization\": \"\\\"none\\\"\", \"__rerun_remap_job_id__\": null}", 
+            "tool_version": "1.0.0", 
             "type": "tool", 
-            "uuid": "fc5c7299-8884-42e9-990b-3290b7ec6975", 
+            "uuid": "8c25d04a-2354-45da-94b0-1ce252d2c6d6", 
             "workflow_outputs": [
                 {
-                    "label": null, 
+                    "label": "", 
                     "output_name": "output", 
-                    "uuid": "f8fce744-58c4-42f4-8252-338aa00a9e29"
+                    "uuid": "95f9528c-c5d9-47cb-a5be-5c84a1c0149a"
                 }
             ]
         }, 
         "6": {
             "annotation": "", 
-            "content_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
+            "content_id": "msconvert_dia_demux", 
             "errors": null, 
             "id": 6, 
             "input_connections": {
-                "input": {
+                "input_file": {
                     "id": 2, 
                     "output_name": "output"
                 }
             }, 
             "inputs": [
                 {
-                    "description": "runtime parameter for tool msconvert (vendor support)", 
-                    "name": "input"
+                    "description": "runtime parameter for tool DIA Demultiplexing (msconvert)", 
+                    "name": "input_file"
                 }
             ], 
-            "label": "DIA mzXML conversion", 
-            "name": "msconvert (vendor support)", 
+            "label": "DIA mzXML demultiplexing", 
+            "name": "DIA Demultiplexing (msconvert)", 
             "outputs": [
                 {
                     "name": "output", 
-                    "type": "mzml"
-                }, 
-                {
-                    "name": "output_refinement", 
-                    "type": "csv"
+                    "type": "data"
                 }
             ], 
             "position": {
-                "left": 695.078125, 
-                "top": 899.5625
+                "left": 728.078125, 
+                "top": 845.578125
             }, 
             "post_job_actions": {
                 "HideDatasetActionoutput": {
@@ -287,23 +275,19 @@
                     "action_type": "HideDatasetAction", 
                     "output_name": "output"
                 }, 
-                "HideDatasetActionoutput_refinement": {
-                    "action_arguments": {}, 
-                    "action_type": "HideDatasetAction", 
-                    "output_name": "output_refinement"
+                "RenameDatasetActionoutput": {
+                    "action_arguments": {
+                        "newname": "#{input_file|basename}.mzXML"
+                    }, 
+                    "action_type": "RenameDatasetAction", 
+                    "output_name": "output"
                 }
             }, 
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/galaxyp/msconvert_win/msconvert_win/3.0.0", 
-            "tool_shed_repository": {
-                "changeset_revision": "f8cf3be564bb", 
-                "name": "msconvert_win", 
-                "owner": "galaxyp", 
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            }, 
-            "tool_state": "{\"__page__\": null, \"filtering\": \"{\\\"scan_numbers\\\": [], \\\"polarity\\\": \\\"false\\\", \\\"activation\\\": \\\"false\\\", \\\"filter_ms_levels\\\": {\\\"do_ms_level_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"analyzer\\\": \\\"false\\\", \\\"indices\\\": [], \\\"strip_it\\\": \\\"false\\\"}\", \"settings\": \"{\\\"binary_compression\\\": \\\"zlib\\\", \\\"intensity_encoding\\\": \\\"64\\\", \\\"mz_encoding\\\": \\\"64\\\", \\\"gzip_compression\\\": \\\"false\\\"}\", \"__rerun_remap_job_id__\": null, \"data_processing\": \"{\\\"precursor_refinement\\\": {\\\"__current_case__\\\": 0, \\\"use_mzrefinement\\\": \\\"false\\\"}, \\\"etd_filtering\\\": {\\\"do_etd_filtering\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"ms2deisotope\\\": \\\"false\\\", \\\"ms2denoise\\\": {\\\"denoise\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"thresholds\\\": [], \\\"filter_mz_windows\\\": {\\\"do_mzwindow_filter\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"charge_state_calculation\\\": {\\\"charge_state_calculation_method\\\": \\\"false\\\", \\\"__current_case__\\\": 0}, \\\"peak_picking\\\": {\\\"pick_peaks\\\": \\\"true\\\", \\\"pick_peaks_algorithm\\\": \\\"vendor\\\", \\\"pick_peaks_ms_levels\\\": \\\"1-\\\", \\\"__current_case__\\\": 1}}\", \"output_type\": \"\\\"mzXML\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
-            "tool_version": "3.0.0", 
+            "tool_id": "msconvert_dia_demux", 
+            "tool_state": "{\"__page__\": null, \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"output_format\": \"\\\"mzXML\\\"\", \"massError\": \"\\\"8.0\\\"\", \"massErrorUnits\": \"\\\"ppm\\\"\", \"optimization\": \"\\\"none\\\"\", \"__rerun_remap_job_id__\": null}", 
+            "tool_version": "1.0.0", 
             "type": "tool", 
-            "uuid": "93702d8b-4849-4cc3-94b4-b2cb855a6436", 
+            "uuid": "0ae295ec-c569-4aed-b7a0-03c8556c2b82", 
             "workflow_outputs": []
         }, 
         "7": {
@@ -1221,13 +1205,13 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "output_msstats", 
-                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
+                    "output_name": "output", 
+                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output_boundaries", 
-                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
+                    "output_name": "output_msstats", 
+                    "uuid": "85f115e7-67e8-44c8-8f3d-3be4e57d84f5"
                 }, 
                 {
                     "label": null, 
@@ -1236,76 +1220,16 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "output", 
-                    "uuid": "dd468d06-48fc-49d3-8bfc-d7538764c4e8"
+                    "output_name": "output_boundaries", 
+                    "uuid": "3752ad74-777d-4369-a7bd-f93f899eb064"
                 }
             ]
         }, 
         "19": {
             "annotation": "", 
-            "content_id": "SAINTq", 
-            "errors": null, 
-            "id": 19, 
-            "input_connections": {
-                "exp_file": {
-                    "id": 10, 
-                    "output_name": "map_file"
-                }, 
-                "input_data|frag_input_file": {
-                    "id": 18, 
-                    "output_name": "output_msstats"
-                }
-            }, 
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool SAINTq", 
-                    "name": "input_data"
-                }, 
-                {
-                    "description": "runtime parameter for tool SAINTq", 
-                    "name": "exp_file"
-                }
-            ], 
-            "label": null, 
-            "name": "SAINTq", 
-            "outputs": [
-                {
-                    "name": "output", 
-                    "type": "tabular"
-                }, 
-                {
-                    "name": "simple_output", 
-                    "type": "tabular"
-                }
-            ], 
-            "position": {
-                "left": 4561.171875, 
-                "top": 893.640625
-            }, 
-            "post_job_actions": {}, 
-            "tool_id": "SAINTq", 
-            "tool_state": "{\"__page__\": null, \"compress_n_ctrl\": \"\\\"100\\\"\", \"min_n_pep\": \"\\\"3\\\"\", \"best_prop_pep\": \"\\\"0.5\\\"\", \"__rerun_remap_job_id__\": null, \"best_prop_frag\": \"\\\"0.5\\\"\", \"compress_n_rep\": \"\\\"100\\\"\", \"min_n_frag\": \"\\\"3\\\"\", \"input_data\": \"{\\\"input_level\\\": \\\"fragment\\\", \\\"frag_remove_repeated_peptides\\\": \\\"false\\\", \\\"frag_input_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 2, \\\"frag_mprophet_qvalue_filter\\\": \\\"0.01\\\"}\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"normalize_control\": \"\\\"true\\\"\"}", 
-            "tool_version": "0.1.0a", 
-            "type": "tool", 
-            "uuid": "136bcf27-8287-4109-a0fa-eaa889476ac2", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "output", 
-                    "uuid": "d3e97937-9461-4782-8a22-a477c172da8d"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "simple_output", 
-                    "uuid": "9023415b-1286-4352-ae41-8a7043f6347d"
-                }
-            ]
-        }, 
-        "20": {
-            "annotation": "", 
             "content_id": "MSstats", 
             "errors": null, 
-            "id": 20, 
+            "id": 19, 
             "input_connections": {
                 "csv_input": {
                     "id": 18, 
@@ -1324,6 +1248,10 @@
                 {
                     "description": "runtime parameter for tool MSstats", 
                     "name": "experiment_map"
+                }, 
+                {
+                    "description": "runtime parameter for tool MSstats", 
+                    "name": "minPep"
                 }, 
                 {
                     "description": "runtime parameter for tool MSstats", 
@@ -1375,7 +1303,7 @@
                 }
             ], 
             "position": {
-                "left": 4625.625, 
+                "left": 4624.625, 
                 "top": 1604.5
             }, 
             "post_job_actions": {
@@ -1401,7 +1329,7 @@
                 }
             }, 
             "tool_id": "MSstats", 
-            "tool_state": "{\"csv_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"featureSubset\": \"{\\\"subset\\\": \\\"all\\\", \\\"__current_case__\\\": 1}\", \"fillMissingFeatures\": \"\\\"true\\\"\", \"merge_isotopes\": \"\\\"false\\\"\", \"remove_single_run\": \"\\\"false\\\"\", \"maxQuantileforCensored\": \"{\\\"censor\\\": \\\"NULL\\\", \\\"__current_case__\\\": 1}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noimpute\": \"\\\"false\\\"\", \"remove_truncated_peaks\": \"\\\"true\\\"\", \"norm_protein\": \"\\\"\\\"\", \"q_threshold\": \"\\\"0.01\\\"\", \"remove_repeated_peptides\": \"\\\"true\\\"\", \"__page__\": null, \"remove50missing\": \"\\\"false\\\"\", \"censoredInt\": \"\\\"false\\\"\", \"peptide_level\": \"\\\"false\\\"\", \"normalization\": \"\\\"equalizeMedians\\\"\", \"remove_proteins_with_interference\": \"\\\"false\\\"\", \"remove_precursors\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"remove_decoys\": \"\\\"true\\\"\", \"MBimpute\": \"\\\"true\\\"\", \"cutoffCensored\": \"\\\"minFeature\\\"\", \"remove_empty\": \"\\\"false\\\"\", \"remove_proteins_by_text\": \"\\\"\\\"\"}", 
+            "tool_state": "{\"csv_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"featureSubset\": \"{\\\"subset\\\": \\\"all\\\", \\\"__current_case__\\\": 1}\", \"fillMissingFeatures\": \"\\\"true\\\"\", \"q_threshold\": \"\\\"0.01\\\"\", \"merge_isotopes\": \"\\\"false\\\"\", \"remove_single_run\": \"\\\"false\\\"\", \"maxQuantileforCensored\": \"{\\\"censor\\\": \\\"NULL\\\", \\\"__current_case__\\\": 1}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"noimpute\": \"\\\"false\\\"\", \"remove_truncated_peaks\": \"\\\"true\\\"\", \"norm_protein\": \"\\\"\\\"\", \"minPep\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"remove_repeated_peptides\": \"\\\"true\\\"\", \"__page__\": null, \"remove50missing\": \"\\\"false\\\"\", \"censoredInt\": \"\\\"false\\\"\", \"peptide_level\": \"\\\"false\\\"\", \"normalization\": \"\\\"equalizeMedians\\\"\", \"remove_proteins_with_interference\": \"\\\"false\\\"\", \"remove_precursors\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"remove_decoys\": \"\\\"true\\\"\", \"MBimpute\": \"\\\"true\\\"\", \"cutoffCensored\": \"\\\"minFeature\\\"\", \"remove_empty\": \"\\\"false\\\"\", \"remove_proteins_by_text\": \"\\\"\\\"\"}", 
             "tool_version": "0.3.0a", 
             "type": "tool", 
             "uuid": "ae878a9f-f421-4e22-996c-c094ec568267", 
@@ -1438,6 +1366,66 @@
                 }
             ]
         }, 
+        "20": {
+            "annotation": "", 
+            "content_id": "SAINTq", 
+            "errors": null, 
+            "id": 20, 
+            "input_connections": {
+                "exp_file": {
+                    "id": 10, 
+                    "output_name": "map_file"
+                }, 
+                "input_data|frag_input_file": {
+                    "id": 18, 
+                    "output_name": "output_msstats"
+                }
+            }, 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool SAINTq", 
+                    "name": "input_data"
+                }, 
+                {
+                    "description": "runtime parameter for tool SAINTq", 
+                    "name": "exp_file"
+                }
+            ], 
+            "label": null, 
+            "name": "SAINTq", 
+            "outputs": [
+                {
+                    "name": "output", 
+                    "type": "tabular"
+                }, 
+                {
+                    "name": "simple_output", 
+                    "type": "tabular"
+                }
+            ], 
+            "position": {
+                "left": 4837.1875, 
+                "top": 1412.6875
+            }, 
+            "post_job_actions": {}, 
+            "tool_id": "SAINTq", 
+            "tool_state": "{\"__page__\": null, \"compress_n_ctrl\": \"\\\"100\\\"\", \"min_n_pep\": \"\\\"3\\\"\", \"best_prop_pep\": \"\\\"0.5\\\"\", \"__rerun_remap_job_id__\": null, \"best_prop_frag\": \"\\\"0.5\\\"\", \"compress_n_rep\": \"\\\"100\\\"\", \"min_n_frag\": \"\\\"3\\\"\", \"input_data\": \"{\\\"input_level\\\": \\\"fragment\\\", \\\"frag_remove_repeated_peptides\\\": \\\"false\\\", \\\"frag_input_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 2, \\\"frag_mprophet_qvalue_filter\\\": \\\"0.01\\\"}\", \"exp_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"normalize_control\": \"\\\"false\\\"\"}", 
+            "tool_version": "0.1.0a", 
+            "type": "tool", 
+            "uuid": "25f41a54-f268-4bee-95e4-940f3300e9db", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "output", 
+                    "uuid": "6a80729e-3efc-4f07-b101-27b0e50d8319"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "simple_output", 
+                    "uuid": "cc5f662e-5b6b-4e01-a70f-e46e116a14ea"
+                }
+            ]
+        }, 
         "21": {
             "annotation": "", 
             "content_id": "MSstatsPlots", 
@@ -1445,11 +1433,11 @@
             "id": 21, 
             "input_connections": {
                 "RData_input": {
-                    "id": 20, 
+                    "id": 19, 
                     "output_name": "RDataOutput"
                 }, 
                 "csv_input": {
-                    "id": 20, 
+                    "id": 19, 
                     "output_name": "comparisonOutput"
                 }, 
                 "experiment_map": {
@@ -1504,8 +1492,8 @@
             "workflow_outputs": [
                 {
                     "label": null, 
-                    "output_name": "RScriptOutput", 
-                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
+                    "output_name": "comparisonPlotOutput", 
+                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
                 }, 
                 {
                     "label": null, 
@@ -1519,8 +1507,8 @@
                 }, 
                 {
                     "label": null, 
-                    "output_name": "comparisonPlotOutput", 
-                    "uuid": "b08e7087-92a3-4025-88c6-05f73fcf18ac"
+                    "output_name": "RScriptOutput", 
+                    "uuid": "b40ae6f1-6ca0-4906-9ff6-cff75056f2ff"
                 }
             ]
         }, 
@@ -1531,15 +1519,15 @@
             "id": 22, 
             "input_connections": {
                 "analysis_type|msstats_comparison": {
-                    "id": 20, 
+                    "id": 19, 
                     "output_name": "comparisonOutput"
                 }, 
                 "analysis_type|msstats_condition": {
-                    "id": 20, 
+                    "id": 19, 
                     "output_name": "conditionPlotCSVOutput"
                 }, 
                 "analysis_type|msstats_quantification": {
-                    "id": 20, 
+                    "id": 19, 
                     "output_name": "quantificationOutput"
                 }, 
                 "analysis_type|msstats_skyline_input": {
@@ -1551,7 +1539,7 @@
                     "output_name": "map_file"
                 }, 
                 "analysis_type|saint_table": {
-                    "id": 19, 
+                    "id": 20, 
                     "output_name": "simple_output"
                 }, 
                 "analysis_type|skyline_boundaries": {
@@ -1714,5 +1702,5 @@
             ]
         }
     }, 
-    "uuid": "a6d77a2c-551f-42fc-8b0d-384a57e6a159"
+    "uuid": "1f75d7d3-1ed1-4f59-8a01-21d40be5e894"
 }
