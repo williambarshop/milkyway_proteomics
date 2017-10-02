@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<srm_settings format_version="3.7" software_version="Skyline (64-bit) 3.7.0.11317">
+  <settings_summary name="Default">
+    <peptide_settings>
+      <enzyme name="Trypsin/P" cut="KR" no_cut="" sense="C" />
+      <digest_settings max_missed_cleavages="0" exclude_ragged_ends="true" />
+      <background_proteome name="background proteome test2" database_path="D:\Data\2017\08\07\DIA 6uL Test2\background.protdb" />
+      <peptide_prediction use_measured_rts="true" measured_rt_window="140" use_spectral_library_drift_times="false" spectral_library_drift_times_peak_width_calc_type="resolving_power" spectral_library_drift_times_resolving_power="0" spectral_library_drift_times_width_at_dt_zero="0" spectral_library_drift_times_width_at_dt_max="0" />
+      <peptide_filter start="0" min_length="6" max_length="40" auto_select="true" unique_by="protein">
+        <peptide_exclusions>
+          <exclusion name="RP/KP" regex="[RK]P" />
+        </peptide_exclusions>
+      </peptide_filter>
+      <peptide_libraries pick="library" />
+      <peptide_modifications max_variable_mods="5" max_neutral_losses="1">
+        <static_modifications>
+          <static_modification name="Carbamidomethyl (C)" aminoacid="C" formula="H3C2NO" unimod_id="4" short_name="CAM" />
+        </static_modifications>
+        <heavy_modifications />
+      </peptide_modifications>
+      <quantification weighting="none" fit="none" normalization="none" ms_level="2" />
+    </peptide_settings>
+    <transition_settings>
+      <transition_prediction precursor_mass_type="Monoisotopic" fragment_mass_type="Monoisotopic" optimize_by="None">
+        <predict_collision_energy name="Thermo TSQ Vantage" step_size="1" step_count="5">
+          <regression_ce charge="2" slope="0.03" intercept="2.905" />
+          <regression_ce charge="3" slope="0.038" intercept="2.281" />
+        </predict_collision_energy>
+      </transition_prediction>
+      <transition_filter precursor_charges="1,2,3,4,5,6" product_charges="1,2" fragment_types="p,b,y" fragment_range_first="m/z &gt; precursor" fragment_range_last="6 ions" precursor_mz_window="0" exclusion_use_dia_window="true" auto_select="true">
+        <measured_ion name="N-terminal to Proline" cut="P" sense="N" min_length="3" />
+      </transition_filter>
+      <transition_libraries ion_match_tolerance="0.05" ion_count="10" pick_from="all" />
+      <transition_integration integrate_all="true" />
+      <transition_instrument min_mz="300" max_mz="2400" mz_match_tolerance="0.055" />
+      <transition_full_scan acquisition_method="DIA" product_mass_analyzer="centroided" product_res="10" precursor_isotopes="Count" precursor_isotope_filter="3" precursor_mass_analyzer="centroided" precursor_res="10" retention_time_filter_type="ms2_ids" retention_time_filter_length="2">
+        <isotope_enrichments name="Default">
+          <atom_percent_enrichment symbol="H'">0.98</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="C'">0.995</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="N'">0.995</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="O&quot;">0.99</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="O'">0.99</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="Cl'">0.99</atom_percent_enrichment>
+          <atom_percent_enrichment symbol="Br'">0.99</atom_percent_enrichment>
+        </isotope_enrichments>
+        <isolation_scheme name="400-1600">
+          <isolation_window start="399.999987840653" end="405.349987745285" />
+          <isolation_window start="405.349992752075" end="410.259992599487" />
+          <isolation_window start="410.259996414185" end="415.169996261597" />
+          <isolation_window start="415.170000076294" end="420.079999923706" />
+          <isolation_window start="420.079997539521" end="424.28999757766695" />
+          <isolation_window start="424.289988994599" end="428.49998903274496" />
+          <isolation_window start="428.5" end="432" />
+          <isolation_window start="432.000004887581" end="435.51000487804504" />
+          <isolation_window start="435.509990215302" end="439.719990253448" />
+          <isolation_window start="439.72000002861" end="442.52999997139" />
+          <isolation_window start="442.529998779297" end="446.029998779297" />
+          <isolation_window start="446.03000366687695" end="449.540003657341" />
+          <isolation_window start="449.540007352829" end="452.350007295609" />
+          <isolation_window start="452.350006103516" end="455.850006103516" />
+          <isolation_window start="455.850010991096" end="459.36001098156004" />
+          <isolation_window start="459.360014677048" end="462.170014619828" />
+          <isolation_window start="462.170013427734" end="465.670013427734" />
+          <isolation_window start="465.670012235641" end="468.480012178421" />
+          <isolation_window start="468.479985356331" end="471.98998534679504" />
+          <isolation_window start="471.989995121956" end="475.49999511242004" />
+          <isolation_window start="475.5" end="479" />
+          <isolation_window start="478.999998807907" end="481.809998750687" />
+          <isolation_window start="481.810002446174" end="485.32000243663805" />
+          <isolation_window start="485.320007324219" end="488.820007324219" />
+          <isolation_window start="488.820012211799" end="492.33001220226305" />
+          <isolation_window start="492.329991459846" end="495.83999145031004" />
+          <isolation_window start="495.840001225471" end="499.35000121593504" />
+          <isolation_window start="499.350006103516" end="502.850006103516" />
+          <isolation_window start="502.850010991096" end="506.36001098156004" />
+          <isolation_window start="506.359990239143" end="509.869990229607" />
+          <isolation_window start="509.87000608444305" end="514.080006122589" />
+          <isolation_window start="514.080021977424" end="517.590021967888" />
+          <isolation_window start="517.590026855469" end="521.090026855469" />
+          <isolation_window start="521.089970707893" end="524.599970698357" />
+          <isolation_window start="524.599980473518" end="528.109980463982" />
+          <isolation_window start="528.110026836396" end="532.320026874542" />
+          <isolation_window start="532.320007324219" end="535.820007324219" />
+          <isolation_window start="535.819987773896" end="540.029987812042" />
+          <isolation_window start="540.029973149299" end="543.539973139763" />
+          <isolation_window start="543.540019512177" end="547.750019550323" />
+          <isolation_window start="547.750004887581" end="551.26000487804492" />
+          <isolation_window start="551.259990215302" end="555.469990253448" />
+          <isolation_window start="555.470012187958" end="559.680012226104" />
+          <isolation_window start="559.680029392242" end="563.880029201508" />
+          <isolation_window start="563.87998533248992" end="568.089985370636" />
+          <isolation_window start="568.08998298645" end="572.99998283386208" />
+          <isolation_window start="572.999980449677" end="577.209980487823" />
+          <isolation_window start="577.210002422333" end="581.420002460479" />
+          <isolation_window start="581.420000076294" end="586.329999923706" />
+          <isolation_window start="586.329973220825" end="591.23997306823708" />
+          <isolation_window start="591.239970684052" end="595.449970722198" />
+          <isolation_window start="595.450029373169" end="600.360029220581" />
+          <isolation_window start="600.3600025177" end="605.27000236511208" />
+          <isolation_window start="605.269999980927" end="609.480000019073" />
+          <isolation_window start="609.47999763488792" end="614.3899974823" />
+          <isolation_window start="614.389970779419" end="619.299970626831" />
+          <isolation_window start="619.3000049591069" end="624.210004806519" />
+          <isolation_window start="624.21001958847" end="629.83001947403" />
+          <isolation_window start="629.830009698868" end="635.440009832382" />
+          <isolation_window start="635.439995050431" end="641.04999518394493" />
+          <isolation_window start="641.049980401993" end="646.659980535507" />
+          <isolation_window start="646.660007238388" end="652.98000741005" />
+          <isolation_window start="652.980009794235" end="659.290009737015" />
+          <isolation_window start="659.290007352829" end="665.600007295609" />
+          <isolation_window start="665.59998536109993" end="672.619985342026" />
+          <isolation_window start="672.619999885559" end="679.630000114441" />
+          <isolation_window start="679.63001465797493" end="686.650014638901" />
+          <isolation_window start="686.65000486373992" end="694.360004901886" />
+          <isolation_window start="694.35999512672493" end="701.379995107651" />
+          <isolation_window start="701.380026817322" end="709.800026893616" />
+          <isolation_window start="709.800022125244" end="719.620021820068" />
+          <isolation_window start="719.620029449463" end="729.440029144287" />
+          <isolation_window start="729.44001197814907" end="739.960012435913" />
+          <isolation_window start="739.960012435913" end="751.19001197814907" />
+          <isolation_window start="751.189987659455" end="762.40998792648293" />
+          <isolation_window start="762.409975528718" end="775.039975643158" />
+          <isolation_window start="775.039992809295" end="789.06999254226707" />
+          <isolation_window start="789.06999778747593" end="803.799997329712" />
+          <isolation_window start="803.799990653992" end="819.929989814758" />
+          <isolation_window start="819.92998790741" end="838.169987678528" />
+          <isolation_window start="838.170001983642" end="855.71000289917" />
+          <isolation_window start="855.710029602051" end="875.350028991699" />
+          <isolation_window start="875.35001182556107" end="897.800012588501" />
+          <isolation_window start="897.800024032593" end="923.75002479553291" />
+          <isolation_window start="923.750029563904" end="951.810029029846" />
+          <isolation_window start="951.81001663208" end="991.100017547608" />
+          <isolation_window start="991.099981307983" end="1045.1099796295171" />
+          <isolation_window start="1045.109996795655" end="1120.8799934387209" />
+          <isolation_window start="1120.8799819946289" end="1240.8299789428711" />
+          <isolation_window start="1240.830032348633" end="1600.000045776367" />
+        </isolation_scheme>
+      </transition_full_scan>
+    </transition_settings>
+    <data_settings document_guid="3b7af50f-0847-4a45-afde-4bab762cbb00">
+      <annotation name="annotation_QValue" targets="precursor_result" type="number" />
+      <annotation name="annotation_Score" targets="precursor_result" type="number" />
+      <annotation name="Cell Line" targets="replicate" type="text" />
+      <annotation name="Biological Sample" targets="replicate" type="number" />
+      <group_comparison name="N-Myc vs C-Myc" control_annotation="Cell Line" control_value="C-myc" case_value="N-myc" identity_annotation="Biological Sample" normalization_method="ratio_to_heavy" summarization_method="averaging" confidence_level="95" per_protein="true" />
+      <views>
+        <view name="Wohl_MSstats_Input" rowsource="pwiz.Skyline.Model.Databinding.Entities.Transition" sublist="Results!*">
+          <column name="Precursor.Peptide.Protein.Name" />
+          <column name="Precursor.Peptide.ModifiedSequence" />
+          <column name="Precursor.Charge" />
+          <column name="FragmentIon" />
+          <column name="ProductCharge" />
+          <column name="Precursor.IsotopeLabelType" />
+          <column name="Results!*.Value.PrecursorResult.PeptideResult.ResultFile.Replicate.&quot;annotation_Condition&quot;" />
+          <column name="Results!*.Value.PrecursorResult.PeptideResult.ResultFile.Replicate.&quot;annotation_BioReplicate&quot;" />
+          <column name="Results!*.Value.PrecursorResult.PeptideResult.ResultFile.FileName" />
+          <column name="Results!*.Value.Area" />
+          <column name="Precursor.Peptide.StandardType" />
+          <column name="Results!*.Value.Truncated" />
+          <column name="Results!*.Value.PrecursorResult.&quot;annotation_annotation_QValue&quot;" />
+          <column name="Results!*.Value.PrecursorResult.&quot;annotation_annotation_Score&quot;" />
+          <column name="Results!*.Value.MassErrorPPM" />
+          <column name="Results!*.Value.PrecursorResult.AverageMassErrorPPM" />
+          <filter column="Results!*.Value" opname="isnotnullorblank" />
+        </view>
+      </views>
+    </data_settings>
+    <doc_rt_alignments>
+      <rt_source name="2017-05-30-140min-wb-inclusion-list-triggered-PRM-test-TUBULIN-A" library="tubb test" />
+      <rt_source name="2017-05-30-140min-wb-inclusion-list-triggered-PRM-test-TUBULIN-B" library="tubb test" />
+    </doc_rt_alignments>
+  </settings_summary>
+</srm_settings>
