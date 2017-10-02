@@ -179,7 +179,7 @@ with open(variable_windows_file,'rb') as freader:
     final_flines_fixed.extend(flines_fixed)
 
 variable_windows_final=variable_windows_file.rsplit('.',1)[0].rsplit("/",1)[1]+"_msplit_windows.tsv"
-with open(variable_windows_file.rsplit("/",1)[1].rsplit('.',1)[0]+"_msplit_windows.tsv",'wb') as fwriter:
+with open(variable_windows_final,'wb') as fwriter:
     for each_line in final_flines_fixed:
         fwriter.write(each_line)
 
