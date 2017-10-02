@@ -178,7 +178,7 @@ with open(variable_windows_file,'rb') as freader:
     final_flines_fixed=['#Scan\twindowBegin\twindowEnd\n','MS1\t{0}\t{1}\n'.format(ms1_start,ms1_end)]
     final_flines_fixed.extend(flines_fixed)
 
-variable_windows_final=variable_windows_file.rsplit('.',1)[0]+"_msplit_windows.tsv"
+variable_windows_final=variable_windows_file.rsplit('.',1)[0].rsplit("/",1)[1]+"_msplit_windows.tsv"
 with open(variable_windows_file.rsplit("/",1)[1].rsplit('.',1)[0]+"_msplit_windows.tsv",'wb') as fwriter:
     for each_line in final_flines_fixed:
         fwriter.write(each_line)
