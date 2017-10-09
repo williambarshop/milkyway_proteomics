@@ -2,7 +2,7 @@
     "a_galaxy_workflow": "true", 
     "annotation": "", 
     "format-version": "0.1", 
-    "name": "2017-09-19 Qualitative-Analysis", 
+    "name": "2017-10-09 Identification Analysis", 
     "steps": {
         "0": {
             "annotation": "", 
@@ -20,7 +20,7 @@
             "name": "Input dataset collection", 
             "outputs": [], 
             "position": {
-                "left": 577.9375, 
+                "left": 577.921875, 
                 "top": 387.5
             }, 
             "tool_id": null, 
@@ -52,8 +52,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 199.71875, 
-                "top": 861.46875
+                "left": 199.6875, 
+                "top": 861.453125
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"FASTA Database Input (fwd only)\"}", 
@@ -84,8 +84,8 @@
             "name": "Input dataset", 
             "outputs": [], 
             "position": {
-                "left": 1314.03125, 
-                "top": 269.203125
+                "left": 1314.015625, 
+                "top": 269.15625
             }, 
             "tool_id": null, 
             "tool_state": "{\"name\": \"Experimental Design File\"}", 
@@ -130,10 +130,15 @@
                 }
             ], 
             "position": {
-                "left": 924.828125, 
-                "top": 413.8125
+                "left": 924.8125, 
+                "top": 413.796875
             }, 
             "post_job_actions": {
+                "HideDatasetActionoutput": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "output"
+                }, 
                 "HideDatasetActionoutput_refinement": {
                     "action_arguments": {}, 
                     "action_type": "HideDatasetAction", 
@@ -151,13 +156,7 @@
             "tool_version": "3.0.0", 
             "type": "tool", 
             "uuid": "af4432b0-5339-4950-aea5-c5490e1c6b09", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "output", 
-                    "uuid": "df9c471b-e36f-454d-8684-29da1cdf90cf"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "4": {
             "annotation": "", 
@@ -185,8 +184,8 @@
                 }
             ], 
             "position": {
-                "left": 714.921875, 
-                "top": 1047.984375
+                "left": 714.84375, 
+                "top": 1047.96875
             }, 
             "post_job_actions": {
                 "RenameDatasetActionparam_out": {
@@ -258,22 +257,22 @@
                 }
             ], 
             "position": {
-                "left": 1114.890625, 
-                "top": 683.34375
+                "left": 1114.84375, 
+                "top": 683.328125
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActionoutput_targz": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "output_targz"
+                }
+            }, 
             "tool_id": "milkyway_msgfplus_search", 
             "tool_state": "{\"protocol\": \"\\\"0\\\"\", \"num_reported_matches\": \"\\\"1\\\"\", \"fragment_method\": \"\\\"0\\\"\", \"cleavage_semi\": \"\\\"2\\\"\", \"__page__\": 0, \"fixed_mods\": \"[\\\"C2H3N1O1,C,opt,any,Carbamidomethyl,___\\\"]\", \"variable_mods\": \"null\", \"__rerun_remap_job_id__\": null, \"max_pep_len\": \"\\\"40\\\"\", \"isotope_error_range\": \"\\\"-1,2\\\"\", \"instrument\": \"\\\"3\\\"\", \"enzyme\": \"\\\"1\\\"\", \"precursor_ion_tol\": \"\\\"15.0\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"min_pep_charge\": \"\\\"2\\\"\", \"threads\": \"\\\"8\\\"\", \"selenocys\": \"\\\"false\\\"\", \"precursor_tolu\": \"\\\"ppm\\\"\", \"silac\": \"{\\\"silac_search\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"java_mem\": \"\\\"4000M\\\"\", \"num_mods\": \"\\\"3\\\"\", \"database\": \"{\\\"decoy_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"target_fasta_file\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"__current_case__\\\": 0, \\\"source_select\\\": \\\"input_ref\\\"}\", \"max_pep_charge\": \"\\\"6\\\"\", \"min_pep_len\": \"\\\"6\\\"\"}", 
             "tool_version": "1.2.7", 
             "type": "tool", 
             "uuid": "e6beb055-1bfe-4cd4-b12e-7d79b1485e48", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "output_targz", 
-                    "uuid": "df913d91-c898-467f-8462-edce8e4071cd"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "6": {
             "annotation": "", 
@@ -313,27 +312,27 @@
                 }
             ], 
             "position": {
-                "left": 1451.765625, 
+                "left": 1451.75, 
                 "top": 392.65625
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActionoutput_mass_corrections": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "output_mass_corrections"
+                }, 
+                "HideDatasetActionoutput_tar": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "output_tar"
+                }
+            }, 
             "tool_id": "milkyway_msgf2pin_converter", 
             "tool_state": "{\"isotope\": \"\\\"true\\\"\", \"__page__\": 0, \"ptm\": \"\\\"true\\\"\", \"pngasef\": \"\\\"false\\\"\", \"fraction_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"matches\": \"\\\"1\\\"\", \"pattern\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"ppm\": \"{\\\"ppm_bool\\\": \\\"true\\\", \\\"ppm_fix\\\": {\\\"ppm_fix_bool\\\": \\\"false\\\", \\\"__current_case__\\\": 1}, \\\"__current_case__\\\": 0}\", \"enzyme\": \"\\\"trypsin\\\"\", \"aafreq\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"silac\": \"\\\"false\\\"\"}", 
             "tool_version": "3.0.0", 
             "type": "tool", 
             "uuid": "c1de469d-bdb6-4b54-8444-58590d22c130", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "output_tar", 
-                    "uuid": "d2884bf9-7344-450e-ae13-3e773d37b97e"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "output_mass_corrections", 
-                    "uuid": "5308076a-d90c-4198-9c76-ba4bf1f15b05"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "7": {
             "annotation": "", 
@@ -373,27 +372,27 @@
                 }
             ], 
             "position": {
-                "left": 1821.03125, 
-                "top": 556.53125
+                "left": 1821.015625, 
+                "top": 557.515625
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActionmap_file": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "map_file"
+                }, 
+                "HideDatasetActionout_pin_tar": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "out_pin_tar"
+                }
+            }, 
             "tool_id": "milkyway_crux_pin_fixer", 
             "tool_state": "{\"__page__\": 0, \"seleno\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"fraction_groups\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"pin_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.1.7", 
             "type": "tool", 
             "uuid": "f4f899d3-e8f4-4915-8a84-2b1c853dccb4", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "out_pin_tar", 
-                    "uuid": "fd21af84-bc3b-423b-959d-1706b449384b"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "map_file", 
-                    "uuid": "be1cee8f-531a-4b9d-bced-570a4bf7ebb3"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "8": {
             "annotation": "", 
@@ -429,10 +428,15 @@
                 }
             ], 
             "position": {
-                "left": 2186.5625, 
+                "left": 2186.53125, 
                 "top": 674.53125
             }, 
             "post_job_actions": {
+                "HideDatasetActioncrux_tar_gz": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "crux_tar_gz"
+                }, 
                 "RenameDatasetActioncrux_tar_gz": {
                     "action_arguments": {
                         "newname": "crux_percolator_output.tar.gz"
@@ -446,13 +450,7 @@
             "tool_version": "0.9.00", 
             "type": "tool", 
             "uuid": "3b3ecca3-eba7-4d97-8ef7-e81729c870b2", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "crux_tar_gz", 
-                    "uuid": "c297f0fa-484b-43c2-80ca-f9b93d56ae62"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "9": {
             "annotation": "", 
@@ -500,27 +498,27 @@
                 }
             ], 
             "position": {
-                "left": 2531.640625, 
-                "top": 585.5625
+                "left": 2531.625, 
+                "top": 585.546875
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActionfido_input": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "fido_input"
+                }, 
+                "HideDatasetActiontarget_decoy": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "target_decoy"
+                }
+            }, 
             "tool_id": "milkyway_percolator_to_fido", 
             "tool_state": "{\"__page__\": 0, \"targetdatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"fct\": \"{\\\"fidoCT\\\": \\\"false\\\", \\\"__current_case__\\\": 1}\", \"__rerun_remap_job_id__\": null, \"all_psms\": \"\\\"true\\\"\", \"pout_tar\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"decoydatabase\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.2.1", 
             "type": "tool", 
             "uuid": "3f0c14fe-64df-4030-8271-fe9f5185d927", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "target_decoy", 
-                    "uuid": "0b3e445b-5ee4-4581-8d64-5ad7da32a30d"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "fido_input", 
-                    "uuid": "32c4b569-35de-42c8-bd06-a0ed5730bf6b"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "10": {
             "annotation": "", 
@@ -556,22 +554,22 @@
                 }
             ], 
             "position": {
-                "left": 2848.84375, 
-                "top": 504.5625
+                "left": 2848.828125, 
+                "top": 504.546875
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActionfidoout": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "fidoout"
+                }
+            }, 
             "tool_id": "fido_wohl", 
             "tool_state": "{\"groupinference\": \"\\\"false\\\"\", \"__page__\": 0, \"fidoin\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"cleannames\": \"\\\"false\\\"\", \"allpsms\": \"\\\"true\\\"\", \"fidotd\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"griddepth\": \"\\\"1\\\"\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "e3e889a8-5da1-4dd3-b899-3e9e7b257bbe", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "fidoout", 
-                    "uuid": "b0802938-4e12-4cc6-8c5f-0c84a91219b5"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "11": {
             "annotation": "", 
@@ -623,32 +621,32 @@
                 }
             ], 
             "position": {
-                "left": 3044.484375, 
-                "top": 761.859375
+                "left": 3044.46875, 
+                "top": 761.84375
             }, 
-            "post_job_actions": {}, 
+            "post_job_actions": {
+                "HideDatasetActioncrux_tar_gz": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "crux_tar_gz"
+                }, 
+                "HideDatasetActionfidoout_q": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "fidoout_q"
+                }, 
+                "HideDatasetActionp_to_q": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "p_to_q"
+                }
+            }, 
             "tool_id": "fido_q_values", 
             "tool_state": "{\"__page__\": 0, \"fidoout\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"add_peptide_indicies\": \"\\\"true\\\"\", \"decoy\": \"\\\"Reverse_\\\"\", \"__rerun_remap_job_id__\": null, \"fidoCT\": \"\\\"false\\\"\", \"clean_spectra\": \"\\\"true\\\"\", \"clip_zero\": \"\\\"true\\\"\", \"diaumpire\": \"\\\"false\\\"\", \"targz_input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"crux_perco_targz\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "1.0.0", 
             "type": "tool", 
             "uuid": "76094b8c-5b3c-4cb4-9128-e9c77b34023e", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "fidoout_q", 
-                    "uuid": "5ef947d4-d6f5-48ce-8784-b43c59350878"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "p_to_q", 
-                    "uuid": "05005041-cb44-4d80-8bcb-5cba3f51f231"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "crux_tar_gz", 
-                    "uuid": "6eda3a45-ca6d-4867-9f07-97be5298ff2e"
-                }
-            ]
+            "workflow_outputs": []
         }, 
         "12": {
             "annotation": "", 
@@ -724,8 +722,8 @@
                 }
             ], 
             "position": {
-                "left": 3402.0625, 
-                "top": 1008.015625
+                "left": 3402.046875, 
+                "top": 1008
             }, 
             "post_job_actions": {
                 "RenameDatasetActionoutputnsaf": {
@@ -835,8 +833,8 @@
                 }
             ], 
             "position": {
-                "left": 3816.703125, 
-                "top": 779.5
+                "left": 3816.6875, 
+                "top": 779.484375
             }, 
             "post_job_actions": {}, 
             "tool_id": "psm_extract", 
@@ -854,92 +852,10 @@
         }, 
         "14": {
             "annotation": "", 
-            "content_id": "SAINT_express", 
+            "content_id": "RdataPackaging", 
             "errors": null, 
             "id": 14, 
             "input_connections": {
-                "bait_raw": {
-                    "id": 12, 
-                    "output_name": "saint_bait_raw"
-                }, 
-                "interact_raw": {
-                    "id": 12, 
-                    "output_name": "saint_interact_raw"
-                }, 
-                "prey_raw": {
-                    "id": 12, 
-                    "output_name": "saint_prey_raw"
-                }
-            }, 
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool SAINT_express", 
-                    "name": "prey_raw"
-                }, 
-                {
-                    "description": "runtime parameter for tool SAINT_express", 
-                    "name": "bait_raw"
-                }, 
-                {
-                    "description": "runtime parameter for tool SAINT_express", 
-                    "name": "interact_raw"
-                }
-            ], 
-            "label": null, 
-            "name": "SAINT_express", 
-            "outputs": [
-                {
-                    "name": "SAINT_raw_output", 
-                    "type": "tabular"
-                }, 
-                {
-                    "name": "SAINT_simple_raw_output", 
-                    "type": "tabular"
-                }
-            ], 
-            "position": {
-                "left": 3850.4375, 
-                "top": 974.828125
-            }, 
-            "post_job_actions": {}, 
-            "tool_id": "SAINT_express", 
-            "tool_state": "{\"__page__\": 0, \"interact_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"prey_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter\": \"\\\"0.0\\\"\", \"bait_raw\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
-            "tool_version": "0.1.0a", 
-            "type": "tool", 
-            "uuid": "9a256c02-428e-477a-84f3-d622411d9ec0", 
-            "workflow_outputs": [
-                {
-                    "label": null, 
-                    "output_name": "SAINT_raw_output", 
-                    "uuid": "78bd971c-a8e1-47e9-95e8-63bd1a1c6209"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "SAINT_simple_nsaf_output", 
-                    "uuid": "fb727f46-f71f-4a8d-a8ce-59aa2ad88f2a"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "SAINT_nsaf_output", 
-                    "uuid": "bdc3fffe-a79c-4d5f-be19-5d88bb4ba775"
-                }, 
-                {
-                    "label": null, 
-                    "output_name": "SAINT_simple_raw_output", 
-                    "uuid": "5cf95858-bc83-48e6-a77f-4c7ac04ed086"
-                }
-            ]
-        }, 
-        "15": {
-            "annotation": "", 
-            "content_id": "RdataPackaging", 
-            "errors": null, 
-            "id": 15, 
-            "input_connections": {
-                "analysis_type|saint_table": {
-                    "id": 14, 
-                    "output_name": "SAINT_simple_raw_output"
-                }, 
                 "fasta": {
                     "id": 1, 
                     "output_name": "output"
@@ -992,10 +908,6 @@
                 }, 
                 {
                     "description": "runtime parameter for tool Rdata packaging", 
-                    "name": "analysis_type"
-                }, 
-                {
-                    "description": "runtime parameter for tool Rdata packaging", 
                     "name": "qual_experiment_map"
                 }, 
                 {
@@ -1036,12 +948,12 @@
                 }
             ], 
             "position": {
-                "left": 4753.734375, 
-                "top": 1142.1875
+                "left": 4788.71875, 
+                "top": 1008.171875
             }, 
             "post_job_actions": {}, 
             "tool_id": "RdataPackaging", 
-            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": 0, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"saint_table\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"selection\\\": \\\"qualCompare\\\", \\\"__current_case__\\\": 1}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
+            "tool_state": "{\"peptide_spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__page__\": null, \"peptide_nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"mzml\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"spc_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"psm_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"qual_experiment_map\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"analysis_type\": \"{\\\"selection\\\": \\\"qual\\\", \\\"__current_case__\\\": 2}\", \"fasta\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"renameType\": \"\\\"accToGene\\\"\", \"fido_roc\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"nsaf_table\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}", 
             "tool_version": "0.5.0a", 
             "type": "tool", 
             "uuid": "63be5fc4-6ba6-4a66-acbe-04879d283027", 
@@ -1064,5 +976,5 @@
             ]
         }
     }, 
-    "uuid": "075ae491-02ef-47e6-9130-d43d4b0213b0"
+    "uuid": "96d8fa98-7de8-4818-a5b7-59535d6d4c7e"
 }
