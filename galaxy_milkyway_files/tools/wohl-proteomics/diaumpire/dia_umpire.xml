@@ -44,6 +44,7 @@
     -MaxPrecursorMass $SE_MaxPrecursorMass
     -WindowType $WindowType
     -WindowSize $WindowSize
+    -ram $ram_allocation
     #set $window_file=$str($WindowSetting)
     #if $window_file != "0" and $window_file !="None"
     -WindowSetting $window_file
@@ -53,6 +54,7 @@
     <inputs>
         <param name="input_file" type="data" multiple="false" label="MSMS File" help="An mzXML file with MS/MS data"/>
         <param name="threads" type="integer" label="threads" value="32" min="1" max="128" />
+        <param name="ram_allocation" type="integer" label="RAM allocation (GB)" value="8" min="2" max="128" />
         <param name="RPmax" type="integer" label="RPmax" value="25" min="1" max="1000" />
         <param name="RFmax" type="integer" label="RFmax" value="300" min="1" max="1000" />
         <param name="CorrThreshold" type="float" label="CorrThreshold" value="0.2" min="0.01" max="10.0" />

@@ -128,6 +128,7 @@ parser.add_argument('-tooldir',action='store',dest='tooldir',help="Galaxy tool f
 parser.add_argument('-mzMLoutput',action='store',dest='mzMLoutput',help="This is a required string to place the output mzML")
 # Thread setting
 parser.add_argument('-Thread', action='store', dest='Thread', default=32, type=int, help="Set up # of available cores")
+parser.add_argument('-ram', action='store', dest='ram_allocation', default=8, type=int, help="RAM (GB) allocated per job")
 # Precursor-fragments grouping parameters
 parser.add_argument('-RPmax', action='store', dest='RPmax', default=25, type=int, help="Precursor-fragments grouping parameters")
 parser.add_argument('-RFmax', action='store', dest='RFmax', default=300, type=int, help="Precursor-fragments grouping parameters")
@@ -257,11 +258,11 @@ for input_folder in input_folder_list: #tqdm(input_folder_list):
             #else:
             subprocess.call("msconvert --mzXML --filter \"peakPicking true 1-\" {0}.mzML".format(output_path+"/"+each_file.rsplit("/",1)[1].rsplit(".",1)[0]),shell=True,stderr=sys.stdout.fileno())
             #shutil.move(each_file,each_file.split('.')[0]+"_original.mzML")
-        print "About to run...\n","java -jar -Xmx32G {0} {1}.mzXML {2}".format(DIAUmpire,output_path+"/"+each_file.rsplit(".",1)[0].rsplit("/",1)[1],parsed_args.paraName)
+        print "About to run...\n","java -jar -Xmx{0}G {1} {2}.mzXML {3}".format(parsed_args.ram_allocation,DIAUmpire,output_path+"/"+each_file.rsplit(".",1)[0].rsplit("/",1)[1],parsed_args.paraName)
         shutil.copy(current_dir+"/"+parsed_args.paraName,os.getcwd()+"/")
         if (overwrite and len([output_path+f for f in os.listdir(output_path) if '{0}_Q'.format(each_file.rsplit(".",1)[0]) and f.endswith('.mgf') and f!=f.rsplit("_Q",1)[0]+".mgf" and each_file.rsplit(".",1)[0].rsplit("/",1)[1] in f]) !=0) or len([output_path+"/"+f for f in os.listdir(output_path) if '{0}_Q'.format(each_file.rsplit(".",1)[0]) and f.endswith('.mgf') and f!=f.rsplit("_Q",1)[0]+".mgf" and each_file.rsplit(".",1)[0].rsplit("/",1)[1] in f]) == 0:
             print "current directory",os.getcwd()
-            subprocess.call("java -jar -Xmx32G \"{0}\" \"{1}.mzXML\" {2}".format(DIAUmpire,output_path+"/"+each_file.rsplit(".",1)[0].rsplit("/",1)[1],parsed_args.paraName),shell=True)
+            subprocess.call("java -jar -Xmx{0}G \"{1}\" \"{2}.mzXML\" {3}".format(parsed_args.ram_allocation,DIAUmpire,output_path+"/"+each_file.rsplit(".",1)[0].rsplit("/",1)[1],parsed_args.paraName),shell=True)
         
         os.chdir(current_dir)
 
