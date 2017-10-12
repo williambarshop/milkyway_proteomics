@@ -230,9 +230,9 @@ if not silac:
             #print this_group_list,"the group list<-=------------------"
             for each_item in this_group_list:
                 #print "examining",each_item
-                #print "Is it in",eachfile,"?"
+                #print "Is it in",eachfile.rsplit("_",1)[0].split("/",1)[1],"?"
                 #if run_groups[eachgroup] in eachfile:
-                if each_item in eachfile:
+                if each_item == eachfile.rsplit("_",1)[0].split("/",1)[1]:
                     target_run_groups[eachgroup].append(eachfile)
                     break
     print "Final Groupings:",target_run_groups
@@ -436,6 +436,7 @@ else: #silac isn't true....
     output_list=[]
     print "Taking care of a few file creation issues...."
     print "Here's our groups...",run_groups
+    print target_run_groups
     for each_group in run_groups:
         with open(each_group+".runs",'wb') as writer:
             print target_run_groups[each_group],"<------------------------------"
