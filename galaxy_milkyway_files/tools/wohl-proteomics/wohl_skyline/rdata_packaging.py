@@ -174,13 +174,17 @@ print out,err
 print "Finished the job processing."
 
 
-print "Handling the renaming!" #This is done only for both the PSM_table and the MSstats outputs...
-
-psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=False)
-
+print "reading PSM table:"
+try:
+    psm_table=pandas.read_csv(options.psm_table,sep='\t',engine="python")
+    #psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=True)
+except:
+    psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=False) #Sometimes causes segfaults....
+print "finsihed reading psm table"
 
 ### The code below is a mixture of things that we need in LFQ and Qual analysis...
 ### It is meant to query uniprot, and generate name mappings for the MSstats csv table, and the PSM table.
+print "Handling the renaming!" #This is done only for both the PSM_table and the MSstats outputs...
 if options.analysis_type=="lfq":
     combined_results=pandas.read_csv(options.msstats_comparison,sep=',',low_memory=False)
     #combined_results=pandas.read_csv(options.msstats_comparison,sep=',',index_col=False)
