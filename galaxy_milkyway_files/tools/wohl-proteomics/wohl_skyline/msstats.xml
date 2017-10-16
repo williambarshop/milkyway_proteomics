@@ -31,6 +31,10 @@ $noimpute
 #if $remove_proteins_by_text!=""
 --removeProteinsByText "$remove_proteins_by_text"
 #end if
+#if $keep_proteins_by_text!=""
+--keepProteinsByText "$keep_proteins_by_text"
+#end if
+
 --normalization $normalization
       #if $normalization=="globalStandards"
       --normalization_protein "${norm_protein}"
@@ -95,6 +99,7 @@ $noimpute
                
         </conditional>
         <param name="remove_proteins_by_text" type="text" label="Targetted Removal of Proteins? Must be a string unique to the protein of interest from the FASTA header!" help="Flanking whitespace will be removed. Multiple proteins can be comma separated (e.g. Q96T76,CIAO1_HUMAN...)"/>
+        <param name="keep_proteins_by_text" type="text" label="Filter proteins to keep? Must be a string unique to the protein of interest from the FASTA header!" help="Removes all proteins not in this list! Flanking whitespace will be removed. Multiple proteins can be comma separated (e.g. Q96T76,CIAO1_HUMAN...)"/>
 
         <param name="censoredInt" type="boolean" truevalue="--censoredInt NA" falsevalue="--censoredInt 0" checked="false" label="Censored Ints are NA values instead of 0's?" help="If you don't know what this is, and you used mProphet, leave this as false."/>
 

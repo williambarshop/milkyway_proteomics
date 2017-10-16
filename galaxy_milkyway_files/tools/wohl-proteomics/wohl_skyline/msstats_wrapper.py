@@ -64,6 +64,7 @@ parser.add_option("--mprophet_q",action="store",type="float",dest="mprophet_q") 
 parser.add_option("--fractionated",action="store_true",dest="fractionated")  # Using the final -??? as the fractionation identifier
 parser.add_option("--remove_repeated_peptides",action="store_true",dest="remove_repeated_peptides")
 parser.add_option("--removeProteinsByText",action="store",type="string",dest="remove_proteins_by_text")
+parser.add_option("--keepProteinsByText",action="store",type="string",dest="keep_proteins_by_text")
 
 parser.add_option("--minPep",action="store",type="int",dest="minimum_peptide_count")   # Require at least "n" peptides for a protein.
 
@@ -216,6 +217,14 @@ if options.remove_proteins_by_text is not None and options.remove_proteins_by_te
         each_protein=each_protein.strip()
         print "Removing protein",each_protein,"from the analysis."
         combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
+
+print "about to filter to keep proteins by text..."
+if options.keep_proteins_by_text is not None and options.remove_proteins_by_text is not "":
+    proteins_to_keep=options.keep_proteins_by_text.split(",")
+    for each_protein in proteins_to_keep:
+        each_protein=each_protein.strip()
+        print "Keeping protein",each_protein,"in the analysis."
+        combined_results=combined_results[combined_results['Protein Name'].str.contains(each_protein)]
 
 
 #Finally, we'll filter out any protein which doesn't have enough peptides based on the optional input.
