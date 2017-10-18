@@ -11,6 +11,8 @@ from pyteomics import mzml
 from Bio import SeqIO
 from subprocess import Popen
 import uniprot as uni
+import csv
+csv.field_size_limit(sys.maxsize) #Sometimes we have very large fields in the chromatograms...
 #####################################
 #This is a script to combine the outputs of many tools into
 #an Rdata image!
