@@ -219,12 +219,14 @@ if options.remove_proteins_by_text is not None and options.remove_proteins_by_te
         combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
 
 print "about to filter to keep proteins by text..."
+print "Starting with",len(combined_results['Protein Name'].unique())
 if options.keep_proteins_by_text is not None and options.remove_proteins_by_text is not "":
     proteins_to_keep=options.keep_proteins_by_text.split(",")
-    for each_protein in proteins_to_keep:
-        each_protein=each_protein.strip()
-        print "Keeping protein",each_protein,"in the analysis."
-        combined_results=combined_results[combined_results['Protein Name'].str.contains(each_protein)]
+    #for each_protein in proteins_to_keep:
+    #    each_protein=each_protein.strip()
+    #    print "Keeping protein",each_protein,"in the analysis."
+    combined_results=combined_results[combined_results['Protein Name'].str.contains("|".join(proteins_to_keep))]
+print "Ending with",len(combined_results['Protein Name'].unique())
 
 
 #Finally, we'll filter out any protein which doesn't have enough peptides based on the optional input.
