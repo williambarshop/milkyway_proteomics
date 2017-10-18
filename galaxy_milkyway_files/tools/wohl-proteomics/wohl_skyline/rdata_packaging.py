@@ -88,7 +88,7 @@ job_process=subprocess.Popen(arguments,stdout=subprocess.PIPE, stderr=subprocess
 #
 # NB NB NB NB: This code assumes that 1. Decoys come after targets. AND 2. Decoys are 1:1 with targets.  There are no targets without decoys, and no target transitions without decoy transitions.
 if options.analysis_type=="lfq":
-    chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t")
+    chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t",engine='python')
     #chromatogram_df=pandas.read_csv(options.skyline_chromatograms,sep="\t",low_memory=False)
 
     if options.filter_decoys:
@@ -174,19 +174,15 @@ print out,err
 print "Finished the job processing."
 
 
-print "reading PSM table:"
-try:
-    psm_table=pandas.read_csv(options.psm_table,sep='\t',engine="python")
-    #psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=True)
-except:
-    psm_table=pandas.read_csv(options.psm_table,sep='\t',low_memory=False) #Sometimes causes segfaults....
-print "finsihed reading psm table"
+print "Handling the renaming!" #This is done only for both the PSM_table and the MSstats outputs...
+
+psm_table=pandas.read_csv(options.psm_table,sep='\t',engine='python')#low_memory=False
+
 
 ### The code below is a mixture of things that we need in LFQ and Qual analysis...
 ### It is meant to query uniprot, and generate name mappings for the MSstats csv table, and the PSM table.
-print "Handling the renaming!" #This is done only for both the PSM_table and the MSstats outputs...
 if options.analysis_type=="lfq":
-    combined_results=pandas.read_csv(options.msstats_comparison,sep=',',low_memory=False)
+    combined_results=pandas.read_csv(options.msstats_comparison,sep=',',engine='python')#low_memory=False
     #combined_results=pandas.read_csv(options.msstats_comparison,sep=',',index_col=False)
     #print combined_results
     combined_results['backup']=combined_results['Protein']
