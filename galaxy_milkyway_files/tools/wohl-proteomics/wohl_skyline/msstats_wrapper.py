@@ -764,9 +764,12 @@ with open("MSstats_Script.R",'wb') as script_writer:
         sorter_script_writer.write("sort(c(\""+"\",\"".join(group_information['Biological Condition'].unique().tolist())+"\"))")
     groups_abet_cmdout=subprocess.check_output(["Rscript","R_sorter.Rscript"])
     print groups_abet_cmdout,"\nACTUALOUTPUT==================="
-    groups_abet=[x.strip("\"").rstrip("\"") for x in groups_abet_cmdout.split()[1:]]
+    groups_abet=[x.strip("\"").rstrip("\"") for x in groups_abet_cmdout.split("\"")[1:]]
     new_abet=[]
-    for each_group in groups_abet:
+    for each_group_prestrip in groups_abet:
+        each_group=each_group_prestrip.strip()
+        if len(each_group)==0:
+            continue
         if each_group.startswith('[') and each_group.endswith(']'):  #These groups are actually just line information from the R output.  We'll remove them.
             print "Group ",each_group," is not a real group... dropping..."
         else:
