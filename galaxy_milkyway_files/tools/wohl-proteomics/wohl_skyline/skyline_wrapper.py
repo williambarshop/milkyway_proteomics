@@ -1056,6 +1056,7 @@ else:
         #final_cmd="SkylineRunner "+whole
 
         final_cmd=final_cmd.split()
+        print "execution 1:"
         print "About to execute command ",' '.join(final_cmd)
 
         notConnectedSkyline=True
@@ -1131,9 +1132,63 @@ else:
     #cfgwriter.write("--out=docker_protection_temporary.sky\n")
 
 
+    #We're going to add the decoy peptides, save out the document, and after that we'll import the data in parallel and finally handle mProphet modeling
+    if options.mprophet is not None and "decoy" not in options.mprophet:
+        if "reverse" in options.mprophet:
+            cfgwriter.write("--decoys-add=reverse\n")
+        elif "shuffle" in options.mprophet:
+            cfgwriter.write("--decoys-add=shuffle\n")
+        else:
+            pass
+
+
+    #Now we'll have to save the document and then we can reopen it to import in parallel
+    ###########################~~~~
+        cfgwriter.close()
+        print "Setting up the file so that we can use parallel import!"
+        with open('skyline_batch','rb') as batchreader:
+            whole=batchreader.read().replace("\r"," ").replace("\n"," ")
+
+        setup_cmd="SkylineCmd "+whole
+
+        setup_cmd=setup_cmd.split()
+        print "execution 2:"
+        print "About to execute command ",' '.join(setup_cmd)
+
+        notConnectedSkyline=True
+        attempt=1
+        while notConnectedSkyline:
+            if attempt == 5:
+                print "I can't get a connection to Skyline... something wrong!\nQuitting!~"
+                sys.exit(2)
+            time.sleep(60)
+            print "MAKING ATTEMPT NUMBER ",str(attempt)
+            proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+            output_communication=proc.communicate()[0]
+            print output_communication
+            returncode = proc.wait()
+            if "Error: Could not connect to Skyline." in output_communication:
+                attempt+=1
+                continue
+            if returncode != 0:
+                raise Exception, "Program returned with non-zero exit code %d." % (returncode)
+            else:
+                notConnectedSkyline=False
+        
+        os.remove(skyline_filename)
+        shutil.copy("docker_protection_temporary.sky",skyline_filename)
+        os.remove("docker_protection_temporary.sky")
+
+
+        os.rename("skyline_batch","skyline_batch_setup")
+        cfgwriter=open("skyline_batch",'wb')
+        cfgwriter.write("--timestamp\n")
+        cfgwriter.write("--in="+skyline_filename+"\n")
+
+
+    #Now that the file has had all the targets set up, and resaved, the file should now be ready for import with parallelism.
     if options.num_procs is not None:
-        #cfgwriter.write("--import-process-count={0}\n".format(options.num_procs)) #DISABLED UNTIL PATCHED...
-        pass
+        cfgwriter.write("--import-process-count={0}\n".format(options.num_procs))
 
     
     if options.mprophet is not None:
@@ -1146,7 +1201,7 @@ else:
             cfgwriter.write("--reintegrate-overwrite-peaks\n")
 
         elif "reverse" in options.mprophet:
-            cfgwriter.write("--decoys-add=reverse\n")
+            #cfgwriter.write("--decoys-add=reverse\n")
             cfgwriter.write("--import-all=.\n")
             cfgwriter.write("--reintegrate-model-name=REVERSEcombinedanalysis"+str(datetime.datetime.now().time()).replace(":",'').replace('.','')+"\n")
             cfgwriter.write("--reintegrate-create-model\n")
@@ -1154,7 +1209,7 @@ else:
             cfgwriter.write("--reintegrate-overwrite-peaks\n")
 
         elif "shuffle" in options.mprophet:
-            cfgwriter.write("--decoys-add=shuffle\n")
+            #cfgwriter.write("--decoys-add=shuffle\n")
             cfgwriter.write("--import-all=.\n")
             cfgwriter.write("--reintegrate-model-name=SHUFFLEcombinedanalysis"+str(datetime.datetime.now().time()).replace(":",'').replace('.','')+"\n")
             cfgwriter.write("--reintegrate-create-model\n")
@@ -1171,18 +1226,18 @@ else:
             #cfgwriter.close()
             #sys.exit(2)
         else:
+            pass
             cfgwriter.write("--import-all=.\n")
 
 
     else:
+        pass
         cfgwriter.write("--import-all=.\n")
 
     
 
+    #cfgwriter.write("--out=docker_protection_temporary.sky\n")
     cfgwriter.close()
-
-    #prependLine("skyline_batch","--in="+skyline_filename+"\n")
-    #Let's go ahead and build a Blib library for the search results in this folder! EDIT: I THINK THIS IS HANDLED BY SKYLINE NOW.... COMMENTED OUT.
 
     single_cfgwriter=open("skyline_batch",'ab')
 
@@ -1223,17 +1278,9 @@ else:
     #final_cmd="SkylineRunner "+whole
 
     final_cmd=final_cmd.split()
+    print "execution 3:"
     print "About to execute command ",' '.join(final_cmd)
 
-        #print whole
-
-    #with open("execute.bat",'wb') as mywriter:
-    #    mywriter.write(' '.join(final_cmd))
-
-
-
-
-    #shutil.copy("skyline_batch","C:\Users\JamesLab\Downloads\skyline_batch")
     notConnectedSkyline=True
     attempt=1
     while notConnectedSkyline:
@@ -1279,6 +1326,7 @@ else:
     final_cmd="SkylineCmd "+whole
 
     final_cmd=final_cmd.split()
+    print "execution 4:"
     print "About to execute command ",' '.join(final_cmd)
 
 
