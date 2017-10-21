@@ -309,8 +309,8 @@ if experiments is not None:
                 biol_rep_groups[group_IDstring]=biol_replicate
     for each in fileNameDictionary:
         for eachgroup in groupDict:
-            #print "working on",eachgroup,"looking to match",groupDict[eachgroup],"to",each
-            if eachgroup in each:
+            print "working on",eachgroup,"looking to match",groupDict[eachgroup],"to",each
+            if eachgroup==each:
             #if groupDict[eachgroup] in each:
                 #experimentDict[each]=groupDict[eachgroup]
                 experimentDict[each]=eachgroup
