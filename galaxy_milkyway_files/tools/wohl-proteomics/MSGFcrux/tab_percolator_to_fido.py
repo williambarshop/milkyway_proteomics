@@ -13,7 +13,7 @@ be merged into a pandas dataframe.  Repeated peptides will have the best (1-PEP)
 2016-09-12
 
 usage (from galaxy):
-tab_percolator_to_fido.py percolator_output_parent_folder/ $target_fasta $decoy_fasta $graph_output $target_decoy_output <true/false for all psms>
+tab_percolator_to_fido.py percolator_output_parent_folder/ $target_fasta $decoy_fasta $graph_output $target_decoy_output <true/false for all_scores> <true/false for psm_level>
 """
 
 import sys
@@ -39,9 +39,14 @@ class Perco2Fido(object):
         targetfasta = args[1]
         decoyfasta = args[2]
         tdoutput = args[4]
-        all_psms=False
+        all_scores=False
         if "true" in args[5] or "True" in args[5] or "TRUE" in args[5]:
-            all_psms=True
+            all_scores=True
+        psm_level=False
+        if "psms" in args[6] or "PSMS" in args[6] or "PSM" in args[6] or "psm" in args[6] or "true" in args[6] or "TRUE" in args[6]:
+            psm_level=True
+
+
 
         targetfasta_seq = SeqIO.parse(open(targetfasta,'rb'),'fasta')        
         decoyfasta_seq = SeqIO.parse(open(decoyfasta,'rb'),'fasta')        
@@ -76,7 +81,9 @@ class Perco2Fido(object):
 
         for root, subFolders, files in os.walk(in_folder):
             for eachfile in files:
-                if 'peptides.txt' in eachfile:
+                if 'peptides.txt' in eachfile and not psm_level:
+                    infiles.append(str(os.path.join(root,eachfile)))
+                elif 'psms.txt' in eachfile and psm_level:
                     infiles.append(str(os.path.join(root,eachfile)))
 
         dataframe_vector=[]
@@ -94,8 +101,8 @@ class Perco2Fido(object):
         #print dataframe_vector[0].columns.values
         del dataframe_vector
         peptides, pepunique = self.readPercolatorPeptides(percolator_results)
-        if all_psms:
-            self.writeFidoInputAllPSMs(peptides, outfile)
+        if all_scores:
+            self.writeFidoInputAllScores(peptides, outfile)
         else:
             self.writeFidoInput(pepunique, outfile)
         
@@ -150,7 +157,7 @@ class Perco2Fido(object):
             f.write("p " + str(pepprob) + "\n")    
         f.close()
         '''
-    def writeFidoInputAllPSMs(self, peptide_list,fidoOutputFile):#,fidoOutputFile2): # current released fido only outputs one file
+    def writeFidoInputAllScores(self, peptide_list,fidoOutputFile):#,fidoOutputFile2): # current released fido only outputs one file
     #   graph input looks like this:
     #    e EEEMPEPK
     #    r SW:TRP6_HUMAN

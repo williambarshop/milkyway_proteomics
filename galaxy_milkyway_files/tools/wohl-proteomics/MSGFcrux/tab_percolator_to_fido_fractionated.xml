@@ -1,13 +1,11 @@
 <tool id="milkyway_percolator_to_fido" version="0.2.1" name="milkyway_percolator_to_fido" >
 
   <description>
-          Prepares many peptide-level percolator outputs to be run with Fido in a combined analysis.
-          For peptides found in multiple experiments, the top PEP across all experiments is singly used for each peptide.
-          Now supports FidoCT!
+          Prepares many percolator outputs to be run with Fido in a combined analysis.
   </description>
   <command>
    tar -zxvf $pout_tar;
-   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/tab_percolator_to_fido.py output $targetdatabase $decoydatabase $fido_input $target_decoy $all_psms 2&gt;&amp;1;
+   python /galaxy-central/tools/wohl-proteomics/MSGFcrux/tab_percolator_to_fido.py output $targetdatabase $decoydatabase $fido_input $target_decoy $all_scores $psm_level 2&gt;&amp;1;
    #if $fct.fidoCT
    mv $target_decoy temp.td;
    python /galaxy-central/tools/wohl-proteomics/FidoCT/td_converter.py temp.td $target_decoy $fct.decoy_str;
@@ -17,7 +15,8 @@
        <param name="pout_tar" type="data" label="tab delimited output tar file from crux percolator" />
        <param name="targetdatabase" type="data" format="fasta" label="Target FASTA database" />
        <param name="decoydatabase" type="data" format="fasta" label="Decoy FASTA database" />
-        <param name="all_psms" type="boolean" truevalue="true" falsevalue="false" checked="true" label="Use all PSMs?" help="If disabled, only most confident PSM per peptide is used." />
+       <param name="all_scores" type="boolean" truevalue="true" falsevalue="false" checked="true" label="Use all available scores?" help="If disabled, only most confident score per analyte level is used." />
+       <param name="psm_level" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Use PSM level instead of peptide level scores?" help="If disabled, peptide level PEPs are given" />
 
     <conditional name="fct">
         <param name="fidoCT" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Prepare inputs for FidoCT?" help="FidoCT is the new convolution trees implementaiton of Fido..." />
