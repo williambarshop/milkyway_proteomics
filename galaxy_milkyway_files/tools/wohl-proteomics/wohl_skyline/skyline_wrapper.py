@@ -1144,6 +1144,7 @@ else:
 
     #Now we'll have to save the document and then we can reopen it to import in parallel
     ###########################~~~~
+        cfgwriter.write("--out=docker_protection_temporary.sky\n")
         cfgwriter.close()
         print "Setting up the file so that we can use parallel import!"
         with open('skyline_batch','rb') as batchreader:
