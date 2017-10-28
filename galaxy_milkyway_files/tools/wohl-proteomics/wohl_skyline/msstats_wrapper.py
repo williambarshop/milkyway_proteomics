@@ -688,7 +688,7 @@ with open("MSstats_Script.R",'wb') as script_writer:
             script_writer.write("featureSubset=\"top3\",")
         else:
             script_writer.write("featureSubset=\"topN\",")
-            script_writer.write("featureSubset=\"n_top_feature="+str(options.feature_subset_N)+",")
+            script_writer.write("n_top_feature="+str(options.feature_subset_N)+",")
     elif "highQuality" in options.feature_subset:
         script_writer.write("featureSubset=\"highQuality\",")
 
