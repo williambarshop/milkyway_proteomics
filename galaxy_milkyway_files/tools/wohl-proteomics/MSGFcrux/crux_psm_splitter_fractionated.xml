@@ -20,7 +20,7 @@
    --ptmThreshold $localization_filter.ptmRS_threshold
    #else if $localization_filter.localization_type=="phosphoRS"
    --ptmThresholdType $localization_filter.localization_type
-   --ptmThreshold $localization_filter.ptmRS_threshold
+   --ptmThreshold $localization_filter.phosphoRS_threshold
    #else if $localization_filter.localization_type=="LuciPHOr"
    --ptmThresholdType $localization_filter.localization_type
    --ptmThreshold $localization_filter.luciphor_threshold
@@ -48,7 +48,7 @@
    --ptmThreshold $localization_filter.ptmRS_threshold
    #else if $localization_filter.localization_type=="phosphoRS"
    --ptmThresholdType $localization_filter.localization_type
-   --ptmThreshold $localization_filter.ptmRS_threshold
+   --ptmThreshold $localization_filter.phosphoRS_threshold
    #else if $localization_filter.localization_type=="LuciPHOr"
    --ptmThresholdType $localization_filter.localization_type
    --ptmThreshold $localization_filter.luciphor_threshold
@@ -71,7 +71,7 @@
    --ptmThreshold $localization_filter.ptmRS_threshold
    #else if $localization_filter.localization_type=="phosphoRS"
    --ptmThresholdType $localization_filter.localization_type
-   --ptmThreshold $localization_filter.ptmRS_threshold
+   --ptmThreshold $localization_filter.phosphoRS_threshold
    #else if $localization_filter.localization_type=="LuciPHOr"
    --ptmThresholdType $localization_filter.localization_type
    --ptmThreshold $localization_filter.luciphor_threshold
@@ -95,7 +95,7 @@
    --ptmThreshold $localization_filter.ptmRS_threshold
    #else if $localization_filter.localization_type=="phosphoRS"
    --ptmThresholdType $localization_filter.localization_type
-   --ptmThreshold $localization_filter.ptmRS_threshold
+   --ptmThreshold $localization_filter.phosphoRS_threshold
    #else if $localization_filter.localization_type=="LuciPHOr"
    --ptmThresholdType $localization_filter.localization_type
    --ptmThreshold $localization_filter.luciphor_threshold
