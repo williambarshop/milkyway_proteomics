@@ -18,10 +18,10 @@ from subprocess import STDOUT, call
 #This is the script to add FIDO protein level q-values back into our percolator psms outputs...
 #We'll add q-values into the .target.psms files, as well as use pyteomics to read some mzid files...
 #
-#VERSION 0.8.0
-version="0.8.0"
-#DATE: 1/24/2017
-date="1/24/2017"
+#VERSION 0.8.1
+version="0.8.1"
+#DATE: 11/21/2017
+date="11/21/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the FIDO q-value insertion tool for Galaxy, Wohlschlegel Lab UCLA"
@@ -145,9 +145,14 @@ def add_Prot_Info(group):
                     pass
                 #group.loc[
             ######~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        
-        group.loc[index,'protein q-values']=",".join(q_list)
-        group.loc[index,'protein empirical q-values']=",".join(emp_q_list)
+        statistical_q=",".join(q_list)
+        empirical_q=",".join(emp_q_list)
+        if useEmpirical:
+            group.loc[index,'protein q-values']=statistical_q
+        else:
+            group.loc[index,'protein q-values']=empirical_q
+        group.loc[index,'protein empirical q-values']=empirical_q
+        group.loc[index,'statistical protein q-values']=statistical_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
         #print aa_list,"b4"
         group.loc[index,'flanking aa']=",".join(fixed_aa_list)
@@ -171,14 +176,19 @@ def add_Prot_Info(group):
 parser = optparse.OptionParser()
 parser.add_option("--fidoq",action="store",type="string",dest="fidoq")
 parser.add_option("--index",action="store_true", dest="index")
+parser.add_option("--useEmpirical",action="store_true", dest="useEmpirical")
 parser.add_option("--clean",action="store_true", dest="clean") #This is going to be to clean up after crux percolator's problem with --top-match filters!  ONLY ENABLE IF TOP-MATCH IS SUPPOSED TO BE = 1!
 parser.add_option("--diaumpire",action="store_true", dest="diaumpire")
 
 (options,args) = parser.parse_args()
 global clean
+global useEmpirical
+useEmpirical=False
 clean=False
 if options.clean:
     clean=True
+if options.useEmpirical:
+    useEmpirical=True
 if options.index:
     add_index=True
 global diaumpire
@@ -252,15 +262,20 @@ for each_match in mzid_matches:
 
 #Now we're going to have to read in all the protein Q-Values into a global dictionary so the multithreading can deal w/ it...
 global protein_q_dict #again, for joblib to copy into each instance...
+global empirical_q_dict
+global protein_group_dict
 protein_q_dict={}
 empirical_q_dict={}
+protein_group_dict={}
 
 protein_q_df=pandas.read_csv(options.fidoq,sep='\t')
 
 for index,row in protein_q_df.iterrows():
-    #for each_protein in row['protein group'].split(",")
-    protein_q_dict[row['protein group']]=row['q-value']
-    empirical_q_dict[row['protein group']]=row['empirical q-value']
+    protein_group_list=[x.strip() for x row['protein group'].split("\t")]
+    for each_protein in protein_group_list:
+        protein_q_dict[each_protein]=row['q-value']
+        empirical_q_dict[each_protein]=row['empirical q-value']
+        ###~~~###protein_group_dict[each_protein]=";".join(row['protein group'])
 
 #Okay, now that we have that, we'll need to read in the percolator psms txt files (we'll do this one at a time to make things easy for us.)
 
@@ -289,6 +304,8 @@ for each_psms_file in targetpsms_matches:
 
     this_df['file_scan_id']=this_df['file']+"_"+this_df['scan']+"_"+this_df['unmodified sequence']
     this_df['scan']=this_df['scan'].astype(int)
+    #this_df['statistical protein q-values']=""
+    #this_df['protein inference group']=""
     if options.clean:
         this_df['clean_up']=1
         
