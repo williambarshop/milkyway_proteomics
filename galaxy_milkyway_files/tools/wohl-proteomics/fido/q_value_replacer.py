@@ -87,12 +87,12 @@ def add_Prot_Info(group):
             try:
                 q_list.append(str(protein_q_dict[prot]))
             except:
-                print "couldnt find ",prot
+                #print "couldnt find ",prot
                 q_list.append("1.0")
             try:
                 emp_q_list.append(str(empirical_q_dict[prot]))
             except:
-                print "empirical couldnt find ",prot
+                #print "empirical couldnt find ",prot
                 emp_q_list.append("1.0")
             #for each in grouped_df.groups:
             #    print each
@@ -154,6 +154,12 @@ def add_Prot_Info(group):
         group.loc[index,'protein empirical q-values']=empirical_q
         group.loc[index,'statistical protein q-values']=statistical_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
+        try:
+            group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
+            group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+        except:
+            group.loc[index,'protein inference group']=eachrow['protein id']
+            group.loc[index,'protein inference group ID']=0
         #print aa_list,"b4"
         group.loc[index,'flanking aa']=",".join(fixed_aa_list)
         #print fixed_aa_list,"after",q_list
@@ -264,18 +270,29 @@ for each_match in mzid_matches:
 global protein_q_dict #again, for joblib to copy into each instance...
 global empirical_q_dict
 global protein_group_dict
+global protein_groupID_dict
+
 protein_q_dict={}
 empirical_q_dict={}
 protein_group_dict={}
+protein_groupID_dict={}
+protein_to_groupID_dict={}
 
 protein_q_df=pandas.read_csv(options.fidoq,sep='\t')
+i=1
 
 for index,row in protein_q_df.iterrows():
-    protein_group_list=[x.strip() for x row['protein group'].split("\t")]
+    protein_group_list=[x.strip() for x in row['protein group'].split("\t")]
     for each_protein in protein_group_list:
         protein_q_dict[each_protein]=row['q-value']
         empirical_q_dict[each_protein]=row['empirical q-value']
-        ###~~~###protein_group_dict[each_protein]=";".join(row['protein group'])
+        protein_group_dict[each_protein]=";".join(row['protein group'])
+        if str(row['protein group']) not in protein_groupID_dict:
+            #group_list.append(str(each_group))
+            protein_groupID_dict[str(row['protein group'])]=i
+            protein_to_groupID_dict[each_protein]=i
+            i+=1
+        protein_group_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
 
 #Okay, now that we have that, we'll need to read in the percolator psms txt files (we'll do this one at a time to make things easy for us.)
 
