@@ -252,6 +252,7 @@ class Perco2Fido(object):
     def readPercolatorPeptides(self, perco_dataframe):
         percolatorPeptides = []
         peptideUnique = dict()
+        perco_dataframe['protein id']=perco_dataframe['protein id'].astype(str)
         for index,eachitem in perco_dataframe.iterrows():
             #print eachitem,type(eachitem),"eachitem"
             decoy = True
