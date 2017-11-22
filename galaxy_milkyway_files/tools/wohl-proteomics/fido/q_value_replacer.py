@@ -292,6 +292,9 @@ for index,row in protein_q_df.iterrows():
             protein_groupID_dict[str(row['protein group'])]=i
             protein_to_groupID_dict[each_protein]=i
             i+=1
+        else:
+            protein_to_groupID_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
+
         protein_group_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
 
 #Okay, now that we have that, we'll need to read in the percolator psms txt files (we'll do this one at a time to make things easy for us.)
