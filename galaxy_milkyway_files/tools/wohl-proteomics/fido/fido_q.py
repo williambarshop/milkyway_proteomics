@@ -1,5 +1,5 @@
 '''
-2016-10-16
+2017-12-01
 Author: WILLIAM BARSHOP
 LABORATORY OF JAMES A WOHLSCHLEGEL
 
@@ -8,6 +8,7 @@ This script will take the Fido raw output and produce Baysen "q-values" (pFDR) v
 
 
 Usage: python fido_q.py $fido_output $decoy_string $output <"true" or "false" for FidoCT>
+Caution... This script has some old code... Sorry.
 '''
 
 import sys, os,time
@@ -16,12 +17,16 @@ arguments = sys.argv[1:]
 input_file=arguments[0]
 decoy_string=arguments[1]
 output_file=arguments[2]
+
+useEmpirical=False
+if "--useEmpirical" in arguments[3]:
+   useEmpirical=True
 fidoCT=False
 clip_zero=False
-if arguments[3]=="true":
+if arguments[4]=="true":
     fidoCT=True
-if len(arguments)>3:
-    if arguments[4]=="true":
+if len(arguments)>4:
+    if arguments[5]=="true":
         clip_zero=True
 
 
@@ -204,9 +209,9 @@ for each_probability in sorted(empirical_ptoq.keys(),reverse=False):
 
 reconstructed_probdict={}
 ptoq_dict_file=open(ptoq_file,'wb')
-ptoq_dict_file.write("FIDO Probability,q-value,empirical q-value,protein group\n")
+ptoq_dict_file.write("FIDO Probability,q-value,statistical q-value,empirical q-value,protein group\n")
 with open(output_file,'w') as writer:
-    writer.write("q-value\tempirical q-value\tprotein group\n")
+    writer.write("q-value\tstatistical q-value\tempirical q-value\tprotein group\n")
     for each_probability in sorted(probability_dict.keys(),reverse=True):
         prot_groups_at_prob=probability_dict[each_probability]
         reconstructed_probdict[each_probability]=[]
@@ -232,9 +237,14 @@ with open(output_file,'w') as writer:
             continue
 
         for eachgroup in prot_groups_at_prob:
-            writer.write(str(ptoq[each_probability])+"\t"+str(empirical_ptoq[each_probability])+"\t"+",".join(eachgroup)+"\n")
+            if useEmpirical:
+                writer.write(str(empirical_ptoq[each_probability])+"\t"+str(ptoq[each_probability])+"\t"+str(empirical_ptoq[each_probability])+"\t"+",".join(eachgroup)+"\n")
+                ptoq_dict_file.write(','.join([str(each_probability),str(empirical_ptoq[each_probability]),str(ptoq[each_probability]),str(empirical_ptoq[each_probability]),'\t'.join(eachgroup)])+'\n')
+            else:
+                writer.write(str(ptoq[each_probability])+"\t"+str(ptoq[each_probability])+"\t"+str(empirical_ptoq[each_probability])+"\t"+",".join(eachgroup)+"\n")
+                ptoq_dict_file.write(','.join([str(each_probability),str(ptoq[each_probability]),str(ptoq[each_probability]),str(empirical_ptoq[each_probability]),'\t'.join(eachgroup)])+'\n')
+
             #print str(empirical_ptoq[each_probability])
-            ptoq_dict_file.write(','.join([str(each_probability),str(ptoq[each_probability]),str(empirical_ptoq[each_probability]),'\t'.join(eachgroup)])+'\n')
             #print ','.join([str(each_probability),str(empirical_ptoq[each_probability]),'\t'.join(eachgroup)])+'\n'
     #for each_probability in sorted(probability_dict.keys(),reverse=True):
     #    prot_groups_at_prob=reconstructed_probdict[each_probability]

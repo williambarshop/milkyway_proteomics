@@ -151,7 +151,7 @@ def add_Prot_Info(group):
             group.loc[index,'protein q-values']=statistical_q
         else:
             group.loc[index,'protein q-values']=empirical_q
-        group.loc[index,'protein empirical q-values']=empirical_q
+        group.loc[index,'empirical protein q-values']=empirical_q
         group.loc[index,'statistical protein q-values']=statistical_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
         try:
@@ -319,7 +319,7 @@ for each_psms_file in targetpsms_matches:
     #    remove_unmod=True
 
     this_df_group=this_df.groupby(numpy.arange(len(this_df))//multiprocessing.cpu_count())
-    this_df=applyParallel(this_df_group,makeUnmodSeq)
+    this_df=applyParallelHalf(this_df_group,makeUnmodSeq)
     this_df['proteinacc_start_stop_pre_post_;']=this_df['unmodified sequence'].map(pep_mappings)
 
     this_df['file_scan_id']=this_df['file']+"_"+this_df['scan']+"_"+this_df['unmodified sequence']
@@ -336,7 +336,7 @@ for each_psms_file in targetpsms_matches:
     #this_df.to_csv("TESTING.csv")
     #print this_df,"This is before runnning...."
     #break #~!~~~~~~~~~~~~
-    addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
+    addedProtInfo=applyParallelHalf(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
     del grouped_df
     print "Done adding protein information...",addedProtInfo
     if options.clean:
