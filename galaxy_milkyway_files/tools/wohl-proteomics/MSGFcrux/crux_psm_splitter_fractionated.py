@@ -379,8 +379,8 @@ if speccount: #We'll do the spectral counting stuff allllllll inside here
             if "q-value" in line[0]:
                 continue
             elif float(line[0]) <= qvalue: #and decoy_str not in line[1]:
-                if "," in line[2]:
-                    temp=line[2].replace("{","").replace("}","").split(",")
+                if "," in line[3]:
+                    temp=line[3].replace("{","").replace("}","").split(",")
                     temp2=[]
                     for eachone in temp:
                         if not decoy_str in eachone:
@@ -388,8 +388,8 @@ if speccount: #We'll do the spectral counting stuff allllllll inside here
                     if len(temp2)>0:
                         passing_proteins[','.join(temp2)]=float(line[0])
                 else:
-                    if not decoy_str in line[2]:
-                        passing_proteins[line[2]]=float(line[0])
+                    if not decoy_str in line[3]:
+                        passing_proteins[line[3]]=float(line[0])
 
     #print passing_proteins,"passing proteins"
 
