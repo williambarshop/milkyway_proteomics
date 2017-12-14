@@ -7,8 +7,9 @@
    #set $mzml_list = ""
    #for $each in $mzml_files:
        #set $mzml_list+= "\""
-       ln -s '$each' '${each.display_name}';
-       #set $mzml_list+=$str($each.display_name)
+       #set $copy_name=$str($each.display_name).rsplit(".",1)[0]+".mzML"
+       ln -s '$each' '$copy_name';
+       #set $mzml_list+=$copy_name
        #set $mzml_list+= "\""
        #set $mzml_list+= ","
    #end for
