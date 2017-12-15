@@ -4,6 +4,14 @@
 	Skyline intensity based quantitation via the SkylineRunner interface!
   </description>
   <command>
+      #if $resLabel.residueIsotopes=="--residueIsotopes"
+        #set $heavy_modstr = str($resLabel.heavymod).replace("___,","___")
+        echo $heavy_modstr ;
+        #set $light_modstr = str($resLabel.lightmod).replace("___,","___")
+        echo $light_modstr ;
+      #end if
+
+
       awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${database} > ${database}_corrected.fasta &amp;
       #if not $protdb_upload.protdb
       #set $background_database = $str($protdb_upload.background_database)
@@ -45,6 +53,12 @@
       #end if
       --exp_file $exp_file
       $makeblib
+      #if $resLabel.residueIsotopes=="--residueIsotopes"
+        $resLabel.residueIsotopes
+        --heavyMass $heavy_modstr
+        --lightMass $light_modstr
+        $resLabel.removeUnmodRI
+      #end if
       --output $output
       --chromatograms_file $output_chromatograms
       --peak_boundaries $output_boundaries
@@ -116,6 +130,24 @@
         </param>
 
         <param name="num_procs" type="integer" value="6" min="0" max="32" label="Number of parallel import processes" />
+
+
+   <section name="resLabel" title="Residue Labeling Experiment Parameters" expanded="False">
+    <param name="residueIsotopes" type="boolean" truevalue="--residueIsotopes" falsevalue="" checked="false" label="Enable Residue Specific Isotope Labeling?" help="Only works with MS1 experiments."/>
+    <param name="removeUnmodRI" type="boolean" truevalue="--removeUnmodRI" falsevalue="" checked="true" label="Remove Unmodified peptides?" help="This must be enabled for the mProphet model to properly build using isotope information."/>
+    <param name="lightmod" format="text" type="select" multiple="false" label="Light Modification">
+      <options from_file="msgfplus_mods.loc">
+        <column name="name" index="0" />
+        <column name="value" index="2" />
+      </options>
+    </param>
+    <param name="heavymod" format="text" type="select" multiple="false" label="Heavy Modification">
+      <options from_file="msgfplus_mods.loc">
+        <column name="name" index="0" />
+        <column name="value" index="2" />
+      </options>
+    </param>
+   </section>
 
 
   </inputs>
