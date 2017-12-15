@@ -110,7 +110,7 @@ parser.add_option("--num_procs",action="store", type="int", dest="num_procs")
 parser.add_option("--residueIsotopes",action="store_true",dest="residueIsotopes")
 parser.add_option("--lightMass",action="store", type="string", dest="lightMass") #These are the galaxy style modstrings
 parser.add_option("--heavyMass",action="store", type="string", dest="heavyMass") #(as above)
-#parser.add_option("--output",action="store", type="string", dest="output")
+parser.add_option("--isotopeScriptLocation",action="store", type="string", dest="isotopeScript")
 parser.add_option("--removeUnmodRI",action="store_true",dest="removeUnmodRI")
 
 
@@ -1109,6 +1109,7 @@ else:
             print options.heavyMass
             print options.lightMass
             heavyMass_value=options.heavyMass.split(",")[0]
+            target_AA=options.heavyMass.split(",")[1]
             try:
                 heavyMass_value=float(heavyMass_value)
             except:
@@ -1123,10 +1124,11 @@ else:
             removeUnmod=""
             if options.removeUnmodRI:
                 removeUnmod="--removeUnmod"
-            residueIsotope_cmd="python --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format(skyline_filename,lightMass,heavyMass,targetAA,removeUnmod)
+            residueIsotope_cmd="python {5} --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format("docker_protection_temporary.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod,options.isotopeScript)
             print residueIsotope_cmd," is about to be executed for residue Isotopes..."
             proc = subprocess.Popen(args=residueIsotope_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             output_communication=proc.communicate()[0]
+            print output_communication
             returncode = proc.wait()
             if returncode != 0:
                 print "isotope pair generation error caused a crash:{0}".format(residueIsotope_cmd)

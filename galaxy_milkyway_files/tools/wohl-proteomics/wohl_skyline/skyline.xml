@@ -58,6 +58,7 @@
         --heavyMass $heavy_modstr
         --lightMass $light_modstr
         $resLabel.removeUnmodRI
+        --isotopeScriptLocation ${__tool_directory__}/isotope_pair_generator.py
       #end if
       --output $output
       --chromatograms_file $output_chromatograms
