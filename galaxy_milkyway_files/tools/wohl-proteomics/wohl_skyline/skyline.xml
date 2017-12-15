@@ -6,11 +6,8 @@
   <command>
       #if $resLabel.residueIsotopes=="--residueIsotopes"
         #set $heavy_modstr = str($resLabel.heavymod).replace("___,","___")
-        echo $heavy_modstr ;
         #set $light_modstr = str($resLabel.lightmod).replace("___,","___")
-        echo $light_modstr ;
       #end if
-
 
       awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${database} > ${database}_corrected.fasta &amp;
       #if not $protdb_upload.protdb
@@ -54,11 +51,11 @@
       --exp_file $exp_file
       $makeblib
       #if $resLabel.residueIsotopes=="--residueIsotopes"
-        $resLabel.residueIsotopes
-        --heavyMass $heavy_modstr
-        --lightMass $light_modstr
+        --residueIsotopes
+        --heavyMass "${heavy_modstr}"
+        --lightMass "${light_modstr}"
         $resLabel.removeUnmodRI
-        --isotopeScriptLocation ${__tool_directory__}/isotope_pair_generator.py
+        --isotopeScriptLocation /galaxy-central/tools/wohl-proteomics/wohl_skyline/isotope_pair_generator.py
       #end if
       --output $output
       --chromatograms_file $output_chromatograms
