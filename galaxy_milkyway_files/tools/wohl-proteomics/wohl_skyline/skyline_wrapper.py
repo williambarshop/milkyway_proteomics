@@ -9,6 +9,7 @@ import sqlite3
 import string
 from pyteomics import parser as pyparser
 from pyteomics import fasta
+from pyteomics import mass
 from operator import itemgetter
 import collections
 #from tqdm import *
@@ -39,10 +40,10 @@ warnings.showwarning = customwarn
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.70A
-version="0.70A"
-#DATE: 7/21/2017
-date="7/21/2017"
+#VERSION 0.75A
+version="0.75A"
+#DATE: 12/15/2017
+date="12/15/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -105,6 +106,15 @@ parser.add_option("--chromatograms_file",action="store", type="string", dest="ch
 parser.add_option("--quantiva_transitions",action="store", type="string", dest="quantiva_transitions") # Export quantiva transitions?
 parser.add_option("--peak_boundaries",action="store", type="string", dest="peak_boundaries")
 parser.add_option("--num_procs",action="store", type="int", dest="num_procs")
+
+parser.add_option("--residueIsotopes",action="store_true",dest="residueIsotopes")
+parser.add_option("--lightMass",action="store", type="string", dest="lightMass") #These are the galaxy style modstrings
+parser.add_option("--heavyMass",action="store", type="string", dest="heavyMass") #(as above)
+#parser.add_option("--output",action="store", type="string", dest="output")
+parser.add_option("--removeUnmodRI",action="store_true",dest="removeUnmodRI")
+
+
+
 
 (options,args) = parser.parse_args(final_args)
 
@@ -1079,6 +1089,64 @@ else:
                 raise Exception, "Program returned with non-zero exit code %d." % (returncode)
             else:
                 notConnectedSkyline=False
+
+
+
+
+        #If we're going to automate the positional isotope label generator, this is where it goes.
+        #It only makes sense for it to be run with MS1-quant, so it's going to be paired up with the decoy peptide generator.
+
+
+        #parser.add_option("--residueIsotopes",action="store_true",dest="residueIsotopes")
+        #parser.add_option("--lightMass",action="store", type="float", dest="lightMass")
+        #parser.add_option("--heavyMass",action="store", type="float", dest="heavyMass")
+        #parser.add_option("--removeUnmodRI",action="store_true",dest="removeUnmodRI")
+        
+        if options.residueIsotopes: #We are running an experiment where we have a subset of one aminoacid (eg K) getting labeled, with a variable modification- but also having an isotope partner. Not every K get modified, so skyline
+            #doesn't really naturally like these situations.  The sciprt included here will handle a simple experiment fitting this description.
+            #options.lightMass#this will be a modstring from galaxy
+            #options.heavyMass #so will this
+            print options.heavyMass
+            print options.lightMass
+            heavyMass_value=options.heavyMass.split(",")[0]
+            try:
+                heavyMass_value=float(heavyMass_value)
+            except:
+                pass#We have an elemental formula! We have to calculate out the mass from there.  Luckily, pyteomics to the rescue!
+                heavyMass_value=mass.calculate_mass(formula=heavyMass_value)
+            lightMass_value=options.lightMass.split(",")[0]
+            try:
+                lightMass_value=float(lightMass_value)
+            except:
+                pass#We have an elemental formula! We have to calculate out the mass from there.  Luckily, pyteomics to the rescue!
+                lightMass_value=mass.calculate_mass(formula=lightMass_value)
+            removeUnmod=""
+            if options.removeUnmodRI:
+                removeUnmod="--removeUnmod"
+            residueIsotope_cmd="python --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format(skyline_filename,lightMass,heavyMass,targetAA,removeUnmod)
+            print residueIsotope_cmd," is about to be executed for residue Isotopes..."
+            proc = subprocess.Popen(args=residueIsotope_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            output_communication=proc.communicate()[0]
+            returncode = proc.wait()
+            if returncode != 0:
+                print "isotope pair generation error caused a crash:{0}".format(residueIsotope_cmd)
+                raise Exception, "Program returned with non-zero exit code %d." % (returncode)
+            #sys.exit(2)
+            #pass
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
 
 
         ######################### NOW I CALL TO BUILD THE DECOY PEPTIDES ############################
