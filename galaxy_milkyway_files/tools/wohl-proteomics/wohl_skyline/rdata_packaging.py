@@ -219,7 +219,7 @@ if "accToGene" in options.renameProteinType or options.renameProteinType is None
                 catch=uni_mapping_dict_combined[each_acc]
             except:
                 uni_mapping_dict[str(each_acc)]=each_acc #This is a failed conversion!
-                pass
+                continue
 
             if len(catch)>0:
                 #print catch,type(catch)
