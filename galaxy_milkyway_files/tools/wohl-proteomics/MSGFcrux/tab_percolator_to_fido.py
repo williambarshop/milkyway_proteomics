@@ -134,7 +134,7 @@ class Perco2Fido(object):
             pepname = peptide.name
             pepprob = 1 - peptide.pep
             f.write("e " + pepname + "\n")
-            for prot in prots:
+            for prot in set(prots):
                 f.write("r " + prot + "\n")
             f.write("p " + str(pepprob) + "\n")    
         f.close()
@@ -152,7 +152,7 @@ class Perco2Fido(object):
             pepname = peptide.name
             pepprob = 1 - peptide.pep
             f.write("e " + pepname + "\n")
-            for prot in prots:
+            for prot in set(prots):
                 f.write("r " + prot + "\n")
             f.write("p " + str(pepprob) + "\n")    
         f.close()
@@ -185,7 +185,7 @@ class Perco2Fido(object):
             pepname = peptide.name
             pepprob = 1 - peptide.pep
             f.write("e " + pepname + "\n")
-            for prot in prots:
+            for prot in set(prots):
                 f.write("r " + prot + "\n")
             f.write("p " + str(pepprob) + "\n")    
         f.close()
@@ -201,7 +201,7 @@ class Perco2Fido(object):
             pepname = peptide.name
             pepprob = 1 - peptide.pep
             f.write("e " + pepname + "\n")
-            for prot in prots:
+            for prot in set(prots):
                 f.write("r " + prot + "\n")
             f.write("p " + str(pepprob) + "\n")    
         f.close()

@@ -6,6 +6,7 @@
   <command>
    cwd=`pwd`;
    mkdir output;
+
    #for $each in $targz_input:
        tar xzvf $each;
    #end for
@@ -60,7 +61,7 @@
         <param name="silac" type="boolean" truevalue="--SILAC" falsevalue="" checked="true" label="Prepare/combine files as SILAC analysis?" />
 
     <conditional name="ppm">
-        <param name="ppm_bool" type="boolean" truevalue="--ppm" falsevalue="" checked="true" label="Calculate features for ppm mass accuracy?" />
+        <param name="ppm_bool" type="boolean" truevalue="--ppm" falsevalue="" checked="true" label="Calculate features for ppm mass accuracy and retention times?" />
         <when value="--ppm">
             <conditional name="ppm_fix">
                 <param name="ppm_fix_bool" type="boolean" truevalue="true" falsevalue="" checked="true" label="Correct ppm mass accuracy per run?" />

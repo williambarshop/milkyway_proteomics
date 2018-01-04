@@ -650,12 +650,15 @@ if options.ppm:
         correction_df_list=[]
     print "We're going to add ppm mass accuracy measurements to each identification."
     mzid_dict={}
+    mzid_rt_dict={}
     ppm_correction_list=[]
 
     for eachfile in output_list:
         del mzid_dict
+        del mzid_rt_dict
         gc.collect()
         mzid_dict={}
+        mzid_rt_dict={}
 
         #file_line_ctr=0
         #with open(eachfile,'rb') as filereader:
@@ -727,6 +730,7 @@ if options.ppm:
                         peptide_start=header[:peptide_index]
                         peptide_start.append("ppm")
                         peptide_start.append("absppm")
+                        peptide_start.append("observedTime")
                         for each_item_pep in header[peptide_index:]:
                             peptide_start.append(each_item_pep)
                         #print "THE NEW HEADER\n",peptide_start
@@ -778,16 +782,24 @@ if options.ppm:
                                #mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan                                      ##### OLD: Stored entire mzid scan information in dictionaries... filled memory...
                                if 'scan number(s)' in each_scan:
                                    mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan['SpectrumIdentificationItem'][0]
+                                   this_scan_id=str(int(each_scan['scan number(s)']))
                                elif options.diaumpire:
                                    #print "Didn't find traditional scan number headers.... Assuming DIA-Umpire converted files as inputs, using \"peak list scans\" tag instead."
                                    #mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1]))]=each_scan['SpectrumIdentificationItem'][0]
                                    #mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])-1)]=each_scan['SpectrumIdentificationItem'][0]
                                    mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]
+                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
                                else:
                                    print "WARNING: ASSUMING DIAUMPIRE INPUTS!"
                                    mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0] #We're assuming it's DIAUmpire...
+                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
                                    #print "I can't find scan numbers in this... BREAKING!"
                                    #sys.exit("failure")
+                               try:
+                                   mzid_rt_dict[file_name_ppm][this_scan_id]=each_scan["scan start time"]
+                               except:
+                                   mzid_rt_dict[file_name_ppm][this_scan_id]=0.0
+
                             del reader
                             gc.collect()
                         #print "-------------"
@@ -813,7 +825,7 @@ if options.ppm:
                         #theo_mz=this_id['SpectrumIdentificationItem'][0]['calculatedMassToCharge']                                         ##### Instead, now we only store the BEST ID from each scan...
                         #exp_mz=this_id['SpectrumIdentificationItem'][0]['experimentalMassToCharge']                                        ##### If needed, we can change that later to be only the exp mz and theo mz...
                         msgf2pin_exp_mz=split_line[expmass_index]
-
+                        this_rt=mzid_rt_dict[file_name_ppm][scan_num]
 
                         #scan_num=int(specID.split("_")[3])
                         #### DETERMINE CHARGE STATE HERE
@@ -875,6 +887,7 @@ if options.ppm:
                         new_line=split_line[:peptide_index]
                         new_line.append(str(ppm))
                         new_line.append(str(absppm))
+                        new_line.append(str(this_rt))
                         #print split_line[peptide_index],"this is pep index"
                         #print split_line[peptide_index:],"this is after pep index"
                         #print "I would append",','.join(split_line[peptide_index:])
