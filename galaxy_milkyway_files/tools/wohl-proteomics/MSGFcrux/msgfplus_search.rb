@@ -205,7 +205,7 @@ ARGV.each do |filename|
 
     if ( search_tool.var_mods !="" && search_tool.var_mods !~/None/) # Checking for none is to cope with galaxy input
       p "Look like we're going to run some variable mods!"
-      var_mods = search_tool.var_mods.gsub(/,\d+.\d+\D*___/,"___").chomp("___").gsub("__gt__",">").gsub("___,","___").gsub(",___","___").split("___").collect { |mod| mod.lstrip.rstrip }.reject {|e| e.empty? }.join("\n")
+      var_mods = search_tool.var_mods.gsub(/,\d+.\d+\D*[^,]___/,"___").chomp("___").gsub("__gt__",">").gsub("___,","___").gsub(",___","___").split("___").collect { |mod| mod.lstrip.rstrip }.reject {|e| e.empty? }.join("\n")
       #var_mods << "O1,M,opt,any,Oxidation\n" if search_tool.methionine_oxidation
       #var_mods << "C2H2O,*,opt,Prot-N-term,Acetyl\n" if search_tool.acetyl_nterm
       #var_mods << "H-1N-1O1,N,opt,any,Deamidated\n" if search_tool.glyco
@@ -219,7 +219,7 @@ ARGV.each do |filename|
   # Fixed modifications
   #
     if ( search_tool.fix_mods !="" && search_tool.fix_mods !~/None/)
-      fix_mods = search_tool.fix_mods.gsub(/,\d+.\d+\D*___/,"___").chomp("___").gsub("opt","fix").gsub("__gt__",">").gsub("___,","___").gsub(",___","___").split("___").collect { |mod| mod.lstrip.rstrip }.reject { |e| e.empty? }.join("\n")
+      fix_mods = search_tool.fix_mods.gsub(/,\d+.\d+\D*[^,]___/,"___").chomp("___").gsub("opt","fix").gsub("__gt__",">").gsub("___,","___").gsub(",___","___").split("___").collect { |mod| mod.lstrip.rstrip }.reject { |e| e.empty? }.join("\n")
       #fix_mods << "C2H3N1O1,C,opt,any,Carbamidomethyl\n" if search_tool.carbamidomethyl
       fix_mods = fix_mods.gsub(/__lt__.*__gt__/, "")
       if ( fix_mods !="")
