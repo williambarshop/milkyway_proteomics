@@ -776,6 +776,7 @@ if options.ppm:
                         if not file_name_ppm in mzid_dict:
                             reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
                             mzid_dict[file_name_ppm]={}
+                            mzid_rt_dict[file_name_ppm]={}
                             #print "We'll have to iterate over the mass spec data to get high res masses..."
                             print "Reading in file",file_name_ppm,"..."
                             for each_scan in reader:
