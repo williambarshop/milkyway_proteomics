@@ -102,8 +102,8 @@ TMT0 K	TMT_k_	224.152478,K,opt,any,TMT,___	TMT_k_
 TMT0 PepNterm	TMT_PepNTerm_	224.152478,*,opt,N-term,TMT,___	TMT_N-term_
 iodoTMT0 C	iodoTMT_c_	324.216141,C,opt,any,iodoTMT,___	iodoTMT_C_
 iodoTMT6plex C	iodoTMT6plex_c_	329.226595,C,opt,any,iodoTMT6plex,___	iodoTMT6plex_C_
-#No-Mod X	nomod_x_	,,,,___	nomod_x_
 KBHeavy K      KBHeavy_k_     470.26331,K,opt,any,KBHeavyK,___     KBHeavy_k_
 KBLight K      KBLight_k_     464.2491,K,opt,any,KBLightK,___     KBLight_k_
 KBHeavy C      KBHeavy_c_     470.29976,C,opt,any,KBHeavyC,___     KBHeavy_c_
 KBLight C      KBLight_c_     464.28595,C,opt,any,KBLightC,___     KBLight_c_
+#No-Mod X	nomod_x_	,,,,___	nomod_x_
