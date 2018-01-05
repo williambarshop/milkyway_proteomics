@@ -4,8 +4,8 @@
 ## For use in Galaxy-Proteomics Workflows
 ## where fractionated data is common.
 ##
-version="1.06"
-##Date : 2017-07-22
+version="1.07"
+##Date : 2018-01-04
 ##
 ######################################
 from optparse import OptionParser
@@ -195,6 +195,44 @@ for each_key in run_groups:
 
 target_files = glob.glob(os.path.join("targets/",'*.mzid'))
 decoy_files = glob.glob(os.path.join("decoys/",'*.mzid'))
+full_files = target_files
+full_files.extend(decoy_files)
+
+#We're just going to slide some code in here to handle situations with unknown modifications.
+#Pretty much, we'll read the mzid files for lines containing "<cvParam cvRef=\"PSI-MS\" accession=\"MS:1001460\""
+#and then read the line just before it for the mass, as in "<Modification location=\"18\" monoisotopicMassDelta=\"470.26331\">"
+#and then take the mass, take the number of places before the decimals and change the next line like so:
+#<cvParam cvRef=\"PSI-MS\" accession=\"UNIMOD:39947026331\"
+#where 3 is the number of digits before the decimal
+#99 is a pad
+#and the rest of the numbers contain the mod mass.
+
+print "starting the unknown modmass replacement..."
+for each_file in full_files:
+    os.rename(each_file,each_file+"_orig")
+    with open(each_file,'w') as mzid_writer:
+        with open(each_file+"_orig",'r') as mzid_reader:
+            prev_line=None
+            curr_line=None
+            for each_line in mzid_reader:
+                prev_line=curr_line
+                curr_line=each_line
+                if "accession=\"MS:1001460\"" in curr_line:
+                    unk_mod_mass=prev_line.split("=",2)[2].split(" ")[0]
+                    unk_mod_mass=unk_mod_mass.replace("\"","").strip()
+                    #unk_mod_mass=float(mod_str)
+                    decimal_power=len(str(unk_mod_mass).split(".")[0])
+                    #curr_line=curr_line.replace("MS:1001460","UNIMOD:{0}99{1}".format(decimal_power,str(unk_mod_mass).replace(".","")))
+                    curr_line=curr_line.replace("PSI-MS","UNIMOD")
+                    #print "current line is",curr_line
+                if prev_line is not None:
+                    mzid_writer.write(prev_line)
+            mzid_writer.write(curr_line)
+    os.unlink(each_file+"_orig")
+            
+
+
+
 
 
 #with open(inputfiles,'rb') as inputfile_list:
@@ -730,7 +768,7 @@ if options.ppm:
                         peptide_start=header[:peptide_index]
                         peptide_start.append("ppm")
                         peptide_start.append("absppm")
-                        peptide_start.append("observedTime")
+                        peptide_start.append("retentionTime")
                         for each_item_pep in header[peptide_index:]:
                             peptide_start.append(each_item_pep)
                         #print "THE NEW HEADER\n",peptide_start
@@ -764,7 +802,7 @@ if options.ppm:
                         if silac:
                             file_name_ppm=original_mzid_mapping[specID.rsplit("_",7)[0]]['original_file'][specID]
                         else:
-                            if label == "1":
+                            if specID.rsplit("_",7)[1] != "decoy":
                                 file_name_ppm="targets/"+specID.rsplit("_",7)[0]+"_target.mzid"
                             else:
                                 file_name_ppm="decoys/"+specID.rsplit("_",7)[0]+"_decoy.mzid"
@@ -820,6 +858,7 @@ if options.ppm:
                         #    print each_scan
                         #print "----------------------------------"
                         #print split_line
+                        #print file_name_ppm,scan_num
                         this_id=mzid_dict[file_name_ppm][scan_num]
                         theo_mz=this_id['calculatedMassToCharge']
                         exp_mz=this_id['experimentalMassToCharge']
