@@ -683,6 +683,173 @@ if options.diaumpire:
         shutil.copy(eachfile+"_dia",eachfile)
 
 
+
+
+##################################################
+##################################################
+#We're going to finish up handling on the PTMs.  If we find some unknown mods, we're going to read through the mzid file and try to grab the correct masses
+#and slip them into place.
+
+ptm_mzid_dict={}
+for eachfile in output_list:
+    del ptm_mzid_dict
+    gc.collect()
+    ptm_mzid_dict={}
+    print "Opening file ",eachfile,"..."
+    with open(eachfile+"_ptms",'wb') as filewriter:
+        with open(eachfile,'rb') as filereader:
+            linectr=0
+            peptide_index=0
+            expmass_index=0
+            mass_index=0
+            index_ctr=0
+            specID_index=0
+            scan_index=0
+            label_index=0
+            isotope_error_index=0
+            charge1_index=-1
+            charge2_index=-1
+            charge3_index=-1
+            charge4_index=-1
+            charge5_index=-1
+            charge6_index=-1
+            charge7_index=-1
+            charge8_index=-1
+            new_reconstructed_lines=[]
+            print "Now for each line..."
+            for eachline in filereader:
+                if linectr==0:
+                    header=eachline.split("\t")
+                    for each_item in header:
+                        if each_item == "Peptide":
+                            peptide_index=index_ctr
+                        elif each_item == "ExpMass":
+                            expmass_index=index_ctr
+                        elif each_item == "CalcMass":
+                            mass_index=index_ctr
+                        elif each_item == "Charge1":
+                            charge1_index=index_ctr
+                        elif each_item == "Charge2":
+                            charge2_index=index_ctr
+                        elif each_item == "Charge3":
+                            charge3_index=index_ctr
+                        elif each_item == "Charge4":
+                            charge4_index=index_ctr
+                        elif each_item == "Charge5":
+                            charge5_index=index_ctr
+                        elif each_item == "Charge6":
+                            charge6_index=index_ctr
+                        elif each_item == "Charge7":
+                            charge7_index=index_ctr
+                        elif each_item == "Charge8":
+                            charge8_index=index_ctr
+                        elif each_item == "SpecId":
+                            specID_index=index_ctr
+                        elif each_item == "ScanNr":
+                            scan_index=index_ctr
+                        elif each_item == "Label":
+                            label_index=index_ctr
+                            #print label_index,"THIS IS LABEL INDEX"
+                        elif each_item == "IsotopeError":
+                            isotope_error_index=index_ctr
+
+                        index_ctr+=1
+
+                    #peptide_index+=1
+                    #print "this should be peptide...",header[peptide_index]
+
+                    peptide_start=header[:peptide_index]
+                    peptide_start.append("ppm")
+                    peptide_start.append("absppm")
+                    peptide_start.append("retentionTime")
+                    for each_item_pep in header[peptide_index:]:
+                        peptide_start.append(each_item_pep)
+                    #print "THE NEW HEADER\n",peptide_start
+                    new_reconstructed_lines.append(peptide_start)
+
+                elif linectr ==1:
+                    directions=eachline.rstrip().split("\t")
+                    start_directions=directions[:peptide_index]
+                    #final_dir=start_directions[-1:]
+                    #start_directions=start_directions[:-1]
+                    #start_directions.append(final_dir[0])
+                    start_directions.append("0")
+                    start_directions.append("-1")
+                    for each_item_dir in directions[peptide_index:]:
+                        start_directions.append(each_item_dir)
+                    start_directions.append("\n")
+                    new_reconstructed_lines.append(start_directions)
+                else:
+                    split_line = eachline.split("\t")
+                    #Okay, so this is where the magic is actually going to happen.
+                    if "[unknown]" in split_line[peptide_index]:
+
+                        specID=split_line[specID_index]
+                        label=split_line[label_index]
+                        isotope_error=int(split_line[isotope_error_index])
+                        if silac:
+                            file_name_ppm=original_mzid_mapping[specID.rsplit("_",7)[0]]['original_file'][specID]
+                        else:
+                            if specID.rsplit("_",7)[1] != "decoy":
+                                file_name_ppm="targets/"+specID.rsplit("_",7)[0]+"_target.mzid"
+                            else:
+                                file_name_ppm="decoys/"+specID.rsplit("_",7)[0]+"_decoy.mzid"
+
+                        scan_num=split_line[scan_index]
+
+                        if not file_name_ppm in ptm_mzid_dict:
+                            reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
+                            by_id=mzid.read(file_name_ppm,indexed_tags={b'Peptide'})
+                            ptm_mzid_dict[file_name_ppm]={}
+                            #mzid_rt_dict[file_name_ppm]={}
+                            print "Reading in file",file_name_ppm,"..."
+                            for each_scan in reader:
+                               #ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan                                      ##### OLD: Stored entire mzid scan information in dictionaries... filled memory...
+                               if 'scan number(s)' in each_scan:
+                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
+                                   this_scan_id=str(int(each_scan['scan number(s)']))
+                               elif options.diaumpire:
+                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
+                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
+                               else:
+                                   print "WARNING: ASSUMING DIAUMPIRE INPUTS!"
+                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification'] #We're assuming it's DIAUmpire...
+                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
+
+
+                            del reader
+                            del by_id
+                        mod_positions=[]
+                        for each_mod in ptm_mzid_dict[split_line[scan_index]]:
+                            mod_positions.append((each_mod['location'],each_mod['monoisotopicMassDelta']))
+                        for each_mod_tuple in sorted(mod_positions):
+                            split_line[peptide_index].replace('unknown',each_mod_tuple[1],1)
+                        del mod_positions
+                        
+                    else:
+                        pass #Do nothing in this situation, we have no unknown mods
+                    new_reconstructed_lines.append(split_line)
+                linectr+=1
+            print "Writing pin file with fixed modifications ",eachfile
+        for each_newline in new_reconstructed_lines:
+            filewriter.write("\t".join(each_newline))
+    os.rename(eachfile,eachfile+"_beforePTMfix")
+    shutil.copy(eachfile+"_ptms",eachfile)
+    
+    
+
+##################################################
+##################################################
+
+
+
+
+##################################################
+########## STARTING PPM CALCULATIONS #############
+##################################################
 if options.ppm:
     if not options.fix_ppm:#options.fix_ppm is not None:
         correction_df_list=[]
