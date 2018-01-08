@@ -131,6 +131,7 @@ file_int=0
 
 
 mod_bracket_re='\[|\]'
+unimod_re=re.compile(r"\[UNIMOD:(\d*)\]")
 mod_dict={}
 
 
@@ -203,54 +204,65 @@ for eachfiles in zipped:
                         this_pep=line[peptide_index].replace("[UNIMOD:162]","")
                         line[peptide_index]=this_pep
 
-
+                    new_peptide=line[peptide_index]
                     if "UNIMOD" in line[peptide_index]:
-                        split_peptide=re.split(mod_bracket_re,line[peptide_index])
-                        #print split_peptide
-                        new_peptide=[]
-                        for each_split in split_peptide:
-                            if "UNIMOD" in each_split:
-                                if each_split in mod_dict:
-                                    new_peptide.append(mod_dict[each_split])
-                                else:
-                                    mass=""
-                                    print each_split," was not in the dictionary!"
-                                    #print obo_parser,type(obo_parser),"this is obo parser"
-                                    trigger=False
-                                    unimod_obo.seek(0)
-                                    for event,value in obo_parser:
-                                        if "TAG_VALUE" in event and not trigger:
-                                            #print event,value,"this is event"
-                                            if each_split in value[1]:
-                                                #print "YO",value[1],"and each split is",each_split
-                                                trigger=True
-                                                #pass
-                                        elif trigger:
-                                            #print event,value,"these are event and value..."
-                                            if "delta_mono_mass" in value[1]:
-                                                print value[1],"val1 should be the mass"
-
-                                                mass="[+"
-                                                mass+=value[1].split("\"")[1]
-                                                #print mass
-                                                if "-" in mass:
-                                                    mass=mass.replace("+","")
-                                                    #print "The mass was below zero..."
-                                                mass+="]"
-                                                #print mass,"THIS IS MAH MASS"
-                                                trigger=False
-                                                break
-                                        else:
-                                            continue
-                                    if mass=="":
-                                        print "ERROR: ERROR: ERROR: THE MASS FOR THIS MOD WAS NOT FOUND IN THE UNIMOD OBO FILE..."
-                                        sys.exit(2)    
-                                    mod_dict[each_split]=mass
-                                    new_peptide.append(mass)
-                                        
+                        match=re.findall(unimod_re,line[peptide_index])
+                        #print line[peptide_index]
+                        #for each_match in match:
+                        #    print each_match
+                        for each_mod in match:
+                            if each_mod in mod_dict:
+                                new_peptide=new_peptide.replace("UNIMOD:"+each_mod,mod_dict[each_mod],1)
                             else:
-                                new_peptide.append(each_split)
-                        new_peptide=''.join(new_peptide)
+                                mass=""
+                                print each_mod," was not in the dictionary!"
+                                #print obo_parser,type(obo_parser),"this is obo parser"
+                                trigger=False
+                                unimod_obo.seek(0)
+                                for event,value in obo_parser:
+                                    if "TAG_VALUE" in event and not trigger:
+                                        #print event,value,"this is event"
+                                        if "UNIMOD:"+each_mod == value[1]:
+                                            #print "YO",value[1],"and each mod is","UNIMOD:"+each_mod,"and",value
+                                            trigger=True
+                                            #pass
+                                    elif trigger:
+                                        #print event,value,"these are event and value..."
+                                        if "delta_mono_mass" in value[1]:
+                                            print value[1],"val1 should be the mass"
+
+                                            mass="+"
+                                            mass+=value[1].split("\"")[1]
+                                            #print mass
+                                            if "-" in mass:
+                                                mass=mass.replace("+","")
+                                                #print "The mass was below zero..."
+                                            #mass+="]"
+                                            #print mass,"THIS IS MAH MASS"
+                                            trigger=False
+                                            break
+                                    else:
+                                        continue
+                                if mass=="":
+                                    print "ERROR: ERROR: ERROR: THE MASS FOR THIS MOD WAS NOT FOUND IN THE UNIMOD OBO FILE..."
+                                    sys.exit(2)    
+                                mod_dict[each_mod]=mass
+                                new_peptide=new_peptide.replace("UNIMOD:"+each_mod,mod_dict[each_mod],1)
+
+
+
+                        #split_peptide=re.split(mod_bracket_re,line[peptide_index])
+                        ##print split_peptide
+                        #new_peptide=[]
+                        #for each_split in split_peptide:
+                        #    if "UNIMOD" in each_split:
+                        #        if each_split in mod_dict:
+                        #            new_peptide.append(mod_dict[each_split])
+                        #        else:
+                        #                
+                        #    else:
+                        #        new_peptide.append(each_split)
+                        #new_peptide=''.join(new_peptide)
                         
 
         
