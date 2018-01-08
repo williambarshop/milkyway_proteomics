@@ -759,9 +759,6 @@ for eachfile in output_list:
                     #print "this should be peptide...",header[peptide_index]
 
                     peptide_start=header[:peptide_index]
-                    peptide_start.append("ppm")
-                    peptide_start.append("absppm")
-                    peptide_start.append("retentionTime")
                     for each_item_pep in header[peptide_index:]:
                         peptide_start.append(each_item_pep)
                     #print "THE NEW HEADER\n",peptide_start
@@ -798,35 +795,60 @@ for eachfile in output_list:
                         scan_num=split_line[scan_index]
 
                         if not file_name_ppm in ptm_mzid_dict:
-                            reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
-                            by_id=mzid.read(file_name_ppm,indexed_tags={b'Peptide'})
+                            #reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
+                            by_id=mzid.read(file_name_ppm,indexed_tags={b'Peptide'},retrieve_refs=True,use_index=True)
                             ptm_mzid_dict[file_name_ppm]={}
                             #mzid_rt_dict[file_name_ppm]={}
                             print "Reading in file",file_name_ppm,"..."
-                            for each_scan in reader:
-                               #ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan                                      ##### OLD: Stored entire mzid scan information in dictionaries... filled memory...
-                               if 'scan number(s)' in each_scan:
-                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
-                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
-                                   this_scan_id=str(int(each_scan['scan number(s)']))
-                               elif options.diaumpire:
-                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
-                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
-                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
-                               else:
-                                   print "WARNING: ASSUMING DIAUMPIRE INPUTS!"
-                                   if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
-                                       ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification'] #We're assuming it's DIAUmpire...
-                                   this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
+                            #for each_scan in reader:
+                            #   #ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan                                      ##### OLD: Stored entire mzid scan information in dictionaries... filled memory...
+                            #   if 'scan number(s)' in each_scan:
+                            #       if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                            #           ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
+                            #       this_scan_id=str(int(each_scan['scan number(s)']))
+                            #   elif options.diaumpire:
+                            #       if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                            #           ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification']
+                            #       this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
+                            #   else:
+                            #       print "WARNING: ASSUMING DIAUMPIRE INPUTS!"
+                            #       if 'Modification' in by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref']):
+                            #           ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=by_id.get_by_id(each_scan['SpectrumIdentificationItem'][0]['peptide_ref'])['Modification'] #We're assuming it's DIAUmpire...
+                            #       this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
 
+                            for each_scan in by_id:
+                                #if each_scan['scan number(s)']==13064 or each_scan['scan number(s)']=="13064":
+                                #    print each_scan,"<=============================="
+                                #    sys.exit(2)
+                                if 'Modification' in each_scan['SpectrumIdentificationItem'][0]:
+                                    if 'scan number(s)' in each_scan:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan['SpectrumIdentificationItem'][0]['Modification']
+                                    elif options.diaumpire:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['Modification']
+                                    else:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['Modification']
 
-                            del reader
+                                if 'Modification' in each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]:
+                                    #ptm_mzid_dict[file_name_ppm]
+                                    if 'scan number(s)' in each_scan:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
+                                    elif options.diaumpire:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
+                                    else:
+                                        ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
+
+                                #print each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification'],"this was the modificiation hopefully <=========================="
+                                #sys.exit(2)
+                            #del reader
                             del by_id
                         mod_positions=[]
-                        for each_mod in ptm_mzid_dict[split_line[scan_index]]:
+                        #print split_line,file_name_ppm
+                        #print 
+                        for each_mod in ptm_mzid_dict[file_name_ppm][split_line[scan_index]]:
                             mod_positions.append((each_mod['location'],each_mod['monoisotopicMassDelta']))
                         for each_mod_tuple in sorted(mod_positions):
-                            split_line[peptide_index].replace('unknown',each_mod_tuple[1],1)
+                            #print each_mod_tuple
+                            split_line[peptide_index]=split_line[peptide_index].replace('unknown',str(each_mod_tuple[1]),1)
                         del mod_positions
                         
                     else:
