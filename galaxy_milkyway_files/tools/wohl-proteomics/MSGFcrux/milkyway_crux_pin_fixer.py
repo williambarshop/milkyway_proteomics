@@ -260,8 +260,8 @@ for eachfiles in zipped:
                                     
 
 
-
-                    newSpecID = target + "_" + str(fileNameDictionary[file_name]) + "_" + str(line[2]) + "_" + str(line[0].split("_")[5]) + "_" + str(line[0].split("_")[6])
+                    #print line[0],"this is what we're splitting"
+                    newSpecID = target + "_" + str(fileNameDictionary[file_name]) + "_" + str(line[2]) + "_" + str(line[0].rsplit("_",7)[5]) + "_" + str(line[0].rsplit("_",7)[6])
                     #print newSpecID
                     #print line
                     #print eachline

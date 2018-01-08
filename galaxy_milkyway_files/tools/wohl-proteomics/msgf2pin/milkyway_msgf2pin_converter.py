@@ -845,10 +845,14 @@ for eachfile in output_list:
                         #print split_line,file_name_ppm
                         #print 
                         for each_mod in ptm_mzid_dict[file_name_ppm][split_line[scan_index]]:
-                            mod_positions.append((each_mod['location'],each_mod['monoisotopicMassDelta']))
+                            if 'unknown modification' in each_mod:
+                                mod_positions.append((each_mod['location'],each_mod['monoisotopicMassDelta']))
                         for each_mod_tuple in sorted(mod_positions):
                             #print each_mod_tuple
-                            split_line[peptide_index]=split_line[peptide_index].replace('unknown',str(each_mod_tuple[1]),1)
+                            if float(each_mod_tuple[1])>0:
+                                split_line[peptide_index]=split_line[peptide_index].replace('unknown',"+"+str(each_mod_tuple[1]),1)
+                            else:
+                                split_line[peptide_index]=split_line[peptide_index].replace('unknown',"-"+str(each_mod_tuple[1]),1)
                         del mod_positions
                         
                     else:
