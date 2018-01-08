@@ -691,10 +691,12 @@ if options.diaumpire:
 #and slip them into place.
 
 ptm_mzid_dict={}
+ptm_new_dict={}
 for eachfile in output_list:
     del ptm_mzid_dict
     gc.collect()
     ptm_mzid_dict={}
+    ptm_new_dict={}
     print "Opening file ",eachfile,"..."
     with open(eachfile+"_ptms",'wb') as filewriter:
         with open(eachfile,'rb') as filereader:
@@ -798,6 +800,7 @@ for eachfile in output_list:
                             #reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
                             by_id=mzid.read(file_name_ppm,indexed_tags={b'Peptide'},retrieve_refs=True,use_index=True)
                             ptm_mzid_dict[file_name_ppm]={}
+                            ptm_new_dict[file_name_ppm]={}
                             #mzid_rt_dict[file_name_ppm]={}
                             print "Reading in file",file_name_ppm,"..."
                             #for each_scan in reader:
@@ -817,24 +820,30 @@ for eachfile in output_list:
                             #       this_scan_id=str(int(each_scan['spectrumID'].split("=")[1])+1)
 
                             for each_scan in by_id:
-                                #if each_scan['scan number(s)']==13064 or each_scan['scan number(s)']=="13064":
+                                #if each_scan['scan number(s)']==19428 or each_scan['scan number(s)']=="19428":
                                 #    print each_scan,"<=============================="
                                 #    sys.exit(2)
                                 if 'Modification' in each_scan['SpectrumIdentificationItem'][0]:
                                     if 'scan number(s)' in each_scan:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan['SpectrumIdentificationItem'][0]['Modification']
                                     elif options.diaumpire:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['Modification']
                                     else:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['Modification']
 
-                                if 'Modification' in each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]:
+                                elif 'Modification' in each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]:
                                     #ptm_mzid_dict[file_name_ppm]
                                     if 'scan number(s)' in each_scan:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['scan number(s)']))]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
                                     elif options.diaumpire:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
                                     else:
+                                        ptm_new_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan
                                         ptm_mzid_dict[file_name_ppm][str(int(each_scan['spectrumID'].split("=")[1])+1)]=each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification']
 
                                 #print each_scan['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['Modification'],"this was the modificiation hopefully <=========================="
@@ -847,12 +856,23 @@ for eachfile in output_list:
                         for each_mod in ptm_mzid_dict[file_name_ppm][split_line[scan_index]]:
                             if 'unknown modification' in each_mod:
                                 mod_positions.append((each_mod['location'],each_mod['monoisotopicMassDelta']))
+                        i=0
                         for each_mod_tuple in sorted(mod_positions):
                             #print each_mod_tuple
                             if float(each_mod_tuple[1])>0:
                                 split_line[peptide_index]=split_line[peptide_index].replace('unknown',"+"+str(each_mod_tuple[1]),1)
                             else:
                                 split_line[peptide_index]=split_line[peptide_index].replace('unknown',"-"+str(each_mod_tuple[1]),1)
+                            i+=1
+
+                        if "unknown" in split_line[peptide_index]:
+                            print each_mod
+                            print sorted(mod_positions)
+                            print "I replaced {0} unknown mods...".format(str(i))
+                            print ptm_mzid_dict[file_name_ppm][split_line[scan_index]]
+                            print ptm_new_dict[file_name_ppm][split_line[scan_index]],"this is what the mods are based on"
+                            print "FAILED",split_line
+                            print "==================================="
                         del mod_positions
                         
                     else:
@@ -1003,7 +1023,6 @@ if options.ppm:
 
                         #print file_name_ppm,"lololol"#[specID]
                         scan_num=split_line[scan_index]
-
                         #print "Label was ",str(label),"so we will be opening the file",file_name_ppm,"from ",specID
                         if not file_name_ppm in mzid_dict:
                             reader=pyteomics.mzid.read(file_name_ppm)#,retrieve_refs=True)
