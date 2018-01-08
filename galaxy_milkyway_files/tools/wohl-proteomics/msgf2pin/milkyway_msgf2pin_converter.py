@@ -770,8 +770,8 @@ for eachfile in output_list:
                     #final_dir=start_directions[-1:]
                     #start_directions=start_directions[:-1]
                     #start_directions.append(final_dir[0])
-                    start_directions.append("0")
-                    start_directions.append("-1")
+                    #start_directions.append("0")
+                    #start_directions.append("-1")
                     for each_item_dir in directions[peptide_index:]:
                         start_directions.append(each_item_dir)
                     start_directions.append("\n")
@@ -975,6 +975,7 @@ if options.ppm:
                         #start_directions.append(final_dir[0])
                         start_directions.append("0")
                         start_directions.append("-1")
+                        start_directions.append("0")
                         for each_item_dir in directions[peptide_index:]:
                             start_directions.append(each_item_dir)
                         start_directions.append("\n")
