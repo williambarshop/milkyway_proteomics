@@ -325,8 +325,6 @@ for each_psms_file in targetpsms_matches:
     this_df=applyParallel(this_df_group,makeUnmodSeq)
     this_df['proteinacc_start_stop_pre_post_;']=this_df['unmodified sequence'].map(pep_mappings)
     
-    this_df[this_df['proteinacc_start_stop_pre_post_;'].isnull()].to_csv("wrong_maps.csv")
-    print pep_mappings['KTEKAK']
     this_df['file_scan_id']=this_df['file']+"_"+this_df['scan']+"_"+this_df['unmodified sequence']
     this_df['scan']=this_df['scan'].astype(int)
     #this_df['statistical protein q-values']=""
