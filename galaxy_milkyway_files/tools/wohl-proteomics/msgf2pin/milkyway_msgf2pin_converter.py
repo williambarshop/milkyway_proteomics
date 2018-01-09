@@ -270,7 +270,7 @@ if not silac:
                 #print "examining",each_item
                 #print "Is it in",eachfile.rsplit("_",1)[0].split("/",1)[1],"?"
                 #if run_groups[eachgroup] in eachfile:
-                if each_item == eachfile.rsplit("_",1)[0].split("/",1)[1]:
+                if each_item == eachfile.rsplit("_",1)[0].split("/",1)[1] and not "decoys/" in eachfile:
                     target_run_groups[eachgroup].append(eachfile)
                     break
     print "Final Groupings:",target_run_groups
