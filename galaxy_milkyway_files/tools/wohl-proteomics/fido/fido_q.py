@@ -52,7 +52,8 @@ with open(input_file,'r') as input_reader:
         if header:
             header=False
             continue
-        #print eachline
+        if eachline == "0.0 0\n":
+            continue
         protein_name_list=eachline.split("{")[1].split("}")[0].strip().split(",")
         for protein_name in protein_name_list:
             #print protein_name
