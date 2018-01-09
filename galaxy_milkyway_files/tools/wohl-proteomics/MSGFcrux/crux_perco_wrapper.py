@@ -180,12 +180,14 @@ for each in onlyfiles:
                     charge=0
                     for each_charge in charge_indicies:
                         if thisline[charge_indicies[each_charge]]=="1":
-                            charge=each_charge[-1]
-                    if charge == 0:
-                        print "We couldnt find a charge for "+str(thisline[specID_index])+" so its defaulting to zero!"
+                            charge=each_charge.replace("Charge","")
+                    if charge == 0 or charge =="0":
+                        print "We couldnt find a charge for "+str(thisline[specID_index])+" so its defaulting to one! This should raise suspicions!"
+                        charge="1"
                     
                     if this_run not in spectral_expmz:
                         spectral_expmz[this_run]={}
+                    #print thisline,"charge is",charge
                     spectral_expmz[this_run][int(thisline[scan_index])]=str((float(thisline[expmass_index])+((float(charge)-1)*proton_mass))/float(charge))
 
                     filewriter.write(thisline[specID_index]+"\t"+thisline[label_index]+"\t"+thisline[scan_index]+"\t"+peptide+"\t"+str(charge)+"\n")
