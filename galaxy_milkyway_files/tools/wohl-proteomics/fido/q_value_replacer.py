@@ -123,7 +123,7 @@ def add_Prot_Info(group):
             else:
                 for innerindex,innerrow in filtergrp.iterrows():
                     tmp_dict={}
-                    print innerrow,"this is the row"
+                    #print innerrow,"this is the row"
                     prot_startstop_list=innerrow['proteinacc_start_stop_pre_post_;'].split(";")
                     for eachprot in prot_startstop_list:
                         this_split=eachprot.rsplit("_",4)
@@ -227,9 +227,6 @@ for each_match in mzid_matches:
     for each in reader:
         #pepSeq=each['SpectrumIdentificationItem'][0]['PeptideEvidenceRef'][0]['peptideEvidence_ref'].split("_")[2]
         pepSeq=each['SpectrumIdentificationItem'][0]['PeptideSequence']
-        #if pepSeq=="KTEKAK":
-        #    print "FOUND KTEKAK",each
-        #    sys.exit(2)
         if not pepSeq in pep_mappings:
             map_list=[]
             for eachProt in each['SpectrumIdentificationItem'][0]['PeptideEvidenceRef']:
