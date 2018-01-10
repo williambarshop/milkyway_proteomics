@@ -336,8 +336,8 @@ for each_psms_file in targetpsms_matches:
     #this_df.to_csv("TESTING.csv")
     #print this_df,"This is before runnning...."
     #break #~!~~~~~~~~~~~~
-    #addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
-    addedProtInfo=applyParallelOne(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
+    addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info)
+    #addedProtInfo=applyParallelOne(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
     del grouped_df
     print "Done adding protein information...",addedProtInfo
     if options.clean:
