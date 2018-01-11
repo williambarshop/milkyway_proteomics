@@ -129,7 +129,7 @@ for root, subFolders, files in os.walk(os.getcwd()):
             
 
 
-pin_columns=['SpecId','Label','ScanNr','ExpMass','CalcMass','RawScore','DeNovoScore','ScoreRatio','Energy','lnEValue','IsotopeError','lnExplainedIonCurrentRatio','lnNTermIonCurrentRatio','lnCTermIonCurrentRatio','lnMS2IonCurrent','Mass','PepLen','dM','absdM','MeanErrorTop7','sqMeanErrorTop7','StdevErrorTop7','Charge2','Charge3','Charge4','Charge5','Charge6','enzN','enzC','enzInt','ptm','A-Freq','C-Freq','D-Freq','E-Freq','F-Freq','G-Freq','H-Freq','I-Freq','K-Freq','L-Freq','M-Freq','N-Freq','P-Freq','Q-Freq','R-Freq','S-Freq','T-Freq','V-Freq','W-Freq','Y-Freq','B-Freq','Z-Freq','J-Freq','X-Freq','U-Freq','O-Freq','ppm','absppm','Peptide']
+pin_columns=['SpecId','Label','ScanNr','ExpMass','CalcMass','RawScore','DeNovoScore','ScoreRatio','Energy','lnEValue','IsotopeError','lnExplainedIonCurrentRatio','lnNTermIonCurrentRatio','lnCTermIonCurrentRatio','lnMS2IonCurrent','Mass','PepLen','dM','absdM','MeanErrorTop7','sqMeanErrorTop7','StdevErrorTop7','Charge2','Charge3','Charge4','Charge5','Charge6','enzN','enzC','enzInt','ptm','A-Freq','C-Freq','D-Freq','E-Freq','F-Freq','G-Freq','H-Freq','I-Freq','K-Freq','L-Freq','M-Freq','N-Freq','P-Freq','Q-Freq','R-Freq','S-Freq','T-Freq','V-Freq','W-Freq','Y-Freq','B-Freq','Z-Freq','J-Freq','X-Freq','U-Freq','O-Freq','ppm','absppm','Peptide','retentionTime','observedTime']
 
 for eachfile in pinfiles:
     with open(eachfile,'rb') as header_reader:
