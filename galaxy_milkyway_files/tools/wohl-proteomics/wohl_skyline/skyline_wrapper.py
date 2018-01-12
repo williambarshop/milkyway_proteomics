@@ -1164,7 +1164,7 @@ else:
 
         ################################# END DECOYS #########################################
         #Now we're going to strip out all the results so that we can reimport with the decoys!
-        strip_cmd="SkylineCmd --in="+skyline_filename+" --remove-all=. --out=docker_protection_temporary.sky"
+        strip_cmd="SkylineCmd --in="+skyline_filename+" --remove-all --out=docker_protection_temporary.sky"
         notConnectedSkyline=True
         attempt=1
         while notConnectedSkyline:
