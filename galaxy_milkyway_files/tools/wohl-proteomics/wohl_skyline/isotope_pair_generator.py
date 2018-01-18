@@ -9,10 +9,10 @@ import xmltodict
 #####################################
 #This is the wrapper for Paired Isotope Addition from two variable mods on a skyline file.
 #
-#VERSION 0.46A
-version="0.46A"
-#DATE: 12/12/2017
-date="12/12/2017"
+#VERSION 0.50A
+version="0.50A"
+#DATE: 1/17/2018
+date="1/17/2018"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the Skyline Isotope Pair Corrector, Wohlschlegel Lab UCLA"
@@ -65,7 +65,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
         #for each_peptide in this_new_protein['peptide']:
         for each_peptide in this_new_protein_peptides:
             #print each_peptide[0],"this is each peptide[0]\n==============================="
-            if str(round(lightMass,1)) in each_peptide['@modified_sequence']:
+            if str(round(lightMass,4)) in each_peptide['@modified_sequence']:
                 if 'dict' in str(type(each_peptide['precursor'])) or "Dict" in str(type(each_peptide['precursor'])):
                     the_precursors=[each_peptide['precursor']]
                 else:
@@ -81,7 +81,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                     if 'bibliospec_spectrum_info' in each_precursor:
                         sequences_with_light_bibliospec[each_peptide['@modified_sequence']][this_charge]=each_precursor['bibliospec_spectrum_info']
                 
-            if str(round(heavyMass,1)) in each_peptide['@modified_sequence']:
+            if str(round(heavyMass,4)) in each_peptide['@modified_sequence']:
                 if 'dict' in str(type(each_peptide['precursor'])) or "Dict" in str(type(each_peptide['precursor'])):
                     the_precursors=[each_peptide['precursor']]
                 else:
@@ -109,17 +109,17 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
             for each_charge in each_dict[each_peptide_key]:
                 if each_peptide_key not in peptides_with_mods_charges:
                     peptides_with_mods_charges[each_peptide_key]=[]
-                if each_peptide_key.replace(str(round(heavyMass,1)),str(round(lightMass,1))) not in peptides_with_mods_charges:
-                    peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,1)),str(round(lightMass,1)))]=[]
-                if each_peptide_key.replace(str(round(lightMass,1)),str(round(heavyMass,1))) not in peptides_with_mods_charges:
-                    peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,1)),str(round(heavyMass,1)))]=[]
+                if each_peptide_key.replace(str(round(heavyMass,4)),str(round(lightMass,4))) not in peptides_with_mods_charges:
+                    peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,4)),str(round(lightMass,4)))]=[]
+                if each_peptide_key.replace(str(round(lightMass,4)),str(round(heavyMass,4))) not in peptides_with_mods_charges:
+                    peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,4)),str(round(heavyMass,4)))]=[]
                 
                 if each_charge not in peptides_with_mods_charges[each_peptide_key]:
                     peptides_with_mods_charges[each_peptide_key].append(each_charge)
-                if each_charge not in peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,1)),str(round(lightMass,1)))]:
-                    peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,1)),str(round(lightMass,1)))].append(each_charge)
-                if each_charge not in peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,1)),str(round(heavyMass,1)))]:
-                    peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,1)),str(round(heavyMass,1)))].append(each_charge)
+                if each_charge not in peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,4)),str(round(lightMass,4)))]:
+                    peptides_with_mods_charges[each_peptide_key.replace(str(round(heavyMass,4)),str(round(lightMass,4)))].append(each_charge)
+                if each_charge not in peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,4)),str(round(heavyMass,4)))]:
+                    peptides_with_mods_charges[each_peptide_key.replace(str(round(lightMass,4)),str(round(heavyMass,4)))].append(each_charge)
                 
     
     #print peptides_with_mods_charges, "These are the peptides which we will need to pair with their proper isotope partner!"
@@ -156,20 +156,23 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
             opposite_in_mods=False
             #print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             #print each_peptide
-            if each_peptide['@modified_sequence'] in completed_peptides or each_peptide['@modified_sequence'].replace(str(round(heavyMass,1)),str(round(lightMass,1))) in completed_peptides or each_peptide['@modified_sequence'].replace(str(round(lightMass,1)),str(round(heavyMass,1))) in completed_peptides:
+            if each_peptide['@modified_sequence'] in completed_peptides or each_peptide['@modified_sequence'].replace(str(round(heavyMass,4)),str(round(lightMass,4))) in completed_peptides or each_peptide['@modified_sequence'].replace(str(round(lightMass,4)),str(round(heavyMass,4))) in completed_peptides:
                 ##consider this section for multi-concurrent label support
                 #print each_peptide['@modified_sequence'],each_peptide,"is supposedly already in",completed_peptides
                 #print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                 continue
             #print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
             modcount=0
-            modcount+=each_peptide['@modified_sequence'].count(str((round(lightMass,1))))
-            modcount+=each_peptide['@modified_sequence'].count(str((round(heavyMass,1))))
+            modcount+=each_peptide['@modified_sequence'].count(str((round(lightMass,4))))
+            modcount+=each_peptide['@modified_sequence'].count(str((round(heavyMass,4))))
             if modcount==0:
                 if not removeUnmod:
                     new_peptide_list.append(each_peptide)
                 else:
                     print "This peptide has no modsite and will be removed(0): {0}".format(each_peptide['@modified_sequence'])
+                    #print each_peptide['@modified_sequence'].count(str((round(lightMass,4))))
+                    #print each_peptide['@modified_sequence'].count(str((round(heavyMass,4))))
+                    #print str((round(heavyMass,4))),str((round(lightMass,4)))
             if each_peptide['@modified_sequence'] in peptides_with_mods:
                 if modcount >1:
                     print "This peptide has more than one modsite and will be removed: {0}".format(each_peptide['@modified_sequence'])
@@ -181,14 +184,14 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         print "This peptide has no modsite and will be removed(1): {0}".format(each_peptide['@modified_sequence'])
                     continue
                 #is what we're looking at heavy or light?
-                if str(round(lightMass,1)) in each_peptide['@modified_sequence']:
+                if str(round(lightMass,4)) in each_peptide['@modified_sequence']:
                     light=True
-                    if each_peptide['@modified_sequence'].replace(str(round(lightMass,1)),str(round(heavyMass,1))) in peptides_with_mods:
+                    if each_peptide['@modified_sequence'].replace(str(round(lightMass,4)),str(round(heavyMass,4))) in peptides_with_mods:
                         opposite_in_mods=True
                        
                 else:
                     heavy=True #if not, must be heavy.
-                    if each_peptide['@modified_sequence'].replace(str(round(heavyMass,1)),str(round(lightMass,1))) in peptides_with_mods:
+                    if each_peptide['@modified_sequence'].replace(str(round(heavyMass,4)),str(round(lightMass,4))) in peptides_with_mods:
                         opposite_in_mods=True
 
                 if not heavy and not light:#it's not modified! just add it and move on
@@ -203,7 +206,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                 #If we start with heavy, we're going to replace that in a couple of places with the light version first.
                 if heavy:
                     each_peptide['@calc_neutral_pep_mass']=str(float(each_peptide['@calc_neutral_pep_mass'])-(heavyMass-lightMass)) 
-                    each_peptide['@modified_sequence']=each_peptide['@modified_sequence'].replace(str(round(heavyMass,1)),str(round(lightMass,1)))
+                    each_peptide['@modified_sequence']=each_peptide['@modified_sequence'].replace(str(round(heavyMass,4)),str(round(lightMass,4)))
                     mod_aa_indicies=[]
                     #print str(type(each_peptide['variable_modifications'])),"this is the heavy mod type"
                     #print each_peptide['variable_modifications']
@@ -297,6 +300,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         isotope=0
                         isotope_zero_mass=example_precursor['transition'][transition_ctr]['product_mz']
                     isotope_mass_dict[str(float(isotope))]=example_precursor['transition'][transition_ctr]['product_mz']
+                    transition_ctr+=1
                     
                 for each_mass_index in isotope_mass_dict:
                     isotope_mass=isotope_mass_dict[each_mass_index]
@@ -325,11 +329,11 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         continue
                     new_precursor['@charge']=each_desired_charge
                     if light:
-                        new_precursor['@precursor_mz']=str((float(new_precursor['@calc_neutral_mass'])+(float(each_desired_charge)*proton_mass))/float(each_desired_charge))
+                        new_precursor['@precursor_mz']=str(round((float(new_precursor['@calc_neutral_mass'])+(float(each_desired_charge)*proton_mass))/float(each_desired_charge),6))
                         
                     if heavy:
-                        new_precursor['@precursor_mz']=str(((float(new_precursor['@calc_neutral_mass'])-(heavyMass-lightMass))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge))
-                        new_precursor['@modified_sequence']=new_precursor['@modified_sequence'].replace(str(round(heavyMass,1)),str(round(lightMass,1)))
+                        new_precursor['@precursor_mz']=str(round(((float(new_precursor['@calc_neutral_mass'])-(heavyMass-lightMass))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge),6))
+                        new_precursor['@modified_sequence']=new_precursor['@modified_sequence'].replace(str(round(heavyMass,4)),str(round(lightMass,4)))
                         new_precursor['@calc_neutral_mass']=str(float(new_precursor['@calc_neutral_mass'])-(heavyMass-lightMass))
                     
                     
@@ -346,7 +350,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         #isotope=int(each_transition['@isotope_dist_rank'])-1
                         #print "changing the value of product",new_precursor['transition'][transition_ctr]['product_mz']
                         ##new_precursor['transition'][transition_ctr]['product_mz']=str(float(new_precursor['@precursor_mz'])+((float(isotope)*C13_mass)/charge))
-                        new_precursor['transition'][transition_ctr]['product_mz']=str(float(new_precursor['@precursor_mz'])+((float(isotope_delta_dict[str(float(isotope))])/charge)))
+                        new_precursor['transition'][transition_ctr]['product_mz']=str(round(float(new_precursor['@precursor_mz'])+((float(isotope_delta_dict[str(float(isotope))])/charge)),6))
                         #print "after:",new_precursor['transition'][transition_ctr]['product_mz']
                         new_precursor['transition'][transition_ctr]['precursor_mz']=str(float(new_precursor['@precursor_mz']))
 
@@ -375,11 +379,11 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         continue
                     new_precursor['@charge']=each_desired_charge
                     if light:
-                        new_precursor['@precursor_mz']=str(((float(new_precursor['@calc_neutral_mass'])+(heavyMass-lightMass))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge))
-                        new_precursor['@modified_sequence']=new_precursor['@modified_sequence'].replace(str(round(lightMass,1)),str(round(heavyMass,1)))
+                        new_precursor['@precursor_mz']=str(round(((float(new_precursor['@calc_neutral_mass'])+(heavyMass-lightMass))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge),6))
+                        new_precursor['@modified_sequence']=new_precursor['@modified_sequence'].replace(str(round(lightMass,4)),str(round(heavyMass,4)))
                         new_precursor['@calc_neutral_mass']=str(float(new_precursor['@calc_neutral_mass'])+(heavyMass-lightMass))
                     if heavy:
-                        new_precursor['@precursor_mz']=str(((float(new_precursor['@calc_neutral_mass']))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge))
+                        new_precursor['@precursor_mz']=str(round(((float(new_precursor['@calc_neutral_mass']))+(float(each_desired_charge)*proton_mass))/float(each_desired_charge),6))
 
                     transition_ctr=0
                     charge=int(new_precursor['@charge'])
@@ -394,7 +398,7 @@ def correct_Isotope_Partners(inputProtein,lightMass,heavyMass,target_AA,removeUn
                         ##new_precursor['transition'][transition_ctr]['product_mz']=str(float(new_precursor['@precursor_mz'])+((float(isotope)*C13_mass)/charge))
                         #print "after:",new_precursor['transition'][transition_ctr]['product_mz'],"from a shift of",((float(isotope)*C13_mass)/charge),isotope,C13_mass,charge
                         ##new_precursor['transition'][transition_ctr]['precursor_mz']=str(float(new_precursor['@precursor_mz']))#+((heavyMass-lightMass)/charge))
-                        new_precursor['transition'][transition_ctr]['product_mz']=str(float(new_precursor['@precursor_mz'])+((float(isotope_delta_dict[str(float(isotope))])/charge)))
+                        new_precursor['transition'][transition_ctr]['product_mz']=str(round(float(new_precursor['@precursor_mz'])+((float(isotope_delta_dict[str(float(isotope))])/charge)),6))
                         #print "after:",new_precursor['transition'][transition_ctr]['product_mz']
                         new_precursor['transition'][transition_ctr]['precursor_mz']=str(float(new_precursor['@precursor_mz']))
                         transition_ctr+=1
