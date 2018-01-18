@@ -101,6 +101,7 @@ parser.add_option("--output",action="store", type="string", dest="output")
 parser.add_option("--background_db",action="store", type="string", dest="background_db") #if no protdb provided, the backgrounddb FASTA should be provided insteads
 parser.add_option("--enzyme",action="store", type="string", dest="enzyme") #if no protdb provided, the enzyme
 parser.add_option("--missedcleave",action="store", type="int", dest="missedcleave") #if no protdb provided, the max missed cleaves
+parser.add_option("--peptide_uniqueness",action="store", type="string", dest="peptide_uniqueness") # Value is "None" "Proteins" "Genes" "Species"
 parser.add_option("--exp_file",action="store", type="string", dest="exp_file") # Wohl-Experimental Design File
 parser.add_option("--chromatograms_file",action="store", type="string", dest="chromatograms") # Wohl-Experimental Design File
 parser.add_option("--quantiva_transitions",action="store", type="string", dest="quantiva_transitions") # Export quantiva transitions?
@@ -142,7 +143,7 @@ tmp_stderr_name = tempfile.NamedTemporaryFile(dir = working_directory, suffix = 
 tmp_stdout_name = tempfile.NamedTemporaryFile(dir = working_directory, suffix = '.stdout').name
 
 
-def correctBackgroundProteome(skylineFile):
+def correctBackgroundProteome(skylineFile,missedCleavages,peptideUniqueness):
     with open(skylineFile,'rb') as fd:
         doc = xmltodict.parse(fd.read())
         time_string=str(datetime.datetime.now().time()).replace(":",'').replace('.','')
@@ -155,6 +156,13 @@ def correctBackgroundProteome(skylineFile):
 	    doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']={}
             doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@name']="background_proteome"+time_string
             doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@database_path']="background_proteome"+time_string+".protdb"
+
+
+    # We'll also add in the number of missed cleavages
+    doc['srm_settings']['settings_summary']['peptide_settings']['digest_settings']['@max_missed_cleavages']=missedCleavages
+    # And we'll add in the information for peptide uniqueness constraints!
+    doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@auto_select']=True
+    doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@unique_by']=peptideUniqueness
 
     # Initial temporary file to store the modified skyline file
     outFile = open(skylineFile[:-4]+'-temp.sky', 'w')
@@ -851,7 +859,7 @@ if options.fractions:
         
         os.chdir(each_fraction_fldr)
         skyline_filename=each_fraction_fldr+".sky"
-        protdb_timestring=correctBackgroundProteome(skyline_filename)
+        protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
 
         prependLine("skyline_batch","--in="+skyline_filename+"\n")
         #Let's go ahead and build a Blib library for the search results in this folder! EDIT: I THINK THIS IS HANDLED BY SKYLINE NOW.... COMMENTED OUT.

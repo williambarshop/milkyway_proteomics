@@ -47,6 +47,7 @@
       --background_db ${background_database}_corrected.fasta
       --enzyme $enzyme
       --missedcleave $missedcleave
+      --peptide_uniqueness $peptide_uniqueness
       #end if
       --exp_file $exp_file
       $makeblib
@@ -118,6 +119,12 @@
         </when>
 
     </conditional>
+        <param name="peptide_uniqueness" type="select" label="Enforce peptide uniqueness by?" >
+           <option value="None">None</option>
+           <option value="Proteins">Proteins</option>
+           <option value="Genes">Genes</option>
+           <option value="Species">Species</option>
+        </param>
 
         <param name="mprophet" type="select" label="Use mProphet model?" help="How to build the mProphet model?" >
            <option value="--mprophet decoy">(MS1) Mass Shifted Decoy Peptides</option>
