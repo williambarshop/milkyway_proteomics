@@ -940,7 +940,7 @@ else:
         shutil.copy(options.skyline_file,skyline_filename)
         pass
     #we'll make sure the background proteome is correct...
-    protdb_timestring=correctBackgroundProteome(skyline_filename)
+    protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
 
 
     if options.protdb is not None:
