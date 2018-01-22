@@ -72,7 +72,7 @@
         <param name="exp_file" type="data"  label="Experiment Map File"/>
 
         <conditional name="ms_level">
-            <param name="quant_type" type="select" label="Choose quantitation type" help="Skyline Document Upload, DDA-MS1, t-MS2 (PRM), DIA MS1+2 msx" >
+            <param name="quant_type" type="select" label="Choose quantitation type" help="ONLY DOC UPLOAD IS CURRENTLY SUPPORTED. Skyline Document Upload, DDA-MS1, t-MS2 (PRM), DIA MS1+2 msx" >
                <option value="provided_file">Skyline Document Upload</option>
                <!--<option value="dda_ms1">DDA MS1</option>
                <option value="ms2_prm">MS2-PRM</option>
@@ -120,10 +120,10 @@
 
     </conditional>
         <param name="peptide_uniqueness" type="select" label="Enforce peptide uniqueness by?" >
-           <option value="Proteins">Proteins</option>
-           <option value="Genes">Genes</option>
-           <option value="Species">Species</option>
-           <option value="None">None</option>
+           <option value="protein">Protein</option>
+           <option value="gene">Gene</option>
+           <option value="species">Species</option>
+           <option value="none">None</option>
         </param>
 
         <param name="mprophet" type="select" label="Use mProphet model?" help="How to build the mProphet model?" >

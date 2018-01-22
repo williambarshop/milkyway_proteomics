@@ -5,13 +5,13 @@
   </description>
   <command>
     python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_pin_fixer.py -i ${pin_input} -o ${output_pin} -m ${map_file} -u /galaxy-central/tools/wohl-proteomics/MSGFcrux/unimod.obo
-    #if $seleno
+<!--    #if $seleno
     -s
-    #end if
+    #end if -->
   </command>
   <inputs>
        <param name="pin_input" type="data" label="tab delimited pin from msgf2pin" />
-       <param name="seleno" type="boolean" checked="false" label="Remove selenocysteine mod?" truevalue="true" falsevalue="false" />
+<!--       <param name="seleno" type="boolean" checked="false" label="Remove selenocysteine mod?" truevalue="true" falsevalue="false" /> -->
   </inputs>
   <outputs>
     <data name="output_pin"/>

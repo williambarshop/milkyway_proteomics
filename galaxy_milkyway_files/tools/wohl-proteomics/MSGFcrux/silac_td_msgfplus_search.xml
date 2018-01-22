@@ -1,12 +1,12 @@
-<tool id="milkyway_msgfplus_search" name="SILAC TD MSGF+ MSMS Search" version="1.2.7">
+<tool id="milkyway_msgfplus_search" name="Target-Decoy MSGF+ MSMS Search" version="1.2.7">
     <description>Run a Separate Target-Decoy MSGF+ Search</description>
     <command>
         #set $new_output = $input_file.display_name.rsplit(".",1)[0]+"_target"
         #set $new_decoy_output = $input_file.display_name.rsplit(".",1)[0]+"_decoy"
         #set $input_name = $input_file.display_name.rsplit(".",1)[0]
 
-
-        #if $silac.silac_search
+<!--        #if $silac.silac_search-->
+        #if False
         #set $silac_mods_str = str($silac.silac_mods)
         #set $parsed_silac_mods = $silac_mods_str.rstrip("___").split("___")
         #set $i=0
@@ -130,9 +130,6 @@
              #end for
              '-->
 
-             #if $selenocys
-             --custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___'
-             #end if
 
              '$input_name'
              #if $modstr_to_descriptor[$each_modstr] != ""
@@ -154,6 +151,10 @@
              --ntt=$cleavage_semi
              --min-pep-charge=$min_pep_charge
              --num-reported-matches=$num_reported_matches
+<!--             #if $selenocys-->
+<!--             custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___' -->
+<!--             #end if -->
+
              --java-mem=$java_mem
              --num-mods=$num_mods
              --threads $threads
@@ -163,9 +164,9 @@
              /galaxy-central/tools/wohl-proteomics/MSGFcrux/msgfplus_search.rb
              --galaxy -d $database.decoy_fasta_file
 
-             #if $selenocys
-             --custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___'
-             #end if
+<!--             #if $selenocys-->
+<!--             custom-aas='C3H7N1O2S1,U,custom,C,Selenocysteine___S-1Se1,U,fix,any,Delta:S(-1)Se(1)___' -->
+<!--             #end if -->
 
              --var-mods='
              #set $tmp_var_modstr = str($variable_mods)
@@ -243,6 +244,7 @@
         </conditional>
         <param name="input_file" type="data" format="mzml" multiple="false" label="MSMS File" help="An mzML file with MS/MS data"/>
         <param name="num_mods" type="integer" label="Maximum number of modifications per peptide" value="3" min="0" max="20" />
+<!--
         <conditional name="silac">
             <param name="silac_search" type="boolean" checked="true" label="SILAC Search?" truevalue="true" falsevalue="false" />
             <when value="true">
@@ -255,6 +257,7 @@
                 </param>
             </when>
         </conditional>
+-->
         <param name="variable_mods" format="text" type="select" multiple="true" label="Variable Modifications" help="Multiple Selection Allowed">
             <options from_file="msgfplus_mods.loc">
                 <column name="name" index="0" />
@@ -276,7 +279,8 @@
             <param name="custom_mod" type="text">
             </param>
         </repeat>-->
-        <param name="selenocys" type="boolean" checked="false" label="Allow selenocystine?" truevalue="true" falsevalue="false" />
+
+<!--        <param name="selenocys" type="boolean" checked="false" label="Allow selenocystine?" truevalue="true" falsevalue="false" /> -->
 
         <!--
 	<param name="missed_cleavages" type="select" format="text" help="Allow peptides to contain up to this many missed enzyme cleavage sites">

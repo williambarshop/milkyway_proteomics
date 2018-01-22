@@ -1,4 +1,4 @@
-<tool id="milkyway_msgf2pin_converter" version="3.0.0" name="silac msgf2pin for fractionated data" >
+<tool id="milkyway_msgf2pin_converter" version="3.0.0" name="milkyway msgf2pin" >
 
   <description>
      Conversion of mzid output from MSGF+ to pin format for use with percolator.
@@ -11,23 +11,20 @@
        tar xzvf $each;
    #end for
 
-    python /galaxy-central/tools/wohl-proteomics/msgf2pin/milkyway_msgf2pin_converter.py -m $matches
+    python /galaxy-central/tools/wohl-proteomics/msgf2pin/milkyway_msgf2pin_converter.py -m 1
+    <!-- $matches -->
     ${aafreq}
     $ptm
-    #if $ppm.ppm_bool
     --ppm
-    #end if
 
-    #if $varExists('$ppm.ppm_fix')
-        #if $ppm.ppm_fix.ppm_fix_bool
-            -x $ppm.ppm_fix.e_threshold
+        #if $ppm_fix.ppm_fix_bool
+            -x $ppm_fix.e_threshold
         #end if
-    #end if
 
     --enzyme $enzyme
     $pngasef
     $isotope
-    $silac
+<!--    $silac -->
     $diaumpire
     --pattern $pattern
    ## --databases $database_list
@@ -43,11 +40,10 @@
     --fractions $fraction_file;
    tar -czvf combined_pins.tar.gz output/;
    mv combined_pins.tar.gz $output_tar;
-   #if $varExists('$ppm.ppm_fix')
-        #if $ppm.ppm_fix.ppm_fix_bool
+        #if $ppm_fix.ppm_fix_bool
             mv ppm_shifts.csv ${output_mass_corrections};
         #end if
-   #end if
+
    echo 'All done!'
    
   </command>
@@ -55,22 +51,16 @@
   <inputs>
         <param name="fraction_file" type="data" label="Fraction information input from wohl-fractionation tool" />
         <param name="targz_input" type="data" multiple="true" label="target decoy targz inputs from msgf+" />
-        <param name="matches" type="integer" value="1" label="Number of Matches per PSM to Consider" help="How many matches to consider per spectrum? NB: When using SILAC, this gets OVERWRITTEN with a value of 15.  Control via MSGF+" />
         <param name="aafreq" type="boolean" truevalue="--aa-freq" falsevalue="" checked="true" label="Calculate amino acid frequency features?" />
         <param name="ptm" type="boolean" truevalue="--PTM" falsevalue="" checked="true" label="Calculate feature for number of PTMs?" />
-        <param name="silac" type="boolean" truevalue="--SILAC" falsevalue="" checked="true" label="Prepare/combine files as SILAC analysis?" />
+        <!-- <param name="silac" type="boolean" truevalue="dashdashREPLACETHIS-SILAC" falsevalue="" checked="true" label="Prepare/combine files as SILAC analysis?" /> -->
 
-    <conditional name="ppm">
-        <param name="ppm_bool" type="boolean" truevalue="--ppm" falsevalue="" checked="true" label="Calculate features for ppm mass accuracy and retention times?" />
-        <when value="--ppm">
             <conditional name="ppm_fix">
                 <param name="ppm_fix_bool" type="boolean" truevalue="true" falsevalue="" checked="true" label="Correct ppm mass accuracy per run?" />
                     <when value="true">
                         <param name="e_threshold" type="float" value="0.00001" label="E-value threshold for ppm fixing" help="MSGF+ E-value threshold for ppm correction per run" />
                     </when>
             </conditional>
-        </when>
-    </conditional>
 
 
 
@@ -106,7 +96,7 @@
   <outputs>
     <data name="output_tar"/>
     <data name="output_mass_corrections" label="Mass Accuracy Corrections File" >
-    <filter>$ppm['ppm_fix']['ppm_fix_bool']=="true"</filter>
+    <filter>$ppm_fix.ppm_fix_bool</filter>
     </data>
 
     <!--

@@ -8,7 +8,7 @@
     python /galaxy-central/tools/wohl-proteomics/fido/fido_q.py $fidoout $decoy $fidoout_q "$useEmpirical" $fidoCT $clip_zero;
     cp p_to_q_dict.csv $p_to_q ;
     tar -xzvf $crux_perco_targz ;
-    python /galaxy-central/tools/wohl-proteomics/fido/q_value_replacer.py --fidoq $fidoout_q $diaumpire $add_peptide_indicies $clean_spectra $useEmpirical ;
+    python /galaxy-central/tools/wohl-proteomics/fido/q_value_replacer.py --fidoq $fidoout_q $diaumpire $useEmpirical --clean --index ;
     tar -cvf - output/ 2>/dev/null | pigz -9 -p 32 > $crux_tar_gz 2>&amp;1;
     </command>
     <inputs>
@@ -18,8 +18,7 @@
         <param name="useEmpirical" type="boolean" truevalue="--useEmpirical" falsevalue="" label="Use empirical q-values instead of statistical q-values?" checked="False" help="statistical q-values calculated as running average of PEPs, empirical q-values are calculated using target-decoy strategy."/>
         <param name="clip_zero" type="boolean" truevalue="true" falsevalue="false" label="Clip out zero values from output?" checked="True"/>
         <param name="diaumpire" type="boolean" truevalue="--diaumpire" falsevalue="" label="Spectral input from DIAUmpire converted to mzML?" checked="False"/>
-        <param name="add_peptide_indicies" type="boolean" label="Add protein indicies per peptide?" truevalue="--index" falsevalue="" checked="True" />
-        <param name="clean_spectra" type="boolean" label="Clean Up Incorrectly Annotated Spectra?" truevalue="--clean" falsevalue="" checked="True" help="Used to clean up problem with crux percolator top-match filter (early 2016) -- will remove all PSMs where the peptide does not map correctly to the attributed protein."/>
+        <param name="clean_spectra" type="boolean" label="Clean Up Incorrectly Annotated Spectra?" truevalue="DASHDASHclean" falsevalue="" checked="True" help="Used to clean up problem with crux percolator top-match filter (early 2016) -- will remove all PSMs where the peptide does not map correctly to the attributed protein."/> -->
         <param name="crux_perco_targz" type="data" label="crux percolator .tar.gz file" />
         <param name="targz_input" type="data" multiple="true" label="target decoy targz inputs from msgf+" />
     </inputs>

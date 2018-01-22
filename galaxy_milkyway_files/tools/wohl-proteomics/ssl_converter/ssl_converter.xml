@@ -48,7 +48,7 @@
    --blib
    #end if
    --expgroups $exp_file
-   $fractions
+<!--   $fractions -->
    $no_mzml
    #if $localization.algorithm=="luciphor"
    --FLRthresh $localization.flr_threshold
@@ -72,18 +72,17 @@
    --mass_corrected_mzml $corr_mzml_list
    #end if
     2>&amp;1;
-
+<!--
     #if $labels.filter
     python /galaxy-central/tools/wohl-proteomics/ssl_converter/ssl_mixed_label_filter.py $labels.labeled_aas ssl_files/ $labels.unlabelable;
     #end if
-
-    <!--tar -cvf - output/ 2>/dev/null | pigz -9 -p 32 > $crux_tar_gz 2>&amp;1;-->
+-->
     tar -cvf - ssl_files/ 2>/dev/null | pigz -9 -p 32 > $ssl_files_with_mzml_tar_gz 2>&amp;1;
   </command>
   <inputs>
         <param name="perco_out" type="data" label="Percolator Output in tar.gz"/>
         <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
-        <param name="highest_intensity" type="boolean" truevalue="--highest_intensity" falsevalue="" checked="false" label="Only keep highest spectral with highest MS2 intensity per run?" help="Experimental feature to help with peak picking" />
+        <param name="highest_intensity" type="boolean" truevalue="--highest_intensity" falsevalue="" checked="false" label="Only keep highest spectrum with the highest MS2 explained intensity per peptide-charge per run?" help="Experimental feature to help with peak picking, especially for very intense peptide signals." />
     <conditional name="blibbuild">
         <param name="blib" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Construct blib libraries?" help="If used with ptm localization, will only include type1 PSMs."/>
         <when value="true">
@@ -97,7 +96,7 @@
         <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
         <param name="q_threshold" type="float" label="maximum PSM q-value threshold" value="0.01" min="0.00" max="1.00"/>
         <param name="fido_q_threshold" type="float" label="maximum Protein/FIDO q-value threshold" value="0.01" min="0.00" max="1.00"/>
-        <param name="fractions" type="boolean" truevalue="--fractions" falsevalue="" checked="false" label="Group SSL files by fractions" help="Organize by fractions... Check if doing fractionated experiments!" />
+<!--        <param name="fractions" type="boolean" truevalue="DASHDASHfractions" falsevalue="" checked="false" label="Group SSL files by fractions" help="Organize by fractions... Check if doing fractionated experiments!" /> -->
 
     <conditional name="localization">
         <param name="algorithm" type="select" label="Use results from PTM localization algorithm?" help="If not, the default localizations from the search algorithm are used.  Obviously, this won't work if the localization algorithm hasn't been run on the data..." >
@@ -123,6 +122,9 @@
             <param name="only_mod" type="boolean" truevalue="--only_mod" falsevalue="" checked="false" label="Only output modified peptides?" />
         </when>
     </conditional>
+
+
+<!--
     <conditional name="labels">
         <param name="filter" type="boolean" truevalue="true" falsevalue="false" checked="false" label="Filter for SILAC aminoacids?" help="Only use if your experiment has heavy labeled AAs you care about... THIS WILL NOT WORK WITH AUTOMATIC BLIB EXPORT!" />
         <when value="true">
@@ -130,6 +132,7 @@
             <param name="unlabelable" type="boolean" truevalue="True" falsevalue="False" checked="True" label="Remove unlabelable peptides" help="That means peptides with no amino acid which COULD be heavy..." />
         </when>
     </conditional>
+-->
   </inputs>
   <outputs>
     <!--<data name="crux_tar_gz" />-->
