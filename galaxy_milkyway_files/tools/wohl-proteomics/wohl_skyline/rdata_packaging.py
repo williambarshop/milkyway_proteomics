@@ -317,9 +317,13 @@ if options.analysis_type=="lfq":
 #We're going to handle the phospho mods, if they exist, and if they do, make a column for KSEA analysis.
 
 #if 'phospho_numMods' in psm_table.columns:
-for each_column_name in [x for x in psm_table.columns if "_numMods" in x and "ptmRS_numMods" not in x]:
-    this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
-    psm_table[this_mod_name+'_numMods']=psm_table[this_mod_name+'_numMods'].astype(float).fillna(0.0)
+for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
+    if each_column_name=="numModSites": #RSmax
+        this_mod_name="pRS"#handle the PhosphoRS case.
+        psm_table[this_mod_name+'_numMods']=psm_table['numModSites'].astype(float).fillna(0.0)
+    else: #ptmRSmax
+        this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
+        psm_table[this_mod_name+'_numMods']=psm_table[this_mod_name+'_numMods'].astype(float).fillna(0.0)
     #if this_mod_name="
     #psm_table['KSEA sites']=""
     working_set=psm_table[psm_table[this_mod_name+'_numMods']>0.0]
@@ -333,7 +337,10 @@ for each_column_name in [x for x in psm_table.columns if "_numMods" in x and "pt
         for eachsite in this_mod_site_scores_split:
             eachsite=eachsite.strip()
             score=float(eachsite.split()[1])
-            factor=int(eachsite.split()[0].rsplit('x',1)[1].replace(":","").strip()) #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
+            #if "x" in eachsite.split()[0]: #ptmRS case
+            #    factor=int(eachsite.split()[0].rsplit('x',1)[1].replace(":","").strip()) #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
+            #else: #pRS case
+            #    factor=1 #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
             site_index=str(int(eachsite.split()[0].split('(')[1].split(')')[0])-1)+"_"+str(eachsite[0]) #AA stored first here.   This is formatted as "7_Y" which would be the index and the AA modified separated by "_"
             this_mod_site_dict[site_index]=score
         this_mod_sorted_sites = sorted(this_mod_site_dict.items(), key=operator.itemgetter(1), reverse=True)
@@ -389,8 +396,10 @@ for each_column_name in [x for x in psm_table.columns if "_numMods" in x and "pt
         mod_str=mod_str[:-1]
         mod_str=';'.join(set([x for x in mod_str.split(";")])) #cleanup!
         mod_logo=mod_logo[:-1]
-        psm_table.set_value(index,col=this_mod_name+' prot-sites',value=mod_str)
-        psm_table.set_value(index,col=this_mod_name+' motifs',value=mod_logo)
+        psm_table.at[index,this_mod_name+' prot-sites']=mod_str
+        psm_table.at[index,this_mod_name+' motifs']=mod_logo
+        #psm_table.set_value(index,col=this_mod_name+' prot-sites',value=mod_str)
+        #psm_table.set_value(index,col=this_mod_name+' motifs',value=mod_logo)
 
 
 psm_table.to_csv('psm_table.tsv',sep='\t',index=False)
