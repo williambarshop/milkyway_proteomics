@@ -436,7 +436,7 @@ for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x==
                     for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
                         uni_str=""
                         for each_uniprot in uni_proteins:
-                            uni_str+=each_uniprot+","+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+str(each_row["MSstats_log2FC_"+each_condition])+";"
+                            uni_str+=each_uniprot+","+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+","+str(each_row["MSstats_log2FC_"+each_condition])+";"
                         psm_table.at[index,this_mod_name+' Phosfate_'+each_condition]=uni_str[:-1]
         mod_str=mod_str[:-1]
         mod_str=';'.join(set([x for x in mod_str.split(";")])) #cleanup!
