@@ -18,10 +18,10 @@ pandas.options.mode.chained_assignment = None #Complaints all over the place!
 #This is a script to combine the outputs of many tools into
 #an Rdata image!
 #
-#VERSION 0.985A
-version="0.985A"
-#DATE: 7/25/2017
-date="7/25/2017"
+#VERSION 0.99A
+version="0.99A"
+#DATE: 2/21/2017
+date="2/21/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the Rdata merger for Galaxy, Wohlschlegel Lab UCLA"
