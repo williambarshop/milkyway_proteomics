@@ -402,7 +402,38 @@ for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x==
         #psm_table.set_value(index,col=this_mod_name+' motifs',value=mod_logo)
 
 
+#We're also going to try to merge the psm table with the MSstats results.  If we have peptide level results, they should merge back in.
+#If there's no match, then we should just drop the columns and not perform the join.
+#So first, let's check and see if our MSstats comparison CSV has any matches for its "Protein" column to our psm table's "Skyline Modified Sequence" column!
+msstats_comparison_df=pandas.read_csv(options.msstats_comparison)
+
+unique_prot_list=msstats_comparison_df['Protein'].unique().tolist()
+psm_table_skyline_seq_list=psm_table['Skyline Modified Sequence'].unique().tolist()
+print "Checking if we will merge peptide level data in..."
+if bool(set(unique_prot_list) & set(psm_table_skyline_seq_list)): #This means that there's at least one which is equal, so we should perform the join!
+    print "We will now merge peptide level quant data into the PSM table..."
+    subset_comparison=msstats_comparison_df[['Protein','Label','log2FC','pvalue','adj.pvalue','issue']]
+    subset_comparison.rename({'Label':'MSstats_condition','log2FC':"MSstats_log2FC",'pvalue':"MSstats_pvalue",'adj.pvalue':"MSstats_adj.pvalue",'issue':"MSstats_issue","Protein":"Skyline Modified Sequence"},inplace=True,axis=1)
+
+    for each_column in ["MSstats_log2FC","MSstats_pvalue","MSstats_adj.pvalue","MSstats_issue"]:
+        #print subset_comparison
+        this_col_pivot=subset_comparison.pivot(index="Skyline Modified Sequence",columns="MSstats_condition",values=each_column)
+        for each_condition in this_col_pivot.columns:
+            print "Adding peptide level quant info for the {0} condition".format(each_condition)
+            this_col_pivot.rename({each_condition:"{0}_{1}".format(each_column,each_condition)},inplace=True,axis=1)
+        psm_table=pandas.merge(psm_table,this_col_pivot,left_on="Skyline Modified Sequence",right_index=True)
+
+    #for each_condition in subset_comparison["MSstats_condition"].unique().tolist():
+    #    one_condition_subset=subset_comparison[subset_comparison["Label"]==each_condition]
+    #    ond_cond_pivot=one_condition_subset.pivot(index="Protein",columns="Label",values="")
+    #psm_table=pandas.merge(psm_table,subset_comparison,left_on="Skyline Modified Sequence",right_on="Protein")
+
 psm_table.to_csv('psm_table.tsv',sep='\t',index=False)
+
+
+
+
+
 
 with open("Rdata_Script.R",'wb') as script_writer:
     #script_writer.write("comparison_csv<-read.csv(\"{0}\",check.names=FALSE)\n".format(options.msstats_comparison))
