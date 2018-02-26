@@ -144,38 +144,19 @@ tmp_stdout_name = tempfile.NamedTemporaryFile(dir = working_directory, suffix = 
 
 #####################################
 #This is the wrapper for Paired Isotope Addition from two variable mods on a skyline file.
+#This is an embedded copy to aid in execution on Pulsar servers which don't seem to like to copy accessory scripts.
 #
 #VERSION 0.50A
 version="0.50A"
 #DATE: 1/17/2018
 date="1/17/2018"
 #####################################
-print "-----------------------------------------------------------------------"
-print "Welcome to the Skyline Isotope Pair Corrector, Wohlschlegel Lab UCLA"
-print "Written by William Barshop"
-print "Version: ",version
-print "Date: ",date
-
-
-
-
-parser = optparse.OptionParser()
-
-parser.add_option("--skylineFile",action="store",type="string",dest="skylineFile")
-parser.add_option("--outputFile",action="store",type="string",dest="outputFile")
-parser.add_option("--lightMass",action="store", type="float", dest="lightMass")
-parser.add_option("--heavyMass",action="store", type="float", dest="heavyMass")
-parser.add_option("--targetAA",action="store", type="string", dest="target_AA")
-parser.add_option("--removeUnmod",action="store_true", dest="removeUnmod")
-
-
-(options,args) = parser.parse_args(sys.argv)
 
 
 global proton_mass
 proton_mass=1.007825035
 global C13_mass
-C13_mass=13.00335483-12.00#it's the isotope delta
+C13_mass=13.00335483-12.00 #it's the isotope delta
 
 
 
