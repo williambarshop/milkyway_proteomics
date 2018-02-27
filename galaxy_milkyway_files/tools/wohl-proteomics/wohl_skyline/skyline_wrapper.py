@@ -40,10 +40,10 @@ warnings.showwarning = customwarn
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.75A
-version="0.75A"
-#DATE: 12/15/2017
-date="12/15/2017"
+#VERSION 0.8A
+version="0.8A"
+#DATE: 2/27/2018
+date="2/27/2018"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -1616,6 +1616,7 @@ else:
             #doesn't really naturally like these situations.  The sciprt included here will handle a simple experiment fitting this description.
             #options.lightMass#this will be a modstring from galaxy
             #options.heavyMass #so will this
+            print "Adding chemical light/heavy pair probes for Skyline document..."
             print options.heavyMass
             print options.lightMass
             heavyMass_value=options.heavyMass.split(",")[0]
@@ -1634,9 +1635,12 @@ else:
             removeUnmod=""
             if options.removeUnmodRI:
                 removeUnmod="--removeUnmod"
+                print "We're also removing the unmodified peptides from the document."
             #residueIsotope_cmd="python {5} --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format("docker_protection_temporary.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod,options.isotopeScript)
 
-            skyline_isotope_mod_generator("docker_protection_temporary.sky","docker_protection_temporary.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod)
+            skyline_isotope_mod_generator("docker_protection_temporary.sky","docker_protection_temporary_output.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod)
+            os.remove("docker_protection_temporary.sky")
+            shutil.copy("docker_protection_temporary_output.sky","docker_protection_temporary.sky")
             #residueIsotope_cmd="python {5} --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format("docker_protection_temporary.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod)
             #print residueIsotope_cmd," is about to be executed for residue Isotopes..."
             #proc = subprocess.Popen(args=residueIsotope_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
@@ -1653,7 +1657,8 @@ else:
         ######################### NOW I CALL TO BUILD THE DECOY PEPTIDES ############################
         time.sleep(30)
         #skyline_decoy_generator("combined_analysis.sky")
-        print "Building Skyline Mass-Shifted Decoys..."
+        print "Building Skyline Mass-Shifted Decoys... and copying the skyline file as backup!"
+        #shutil.copy("docker_protection_temporary.sky","../../../backup_before_decoys.sky")
         skyline_decoy_generator("docker_protection_temporary.sky")
         print "finished adding decoy peptides!"
         shutil.move(skyline_filename,"ORIGINAL.sky")
