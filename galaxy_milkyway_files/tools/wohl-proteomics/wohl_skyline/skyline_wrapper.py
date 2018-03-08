@@ -40,10 +40,10 @@ warnings.showwarning = customwarn
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.8A
-version="0.8A"
-#DATE: 2/27/2018
-date="2/27/2018"
+#VERSION 0.81A
+version="0.81A"
+#DATE: 3/08/2018
+date="3/08/2018"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -100,7 +100,8 @@ parser.add_option("--mprophet",action="store",type="string",dest="mprophet") #Sh
 parser.add_option("--output",action="store", type="string", dest="output")
 parser.add_option("--background_db",action="store", type="string", dest="background_db") #if no protdb provided, the backgrounddb FASTA should be provided insteads
 parser.add_option("--enzyme",action="store", type="string", dest="enzyme") #if no protdb provided, the enzyme
-parser.add_option("--missedcleave",action="store", type="int", dest="missedcleave") #if no protdb provided, the max missed cleaves
+parser.add_option("--missedcleave",action="store", type="int", dest="missedcleave") #maxed missed cleavages allowed
+parser.add_option("--raggedEnds",action="store_true", dest="raggedEnds") #Should skyline EXCLUDE raggedEnds?
 parser.add_option("--peptide_uniqueness",action="store", type="string", dest="peptide_uniqueness") # Value is "None" "Proteins" "Genes" "Species"
 parser.add_option("--exp_file",action="store", type="string", dest="exp_file") # Wohl-Experimental Design File
 parser.add_option("--chromatograms_file",action="store", type="string", dest="chromatograms") # Wohl-Experimental Design File
@@ -645,7 +646,7 @@ def skyline_isotope_mod_generator(skylineFile,outputFile,lightMass,heavyMass,tar
     os.remove(skylineFile[:-4]+'-temp.sky')
 
 
-def correctBackgroundProteome(skylineFile,missedCleavages,peptideUniqueness):
+def correctBackgroundProteome(skylineFile,missedCleavages,raggedEnds,peptideUniqueness):
     with open(skylineFile,'rb') as fd:
         doc = xmltodict.parse(fd.read())
         time_string=str(datetime.datetime.now().time()).replace(":",'').replace('.','')
@@ -665,6 +666,11 @@ def correctBackgroundProteome(skylineFile,missedCleavages,peptideUniqueness):
     # And we'll add in the information for peptide uniqueness constraints!
     doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@auto_select']=True
     doc['srm_settings']['settings_summary']['peptide_settings']['background_proteome']['@unique_by']=peptideUniqueness
+    # And we'll handle the raggedEnds setting!
+    if raggedEnds:
+        doc['srm_settings']['settings_summary']['peptide_settings']['digest_settings']['@exclude_ragged_ends']="True"
+    else:
+        doc['srm_settings']['settings_summary']['peptide_settings']['digest_settings']['@exclude_ragged_ends']="False"
 
     # Initial temporary file to store the modified skyline file
     outFile = open(skylineFile[:-4]+'-temp.sky', 'w')
@@ -1361,7 +1367,7 @@ if options.fractions:
         
         os.chdir(each_fraction_fldr)
         skyline_filename=each_fraction_fldr+".sky"
-        protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
+        protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.raggedEnds,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
 
         prependLine("skyline_batch","--in="+skyline_filename+"\n")
         #Let's go ahead and build a Blib library for the search results in this folder! EDIT: I THINK THIS IS HANDLED BY SKYLINE NOW.... COMMENTED OUT.
@@ -1442,7 +1448,7 @@ else:
         shutil.copy(options.skyline_file,skyline_filename)
         pass
     #we'll make sure the background proteome is correct...
-    protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
+    protdb_timestring=correctBackgroundProteome(skyline_filename,options.missedcleave,options.raggedEnds,options.peptide_uniqueness) #This line is also responsible for fixing the missed cleavages values and setitng peptide uniqueness constraints
 
 
     if options.protdb is not None:
@@ -1638,6 +1644,7 @@ else:
                 print "We're also removing the unmodified peptides from the document."
             #residueIsotope_cmd="python {5} --skylineFile {0} --lightMass {1} --heavyMass {2} --targetAA {3} {4} --out=docker_protection_temporary.sky".format("docker_protection_temporary.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod,options.isotopeScript)
 
+            shutil.copy("docker_protection_temporary.sky","../../../backup_before_isotopes.sky")
             skyline_isotope_mod_generator("docker_protection_temporary.sky","docker_protection_temporary_output.sky",round(lightMass_value,6),round(heavyMass_value,6),target_AA,removeUnmod)
             os.remove("docker_protection_temporary.sky")
             shutil.copy("docker_protection_temporary_output.sky","docker_protection_temporary.sky")
@@ -1658,7 +1665,7 @@ else:
         time.sleep(30)
         #skyline_decoy_generator("combined_analysis.sky")
         print "Building Skyline Mass-Shifted Decoys... and copying the skyline file as backup!"
-        #shutil.copy("docker_protection_temporary.sky","../../../backup_before_decoys.sky")
+        shutil.copy("docker_protection_temporary.sky","../../../backup_before_decoys.sky")
         skyline_decoy_generator("docker_protection_temporary.sky")
         print "finished adding decoy peptides!"
         shutil.move(skyline_filename,"ORIGINAL.sky")

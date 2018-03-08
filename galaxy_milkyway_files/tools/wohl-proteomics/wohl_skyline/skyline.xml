@@ -47,6 +47,7 @@
       --background_db ${background_database}_corrected.fasta
       --enzyme $enzyme
       --missedcleave $missedcleave
+      $protdb_upload.raggedEnds
       --peptide_uniqueness $peptide_uniqueness
       #end if
       --exp_file $exp_file
@@ -116,6 +117,7 @@
                <option value="Chymotrypsin">Chymotrypsin [F|W|Y|L]^P</option>
         </param>
         <param name="missedcleave" type="integer" value="0" min="0" max="9" label="Number of allowable missed cleavages" />
+        <param name="raggedEnds" type="boolean" truevalue="--raggedEnds" falsevalue="" checked="False" label="Exclude peptides with potential ragged ends?" help="Removes peptides which abut multiple cleavage sites like ...KR or KK... etc etc."/>
         </when>
 
     </conditional>
