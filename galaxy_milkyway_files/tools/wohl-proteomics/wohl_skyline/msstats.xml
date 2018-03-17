@@ -63,7 +63,7 @@ $noimpute
         <param name="csv_input" type="data" label="MSstats CSV file"/>
         <param name="experiment_map" type="data" label="Experiment Map File"/>
         <param name="q_threshold" type="float" value="0.01" min="0.00" max="1.00" label="mProphet Q-Value Threshold"/>
-        <param name="minPep" type="integer" value="2" min="1" label="Minimum Peptides per Protein" help="This will filter out proteins with less than this many peptides.  Is applied after unique mapping filtering, if enabled."/>
+        <param name="minPep" type="integer" value="2" min="1" label="Minimum Peptides per Protein (Should be 1 if peptide level analysis)" help="NB: Set to ONE if doing a peptide level analysis! This will filter out proteins with less than this many peptides.  Is applied after unique mapping filtering, if enabled."/>
         <param name="remove_decoys" type="boolean" truevalue="--remove_decoys" falsevalue="" checked="true" label="Remove Decoy Peptides?" />
         <param name="remove_precursors" type="boolean" truevalue="--remove_precursors" falsevalue="" checked="false" label="Remove precursor peak areas? (For MS2 quant only)" />
 

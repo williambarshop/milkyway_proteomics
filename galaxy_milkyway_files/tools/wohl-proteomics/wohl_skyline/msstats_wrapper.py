@@ -195,6 +195,7 @@ if options.fractionated:
     combined_results=combined_results.copy(deep=True)
 
 if options.normalization=="globalStandards":
+    combined_results["Stanard Type"]=combined_results["Standard Type"].astype(str)
     protein_norm_dict={}
     for each_item in options.normalize_protein.split(","):
         if "::" in each_item:
@@ -209,7 +210,7 @@ if options.normalization=="globalStandards":
             combined_results.loc[combined_results['Protein Name'].str.contains(each_protein),"Standard Type"]="globalStandard"
         else:
             for each_peptide in this_pep_list:
-                combined_results.loc[combined_results['Protein Name'].str.contains(each_protein) & combined_results['Peptide Modified Sequence']==each_peptide,"Standard Type"]="globalStandard"
+                combined_results.loc[numpy.logical_and(combined_results['Protein Name'].str.contains(each_protein),combined_results['Peptide Modified Sequence']==each_peptide),"Standard Type"]="globalStandard"
 print "about to remove proteins by text..."
 if options.remove_proteins_by_text is not None and options.remove_proteins_by_text is not "":
     proteins_to_remove=options.remove_proteins_by_text.split(",")
@@ -458,11 +459,9 @@ if options.minimum_peptide_count is not None and options.minimum_peptide_count >
     #unique_peps_only=combined_results.drop_duplicates(subset="Peptide Modified Sequence")
     protein_groups=combined_results.groupby("Protein Name")
     passing_proteins=protein_groups.filter(lambda x: len(x["Peptide Modified Sequence"].unique()) >= options.minimum_peptide_count)
+
     passing_proteins_list=passing_proteins["Protein Name"].unique().tolist()
-    print "About to filter proteins to require at least {0} peptides".format(options.minimum_peptide_count)
-    print "{0} proteins before filter...".format(len(combined_results['Protein Name'].unique()))
     combined_results=combined_results[combined_results["Protein Name"].isin(passing_proteins_list)]
-    print "{0} proteins after filter....".format(len(combined_results['Protein Name'].unique()))
 
 
 if options.remove_empty:
