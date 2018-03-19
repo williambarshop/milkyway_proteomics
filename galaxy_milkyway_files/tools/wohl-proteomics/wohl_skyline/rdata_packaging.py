@@ -14,14 +14,22 @@ import uniprot as uni
 import csv
 csv.field_size_limit(sys.maxsize) #Sometimes we have very large fields in the chromatograms...
 pandas.options.mode.chained_assignment = None #Complaints all over the place!
+import warnings, sys
+
+def customwarn(message, category, filename, lineno, file=None, line=None):
+    sys.stdout.write(warnings.formatwarning(message, category, filename, lineno))
+
+warnings.showwarning = customwarn
+
+
 #####################################
 #This is a script to combine the outputs of many tools into
 #an Rdata image!
 #
-#VERSION 0.99A
-version="0.99A"
-#DATE: 2/21/2017
-date="2/21/2017"
+#VERSION 0.992A
+version="0.992A"
+#DATE: 3/19/2017
+date="3/19/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the Rdata merger for Galaxy, Wohlschlegel Lab UCLA"
@@ -186,6 +194,8 @@ psm_table=pandas.read_csv(options.psm_table,sep='\t',engine='python')#low_memory
 ### It is meant to query uniprot, and generate name mappings for the MSstats csv table, and the PSM table.
 if options.analysis_type=="lfq":
     combined_results=pandas.read_csv(options.msstats_comparison,sep=',',engine='python')#low_memory=False
+    if "log10FC" in combined_results.columns:
+        combined_results['log2FC']=numpy.log2(numpy.power([10]*len(combined_results['log10FC']),combined_results['log10FC']))
     #combined_results=pandas.read_csv(options.msstats_comparison,sep=',',index_col=False)
     #print combined_results
     combined_results['backup']=combined_results['Protein']
@@ -316,41 +326,43 @@ if options.analysis_type=="lfq":
     combined_results.to_csv('msstats_comparison.csv',sep=',',index=False)
 
 
+#We're also going to try to merge the psm table with the MSstats results.  If we have peptide level results, they should merge back in.
+#If there's no match, then we should just drop the columns and not perform the join.
+#So first, let's check and see if our MSstats comparison CSV has any matches for its "Protein" column to our psm table's "Skyline Modified Sequence" column!
+msstats_comparison_df=pandas.read_csv(options.msstats_comparison)
+if "log10FC" in combined_results.columns:
+    msstats_comparison_df['log2FC']=numpy.log2(numpy.power([10]*len(msstats_comparison_df['log10FC']),msstats_comparison_df['log10FC']))
 
-    #We're also going to try to merge the psm table with the MSstats results.  If we have peptide level results, they should merge back in.
-    #If there's no match, then we should just drop the columns and not perform the join.
-    #So first, let's check and see if our MSstats comparison CSV has any matches for its "Protein" column to our psm table's "Skyline Modified Sequence" column!
-    msstats_comparison_df=pandas.read_csv(options.msstats_comparison)
+unique_prot_list=msstats_comparison_df['Protein'].unique().tolist()
+psm_table_skyline_seq_list=psm_table['Skyline Modified Sequence'].unique().tolist()
+print "Checking if we will merge peptide level data in..."
+peptide_quant=False
+if bool(set(unique_prot_list) & set(psm_table_skyline_seq_list)): #This means that there's at least one which is equal, so we should perform the join!
+    peptide_quant=True
+    print "We will now merge peptide level quant data into the PSM table..."
 
-    unique_prot_list=msstats_comparison_df['Protein'].unique().tolist()
-    psm_table_skyline_seq_list=psm_table['Skyline Modified Sequence'].unique().tolist()
-    print "Checking if we will merge peptide level data in..."
-    peptide_quant=False
-    if bool(set(unique_prot_list) & set(psm_table_skyline_seq_list)): #This means that there's at least one which is equal, so we should perform the join!
-        peptide_quant=True
-        print "We will now merge peptide level quant data into the PSM table..."
-        subset_comparison=msstats_comparison_df[['Protein','Label','log2FC','pvalue','adj.pvalue','issue']]
-        subset_comparison.rename({'Label':'MSstats_condition','log2FC':"MSstats_log2FC",'pvalue':"MSstats_pvalue",'adj.pvalue':"MSstats_adj.pvalue",'issue':"MSstats_issue","Protein":"Skyline Modified Sequence"},inplace=True,axis=1)
+    subset_comparison=msstats_comparison_df[['Protein','Label','log2FC','pvalue','adj.pvalue','issue']]
+    subset_comparison.rename({'Label':'MSstats_condition','log2FC':"MSstats_log2FC",'pvalue':"MSstats_pvalue",'adj.pvalue':"MSstats_adj.pvalue",'issue':"MSstats_issue","Protein":"Skyline Modified Sequence"},inplace=True,axis=1)
 
-        for each_column in ["MSstats_log2FC","MSstats_pvalue","MSstats_adj.pvalue","MSstats_issue"]:
-            #print subset_comparison
-            this_col_pivot=subset_comparison.pivot(index="Skyline Modified Sequence",columns="MSstats_condition",values=each_column)
-            for each_condition in this_col_pivot.columns:
-                print "Adding peptide level quant info for the {0} condition".format(each_condition)
-                this_col_pivot.rename({each_condition:"{0}_{1}".format(each_column,each_condition)},inplace=True,axis=1)
-            psm_table=pandas.merge(psm_table,this_col_pivot,left_on="Skyline Modified Sequence",right_index=True)
+    for each_column in ["MSstats_log2FC","MSstats_pvalue","MSstats_adj.pvalue","MSstats_issue"]:
+        #print subset_comparison
+        this_col_pivot=subset_comparison.pivot(index="Skyline Modified Sequence",columns="MSstats_condition",values=each_column)
+        for each_condition in this_col_pivot.columns:
+            print "Adding peptide level quant info for the {0} condition".format(each_condition)
+            this_col_pivot.rename({each_condition:"{0}_{1}".format(each_column,each_condition)},inplace=True,axis=1)
+        psm_table=pandas.merge(psm_table,this_col_pivot,left_on="Skyline Modified Sequence",right_index=True)
 
 
-    #We're going to handle the phospho mods, if they exist, and if they do, make a column for KSEA analysis.
-    if peptide_quant:
-        for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
-            if each_column_name=="numModSites": #RSmax
-                this_mod_name="pRS"#handle the PhosphoRS case.
-            else: #ptmRSmax
-                this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
-            for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
-                print "Generating column for condition: {0}".format(each_condition)
-                psm_table[this_mod_name+' Phosfate_'+each_condition]=""
+#We're going to handle the phospho mods, if they exist, and if they do, make a column for KSEA analysis.
+if peptide_quant:
+    for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
+        if each_column_name=="numModSites": #RSmax
+            this_mod_name="pRS"#handle the PhosphoRS case.
+        else: #ptmRSmax
+            this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
+        for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
+            print "Generating column for condition: {0}".format(each_condition)
+            psm_table[this_mod_name+' Phosfate_'+each_condition]=""
 
 #if 'phospho_numMods' in psm_table.columns:
 for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
