@@ -1,4 +1,5 @@
-#!/usr/bin/env ruby
+#!/usr/local/rvm/rubies/ruby-2.4.1/bin/ruby
+#    ## old shebang /usr/bin/env ruby
 #
 # This file is part of protk
 # Created by Ira Cooke 14/12/2010
