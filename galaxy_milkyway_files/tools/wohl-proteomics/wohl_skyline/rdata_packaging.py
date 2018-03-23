@@ -324,139 +324,139 @@ elif "norename" in options.renameProteinType and options.analysis_type=="lfq":#M
 if options.analysis_type=="lfq":
     combined_results.drop('backup',axis=1,inplace=True)
     combined_results.to_csv('msstats_comparison.csv',sep=',',index=False)
+    msstats_comparison_df=pandas.read_csv(options.msstats_comparison)
+    if "log10FC" in combined_results.columns:
+        msstats_comparison_df['log2FC']=numpy.log2(numpy.power([10]*len(msstats_comparison_df['log10FC']),msstats_comparison_df['log10FC']))
 
 
 #We're also going to try to merge the psm table with the MSstats results.  If we have peptide level results, they should merge back in.
 #If there's no match, then we should just drop the columns and not perform the join.
 #So first, let's check and see if our MSstats comparison CSV has any matches for its "Protein" column to our psm table's "Skyline Modified Sequence" column!
-msstats_comparison_df=pandas.read_csv(options.msstats_comparison)
-if "log10FC" in combined_results.columns:
-    msstats_comparison_df['log2FC']=numpy.log2(numpy.power([10]*len(msstats_comparison_df['log10FC']),msstats_comparison_df['log10FC']))
 
-unique_prot_list=msstats_comparison_df['Protein'].unique().tolist()
-psm_table_skyline_seq_list=psm_table['Skyline Modified Sequence'].unique().tolist()
-print "Checking if we will merge peptide level data in..."
-peptide_quant=False
-if bool(set(unique_prot_list) & set(psm_table_skyline_seq_list)): #This means that there's at least one which is equal, so we should perform the join!
-    peptide_quant=True
-    print "We will now merge peptide level quant data into the PSM table..."
+    unique_prot_list=msstats_comparison_df['Protein'].unique().tolist()
+    psm_table_skyline_seq_list=psm_table['Skyline Modified Sequence'].unique().tolist()
+    print "Checking if we will merge peptide level data in..."
+    peptide_quant=False
+    if bool(set(unique_prot_list) & set(psm_table_skyline_seq_list)): #This means that there's at least one which is equal, so we should perform the join!
+        peptide_quant=True
+        print "We will now merge peptide level quant data into the PSM table..."
+ 
+        subset_comparison=msstats_comparison_df[['Protein','Label','log2FC','pvalue','adj.pvalue','issue']]
+        subset_comparison.rename({'Label':'MSstats_condition','log2FC':"MSstats_log2FC",'pvalue':"MSstats_pvalue",'adj.pvalue':"MSstats_adj.pvalue",'issue':"MSstats_issue","Protein":"Skyline Modified Sequence"},inplace=True,axis=1)
 
-    subset_comparison=msstats_comparison_df[['Protein','Label','log2FC','pvalue','adj.pvalue','issue']]
-    subset_comparison.rename({'Label':'MSstats_condition','log2FC':"MSstats_log2FC",'pvalue':"MSstats_pvalue",'adj.pvalue':"MSstats_adj.pvalue",'issue':"MSstats_issue","Protein":"Skyline Modified Sequence"},inplace=True,axis=1)
-
-    for each_column in ["MSstats_log2FC","MSstats_pvalue","MSstats_adj.pvalue","MSstats_issue"]:
-        #print subset_comparison
-        this_col_pivot=subset_comparison.pivot(index="Skyline Modified Sequence",columns="MSstats_condition",values=each_column)
-        for each_condition in this_col_pivot.columns:
-            print "Adding peptide level quant info for the {0} condition".format(each_condition)
-            this_col_pivot.rename({each_condition:"{0}_{1}".format(each_column,each_condition)},inplace=True,axis=1)
-        psm_table=pandas.merge(psm_table,this_col_pivot,left_on="Skyline Modified Sequence",right_index=True)
+        for each_column in ["MSstats_log2FC","MSstats_pvalue","MSstats_adj.pvalue","MSstats_issue"]:
+            #print subset_comparison
+            this_col_pivot=subset_comparison.pivot(index="Skyline Modified Sequence",columns="MSstats_condition",values=each_column)
+            for each_condition in this_col_pivot.columns:
+                print "Adding peptide level quant info for the {0} condition".format(each_condition)
+                this_col_pivot.rename({each_condition:"{0}_{1}".format(each_column,each_condition)},inplace=True,axis=1)
+            psm_table=pandas.merge(psm_table,this_col_pivot,left_on="Skyline Modified Sequence",right_index=True)
 
 
-#We're going to handle the phospho mods, if they exist, and if they do, make a column for KSEA analysis.
-if peptide_quant:
+    #We're going to handle the phospho mods, if they exist, and if they do, make a column for KSEA analysis.
+    if peptide_quant:
+        for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
+            if each_column_name=="numModSites": #RSmax
+                this_mod_name="pRS"#handle the PhosphoRS case.
+            else: #ptmRSmax
+                this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
+            for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
+                print "Generating column for condition: {0}".format(each_condition)
+                psm_table[this_mod_name+' Phosfate_'+each_condition]=""
+
+    #if 'phospho_numMods' in psm_table.columns:
     for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
         if each_column_name=="numModSites": #RSmax
             this_mod_name="pRS"#handle the PhosphoRS case.
+            psm_table[this_mod_name+'_numMods']=psm_table['numModSites'].astype(float).fillna(0.0)
         else: #ptmRSmax
             this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
-        for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
-            print "Generating column for condition: {0}".format(each_condition)
-            psm_table[this_mod_name+' Phosfate_'+each_condition]=""
+            psm_table[this_mod_name+'_numMods']=psm_table[this_mod_name+'_numMods'].astype(float).fillna(0.0)
+        #if this_mod_name="
+        #psm_table['KSEA sites']=""
+        working_set=psm_table[psm_table[this_mod_name+'_numMods']>0.0]
+        for index,each_row in working_set.iterrows():
+            site_prob=each_row[this_mod_name+'_siteProbabilities']
 
-#if 'phospho_numMods' in psm_table.columns:
-for each_column_name in [x for x in psm_table.columns if ("_numMods" in x or x=="numModSites") and "ptmRS_numMods" not in x]:
-    if each_column_name=="numModSites": #RSmax
-        this_mod_name="pRS"#handle the PhosphoRS case.
-        psm_table[this_mod_name+'_numMods']=psm_table['numModSites'].astype(float).fillna(0.0)
-    else: #ptmRSmax
-        this_mod_name=each_column_name.rsplit("_",1)[0] # This will be the mod name.
-        psm_table[this_mod_name+'_numMods']=psm_table[this_mod_name+'_numMods'].astype(float).fillna(0.0)
-    #if this_mod_name="
-    #psm_table['KSEA sites']=""
-    working_set=psm_table[psm_table[this_mod_name+'_numMods']>0.0]
-    for index,each_row in working_set.iterrows():
-        site_prob=each_row[this_mod_name+'_siteProbabilities']
+            this_mod_site_scores_split=each_row[this_mod_name+"_siteProbabilities"].split(';')
+            this_mod_site_dict={}
+            #this_mod_number_of_sites=len(this_mod_site_scores_split)
+            this_mod_number_of_sites=int(each_row[this_mod_name+'_numMods'])
+            for eachsite in this_mod_site_scores_split:
+                eachsite=eachsite.strip()
+                score=float(eachsite.split()[1])
+                #if "x" in eachsite.split()[0]: #ptmRS case
+                #    factor=int(eachsite.split()[0].rsplit('x',1)[1].replace(":","").strip()) #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
+                #else: #pRS case
+                #    factor=1 #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
+                site_index=str(int(eachsite.split()[0].split('(')[1].split(')')[0])-1)+"_"+str(eachsite[0]) #AA stored first here.   This is formatted as "7_Y" which would be the index and the AA modified separated by "_"
+                this_mod_site_dict[site_index]=score
+            this_mod_sorted_sites = sorted(this_mod_site_dict.items(), key=operator.itemgetter(1), reverse=True)
+            this_mod_sorted_sites=this_mod_sorted_sites[:this_mod_number_of_sites]
+            #print this_mod_sorted_sites
+            #sys.exit(2)
+            this_mod_sorted_sites=[(x[0].split("_")[0],x[0].split("_")[1]) for x in this_mod_sorted_sites]
+            mod_str=""
+            phosfate_str=""
+            mod_logo=""
+            logo_length=6# AA's on each side of the modification site...
+            for eachsite in this_mod_sorted_sites:
+                AA_position=eachsite[0]
+                mod_AA=eachsite[1]
 
-        this_mod_site_scores_split=each_row[this_mod_name+"_siteProbabilities"].split(';')
-        this_mod_site_dict={}
-        #this_mod_number_of_sites=len(this_mod_site_scores_split)
-        this_mod_number_of_sites=int(each_row[this_mod_name+'_numMods'])
-        for eachsite in this_mod_site_scores_split:
-            eachsite=eachsite.strip()
-            score=float(eachsite.split()[1])
-            #if "x" in eachsite.split()[0]: #ptmRS case
-            #    factor=int(eachsite.split()[0].rsplit('x',1)[1].replace(":","").strip()) #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
-            #else: #pRS case
-            #    factor=1 #We don't need this for the phospho case, but we'll leave it anyway and instead place the AA in, instead.
-            site_index=str(int(eachsite.split()[0].split('(')[1].split(')')[0])-1)+"_"+str(eachsite[0]) #AA stored first here.   This is formatted as "7_Y" which would be the index and the AA modified separated by "_"
-            this_mod_site_dict[site_index]=score
-        this_mod_sorted_sites = sorted(this_mod_site_dict.items(), key=operator.itemgetter(1), reverse=True)
-        this_mod_sorted_sites=this_mod_sorted_sites[:this_mod_number_of_sites]
-        #print this_mod_sorted_sites
-        #sys.exit(2)
-        this_mod_sorted_sites=[(x[0].split("_")[0],x[0].split("_")[1]) for x in this_mod_sorted_sites]
-        mod_str=""
-        phosfate_str=""
-        mod_logo=""
-        logo_length=6# AA's on each side of the modification site...
-        for eachsite in this_mod_sorted_sites:
-            AA_position=eachsite[0]
-            mod_AA=eachsite[1]
-
-            for each_protein in each_row['proteinacc_start_stop_pre_post_;'].split(";"):
-                all_uniprots=set(re.findall(uniprot_pattern,each_protein.rsplit("_",4)[0]))
-                all_mappings=[]
-                uni_proteins=[]
-                for each_uniprot in all_uniprots:
-                    id_filter=fasta_df[fasta_df['id']==each_uniprot]
-                    if len(id_filter)==0:
-                        #print "WARNING: Couldn't find ",each_uniprot,"in the FASTA db"
-                        id_filter=fasta_df[fasta_df['id']==each_protein.rsplit("_",4)[0]]
-                        #if len(id_filter)==0:
-                        #    print "WARNING: Still can't find",each_protein.rsplit("_",4)[0],"in the FASTA..."
-                    for id_index,id_each_row in id_filter.iterrows():
-                        prot_index=int(AA_position)+int(each_protein.rsplit("_",4)[1])-1
-                        prot_length=len(id_each_row['Sequence'])
-                        if prot_index<logo_length-1:
-                            n_term_offset="-"*(logo_length-prot_index)
-                            mod_logo+=each_uniprot+":"+n_term_offset+id_each_row['Sequence'][prot_index-(logo_length-(logo_length-prot_index)):prot_index+logo_length+1]+";"
-                        elif (prot_index+logo_length)>=prot_length:
-                            offset_buffer=logo_length-(prot_length-1-prot_index)
-                            c_term_offset="-"*offset_buffer
-                            mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+(logo_length-(logo_length-((prot_length)-prot_index)))]+c_term_offset+";"
-                            #print mod_logo
-                            #print prot_length,prot_index
-                        else:
-                            #mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+logo_length]+c_term_offset+";"
-                            mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+logo_length+1]+";"
-                        #id_each_row['Sequence']
-                    #print mod_logo
-                    #these_uniprots=set(re.findall(uniprot_pattern,each_protein.rsplit("_",4)[0]))
-                    try:
-                        #for each_these_uniprot in these_uniprots:
-                        uni_mappings=uni_mapping_dict[each_uniprot]
-                    except:
-                        #for each_these_uniprot in these_uniprots:
-                        #uni_mappings=each_uniprot
-                        uni_mappings=each_protein.rsplit("_",4)[0]
-                    all_mappings.append(uni_mappings)
-                    uni_proteins.append(each_uniprot)
-                for each_mapping in set(all_mappings): # This will always only have one, unless we change the append above to extend, and make the uni_mapping_dict into a list storage...
-                    mod_str+=each_mapping+"_"+str(mod_AA)+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+";"
-                if peptide_quant:
-                    for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
-                        uni_str=""
-                        for each_uniprot in uni_proteins:
-                            uni_str+=each_uniprot+","+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+","+str(each_row["MSstats_log2FC_"+each_condition])+";"
-                        psm_table.at[index,this_mod_name+' Phosfate_'+each_condition]=uni_str[:-1]
-        mod_str=mod_str[:-1]
-        mod_str=';'.join(set([x for x in mod_str.split(";")])) #cleanup!
-        mod_logo=mod_logo[:-1]
-        psm_table.at[index,this_mod_name+' prot-sites']=mod_str
-        psm_table.at[index,this_mod_name+' motifs']=mod_logo
-        #psm_table.set_value(index,col=this_mod_name+' prot-sites',value=mod_str)
-        #psm_table.set_value(index,col=this_mod_name+' motifs',value=mod_logo)
+                for each_protein in each_row['proteinacc_start_stop_pre_post_;'].split(";"):
+                    all_uniprots=set(re.findall(uniprot_pattern,each_protein.rsplit("_",4)[0]))
+                    all_mappings=[]
+                    uni_proteins=[]
+                    for each_uniprot in all_uniprots:
+                        id_filter=fasta_df[fasta_df['id']==each_uniprot]
+                        if len(id_filter)==0:
+                            #print "WARNING: Couldn't find ",each_uniprot,"in the FASTA db"
+                            id_filter=fasta_df[fasta_df['id']==each_protein.rsplit("_",4)[0]]
+                            #if len(id_filter)==0:
+                            #    print "WARNING: Still can't find",each_protein.rsplit("_",4)[0],"in the FASTA..."
+                        for id_index,id_each_row in id_filter.iterrows():
+                            prot_index=int(AA_position)+int(each_protein.rsplit("_",4)[1])-1
+                            prot_length=len(id_each_row['Sequence'])
+                            if prot_index<logo_length-1:
+                                n_term_offset="-"*(logo_length-prot_index)
+                                mod_logo+=each_uniprot+":"+n_term_offset+id_each_row['Sequence'][prot_index-(logo_length-(logo_length-prot_index)):prot_index+logo_length+1]+";"
+                            elif (prot_index+logo_length)>=prot_length:
+                                offset_buffer=logo_length-(prot_length-1-prot_index)
+                                c_term_offset="-"*offset_buffer
+                                mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+(logo_length-(logo_length-((prot_length)-prot_index)))]+c_term_offset+";"
+                                #print mod_logo
+                                #print prot_length,prot_index
+                            else:
+                                #mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+logo_length]+c_term_offset+";"
+                                mod_logo+=each_uniprot+":"+id_each_row['Sequence'][prot_index-logo_length:prot_index+logo_length+1]+";"
+                            #id_each_row['Sequence']
+                        #print mod_logo
+                        #these_uniprots=set(re.findall(uniprot_pattern,each_protein.rsplit("_",4)[0]))
+                        try:
+                            #for each_these_uniprot in these_uniprots:
+                            uni_mappings=uni_mapping_dict[each_uniprot]
+                        except:
+                            #for each_these_uniprot in these_uniprots:
+                            #uni_mappings=each_uniprot
+                            uni_mappings=each_protein.rsplit("_",4)[0]
+                        all_mappings.append(uni_mappings)
+                        uni_proteins.append(each_uniprot)
+                    for each_mapping in set(all_mappings): # This will always only have one, unless we change the append above to extend, and make the uni_mapping_dict into a list storage...
+                        mod_str+=each_mapping+"_"+str(mod_AA)+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+";"
+                    if peptide_quant:
+                        for each_condition in [x.split("_",2)[2] for x in psm_table.columns if "MSstats_log2FC_" in x]:
+                            uni_str=""
+                            for each_uniprot in uni_proteins:
+                                uni_str+=each_uniprot+","+str(int(AA_position)+int(each_protein.rsplit("_",4)[1]))+","+str(each_row["MSstats_log2FC_"+each_condition])+";"
+                            psm_table.at[index,this_mod_name+' Phosfate_'+each_condition]=uni_str[:-1]
+            mod_str=mod_str[:-1]
+            mod_str=';'.join(set([x for x in mod_str.split(";")])) #cleanup!
+            mod_logo=mod_logo[:-1]
+            psm_table.at[index,this_mod_name+' prot-sites']=mod_str
+            psm_table.at[index,this_mod_name+' motifs']=mod_logo
+            #psm_table.set_value(index,col=this_mod_name+' prot-sites',value=mod_str)
+            #psm_table.set_value(index,col=this_mod_name+' motifs',value=mod_logo)
 
 
 
