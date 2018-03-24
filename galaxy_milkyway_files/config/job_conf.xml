@@ -17,8 +17,11 @@
         </plugin>
         <plugin id="pulsar" type="runner" load="galaxy.jobs.runners.pulsar:PulsarLegacyJobRunner" workers="2"/>
     </plugins>
-    <handlers>
-        <handler id="main"/>
+    <handlers default_from_environ="GALAXY_HANDLERS_DEFAULT" default="handlers">
+          <handler id="handler0" tags="handlers"/>
+          <handler id="handler1" tags="handlers"/>
+          <handler id="handler2" tags="handlers"/>
+          <handler id="handler3" tags="handlers"/>
     </handlers>
     <destinations default="local">
         <destination id="local" runner="local">
@@ -95,13 +98,14 @@
     </tools>
 
     <limits>
-    <limit type="destination_user_concurrent_jobs" id="local">12</limit>
-    <limit type="destination_user_concurrent_jobs" id="win_pulsar">12</limit>
+    <limit type="destination_user_concurrent_jobs" id="local">8</limit>
+    <limit type="destination_user_concurrent_jobs" id="win_pulsar">5</limit>
+    <limit type="destination_total_concurrent_jobs" id="win_pulsar">6</limit>
     <limit type="destination_total_concurrent_jobs" id="local">12</limit>
 
-    <limit type="concurrent_jobs">12</limit>
-    <limit type="registered_user_concurrent_jobs">12</limit>
-    <limit type="output_size">100GB</limit>
+    <limit type="concurrent_jobs">21</limit>
+    <limit type="registered_user_concurrent_jobs">20</limit>
+    <limit type="output_size">250GB</limit>
 
     </limits>
 
