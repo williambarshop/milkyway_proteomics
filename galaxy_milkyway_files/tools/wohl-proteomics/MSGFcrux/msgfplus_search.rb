@@ -1,5 +1,5 @@
 #!/usr/local/rvm/rubies/ruby-2.4.1/bin/ruby
-#### #!/usr/bin/env ruby
+ruby_path="/usr/local/rvm/rubies/ruby-2.4.1/bin/" #Please update this if ruby moves.
 #
 # This file is part of protk
 # Created by Ira Cooke 14/12/2010
@@ -241,9 +241,9 @@ ARGV.each do |filename|
     # As a final part of the command we convert to pepxml
     if search_tool.pepxml
       #if search_tool.explicit_output
-      cmd << ";ruby -pi.bak -e \"gsub('post=\\\"?','post=\\\"X')\" #{mzid_output_path}"
-      cmd << ";ruby -pi.bak -e \"gsub('pre=\\\"?','pre=\\\"X')\" #{mzid_output_path}"
-      cmd << ";ruby -pi.bak -e \"gsub('id=\\\"UnspecificCleavage\\\"','id=\\\"UnspecificCleavage\\\" name=\\\"unspecific cleavage\\\"')\" #{mzid_output_path}"
+      cmd << ";#{ruby_path}/ruby -pi.bak -e \"gsub('post=\\\"?','post=\\\"X')\" #{mzid_output_path}"
+      cmd << ";#{ruby_path}/ruby -pi.bak -e \"gsub('pre=\\\"?','pre=\\\"X')\" #{mzid_output_path}"
+      cmd << ";#{ruby_path}/ruby -pi.bak -e \"gsub('id=\\\"UnspecificCleavage\\\"','id=\\\"UnspecificCleavage\\\" name=\\\"unspecific cleavage\\\"')\" #{mzid_output_path}"
       cmd << ";idconvert #{mzid_output_path} --pepXML -o #{Pathname.new(mzid_output_path).dirname}" 
 
  
@@ -252,7 +252,7 @@ ARGV.each do |filename|
       # Fix the msms_run_summary base_name attribute
       #
       if for_galaxy
-        cmd << ";ruby -pi.bak -e \"gsub(/ base_name=[^ ]+/,' base_name=\\\"#{original_input_file}\\\"')\" #{pepxml_output_path}"
+        cmd << ";#{ruby_path}/ruby -pi.bak -e \"gsub(/ base_name=[^ ]+/,' base_name=\\\"#{original_input_file}\\\"')\" #{pepxml_output_path}"
       end
       #Then copy the pepxml to the final output path
       cmd << "; mv #{pepxml_output_path} #{output_path}"
