@@ -1162,12 +1162,10 @@ if options.ppm:
 
 
                 print "Writing mass corrections to file and console:"
-                for each_newline in new_reconstructed_lines:
-                    #print each_newline
-                    filewriter.write("\t".join(each_newline))
 
                 if not options.fix_ppm:# is None:
-                    pass
+                    for each_newline in new_reconstructed_lines:
+                        filewriter.write("\t".join(each_newline))
 
                 else:#We're doing the PPM correction!
 
@@ -1181,8 +1179,8 @@ if options.ppm:
                     print "Reading in ",eachfile+"_ppm"
 
                     new_df=pandas.read_csv(eachfile+"_ppm",sep="\t",skiprows=[1],low_memory=False)
-                    new_df=new_df[new_df['SpecId'].str.contains("DefaultDirection")==False]
-                    new_df=new_df[new_df['Label'].str.contains("Label")==False]
+                    #new_df=new_df[new_df['SpecId'].str.contains("DefaultDirection")==False]
+                    #new_df=new_df[new_df['Label'].str.contains("Label")==False]
                     new_df['Label']=new_df['Label'].astype(int)
                     new_df['ppm']=new_df['ppm'].astype(float)
                     new_df=new_df[np.logical_and(new_df['lnEValue'] >= (-1.0*math.log(fix_ppm)),new_df['Label']==1)]
