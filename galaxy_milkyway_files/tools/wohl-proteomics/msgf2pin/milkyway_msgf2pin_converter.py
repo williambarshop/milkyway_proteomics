@@ -2,10 +2,9 @@
 ## MSGF2pin+SILAC Wapper, Wohlschlegel Lab
 ## Written by William Barshop
 ## For use in Galaxy-Proteomics Workflows
-## where fractionated data is common.
 ##
-version="1.07"
-##Date : 2018-01-04
+version="1.08"
+##Date : 2018-05-08
 ##
 ######################################
 from optparse import OptionParser
@@ -1161,11 +1160,13 @@ if options.ppm:
                     linectr+=1
 
 
-                print "Writing mass corrections to file and console:"
+                #print "Writing mass corrections to file and console:"
 
                 if not options.fix_ppm:# is None:
                     for each_newline in new_reconstructed_lines:
+                        #print each_newline
                         filewriter.write("\t".join(each_newline))
+                    pass
 
                 else:#We're doing the PPM correction!
 
@@ -1181,6 +1182,10 @@ if options.ppm:
                     new_df=pandas.read_csv(eachfile+"_ppm",sep="\t",skiprows=[1],low_memory=False)
                     #new_df=new_df[new_df['SpecId'].str.contains("DefaultDirection")==False]
                     #new_df=new_df[new_df['Label'].str.contains("Label")==False]
+                    print "About to clean up NA rows from label data... Be concerned if the following two numbers difference is large:"
+                    print "Before: {0}".format(len(new_df))
+                    new_df.dropna(subset=['Label'],inplace=True)
+                    print "After: {0}".format(len(new_df))
                     new_df['Label']=new_df['Label'].astype(int)
                     new_df['ppm']=new_df['ppm'].astype(float)
                     new_df=new_df[np.logical_and(new_df['lnEValue'] >= (-1.0*math.log(fix_ppm)),new_df['Label']==1)]
@@ -1308,7 +1313,7 @@ if options.ppm:
     if options.fix_ppm:
         all_corrected_ppm=pandas.concat(ppm_correction_list)
         print "Writing out the ppm corrections per file for later use..."
-        #print all_corrected_ppm
+        print all_corrected_ppm
         all_corrected_ppm.index=all_corrected_ppm.index+".mzML"
         all_corrected_ppm.to_csv("ppm_shifts.csv",sep=',')
 
