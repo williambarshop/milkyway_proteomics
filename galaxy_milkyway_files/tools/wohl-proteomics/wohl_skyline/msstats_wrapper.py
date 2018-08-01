@@ -630,7 +630,7 @@ print "Now we're going to prepare the R script for MSstats"
 
 #Let's start by reading in the experiment structure.
 group_information = pandas.read_csv(options.experiment_file,sep='\t')
-
+group_information["Biological Condition"]=group_information["Biological Condition"].astype(str)
 
 with open("MSstats_Script.R",'wb') as script_writer:
     script_writer.write("library(MSstats)\n")
@@ -760,7 +760,7 @@ with open("MSstats_Script.R",'wb') as script_writer:
     #groups_abet=natsorted(group_information['Biological Condition'].unique().tolist(),alg=ns.IGNORECASE | ns.REAL)  #This should be the same order that MSstats sees! -- it appears that it is not... alphabetical ignore case
     #Natsort fails when numbers come into play, so we'll just put this to bed and use R to sort.
     with open("R_sorter.Rscript",'wb') as sorter_script_writer:
-        sorter_script_writer.write("sort(c(\""+"\",\"".join(group_information['Biological Condition'].unique().tolist())+"\"))")
+        sorter_script_writer.write("sort(c(\""+"\",\"".join(group_information['Biological Condition'].astype(str).unique().tolist())+"\"))")
     groups_abet_cmdout=subprocess.check_output(["Rscript","R_sorter.Rscript"])
     print groups_abet_cmdout,"\nACTUALOUTPUT==================="
     groups_abet=[x.strip("\"").rstrip("\"") for x in groups_abet_cmdout.split("\"")[1:]]

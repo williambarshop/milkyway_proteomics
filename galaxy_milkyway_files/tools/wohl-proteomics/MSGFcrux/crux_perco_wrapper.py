@@ -1,5 +1,5 @@
-version=".88A"
-date="7/27/2017"
+version=".92B"
+date="7/31/2018"
 
 import sys, os, subprocess, shutil
 import pandas
@@ -35,9 +35,11 @@ run_dict={} # Key is file_idx, value is file_name.mzML
 run_dict_reverse={}
 group_to_run_dict={} # Key is group, value is [1, 2, 3, 4] list of file_idx belonging to runs in the group...
 group_to_file_name={} # key is group, value is ["xxxx.mzML", "xxxx.mzML"]
+run_to_group_dict={} #Key is run, value is group for pin file
 for index,row in group_information.iterrows():
     run_dict[str(row['Crux File Integer'])]=row['Original File Name']+".mzML"
     run_dict_reverse[row['Original File Name']+".mzML"]=row['Crux File Integer']
+    run_to_group_dict[row['Original File Name']+".mzML"]=row['Fractionation Group ID String']
     if row['Fractionation Group ID String'] in group_to_run_dict:
         group_to_run_dict[row['Fractionation Group ID String']].append(str(row['Crux File Integer']))
     else:
@@ -52,7 +54,7 @@ for index,row in group_information.iterrows():
 
 
 #Here we actually run percolator
-if independent_perco=="T": #If =="T" then we'll run percolator separately for each file
+if independent_perco=="T": #If =="T" then we'll run percolator separately for each file or group
     for each in onlyfiles:
         #print each
         cmd=arguments[:]
@@ -69,6 +71,37 @@ if independent_perco=="T": #If =="T" then we'll run percolator separately for ea
         os.chdir(startingdir)
     for each in processes:
         each.wait()
+
+    for each in onlyfiles:  #here i need to take the group and filter it into the runs that belong TO THIS GROUP so use the group_to_run_dict to get the fileidx set
+        clean_name=each.rsplit(".",1)[0]
+        files_to_filter=[clean_name+'.percolator.decoy.peptides.txt',clean_name+'.percolator.target.peptides.txt',clean_name+'.percolator.target.psms.txt',clean_name+'.percolator.decoy.psms.txt']
+        os.chdir(startingdir+"/output/"+each.replace(".mzML",".pin")+"_out/crux-output")##
+
+        for each_newfile in group_to_file_name[each.replace(".pin","")]:#run_dict_reverse:
+            print "handling {0} and {1}".format(each,each_newfile)
+            if each_newfile.replace(".mzML","") != each.replace(".pin",""):
+                if not os.path.isdir(startingdir+"/output/"+each_newfile.replace(".mzML",".pin")+"_out/"):
+                    os.mkdir(startingdir+"/output/"+each_newfile.replace(".mzML",".pin")+"_out/")
+                shutil.copytree(startingdir+"/output/"+each.replace(".mzML",".pin")+"_out/crux-output",startingdir+"/output/"+each_newfile.replace(".mzML",".pin")+"_out/crux-output")
+                os.chdir(startingdir+"/output/"+each_newfile.replace(".mzML",".pin")+"_out/crux-output")
+                #Now we'll load each of the following files and filter them out, and rename them....
+                for each_filter_file in files_to_filter:
+                    this_pin_df=pandas.read_csv(each_filter_file,sep='\t')
+                    this_pin_df=this_pin_df[this_pin_df['file_idx']==run_dict_reverse[each_newfile]]
+                    this_pin_df.to_csv(each.rsplit(".",1)[0]+'.'+'.'.join(each_filter_file.rsplit(".",4)[1:]),sep='\t',index=False)
+                os.chdir(startingdir)#
+
+        #cleanup
+        #for each_filter_file in files_to_filter:
+        #    os.remove(each_filter_file)
+    #os.chdir(startingdir)
+    #cleanup
+    #os.chdir("output/")
+    #os.system("tar -cvf - combined_out/ 2>/dev/null | pigz -9 -p 24 > combined_perco.tar.gz")
+    #shutil.rmtree("combined_out/")
+    os.chdir(startingdir)
+
+
 else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
     #2. Run crux percolator for the aggregated data
     #3. Read in the outputs [psms:[targets, decoys],peptides:[targets,decoys] as a single dataframes, and then split them by file and output them to proper folders]
@@ -76,6 +109,8 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
     os.mkdir("output/combined_out")
     first_file=True
     with open("output/combined_out/combined_input.pin",'wb') as pin_writer:
+        #print run_dict_reverse,"new"
+        #print onlyfiles,"old"
         for each in onlyfiles:
             line_ctr=0
             with open(folder+"/"+each,'rb') as pin_reader:
@@ -107,10 +142,10 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
     percolator_process.wait()
     combined_out_folder=os.getcwd()
     files_to_filter=['combined_analysis.percolator.decoy.peptides.txt','combined_analysis.percolator.target.peptides.txt','combined_analysis.percolator.target.psms.txt','combined_analysis.percolator.decoy.psms.txt']
-    for each in onlyfiles:
+    for each in run_dict_reverse:
         os.chdir(combined_out_folder)
-        shutil.copytree("crux-output",startingdir+"/output/"+each+"_out/crux-output")
-        os.chdir(startingdir+"/output/"+each+"_out/crux-output")
+        shutil.copytree("crux-output",startingdir+"/output/"+each.replace(".mzML",".pin")+"_out/crux-output")
+        os.chdir(startingdir+"/output/"+each.replace(".mzML",".pin")+"_out/crux-output")
         #Now we'll load each of the following files and filter them out, and rename them....
         for each_filter_file in files_to_filter:
             this_pin_df=pandas.read_csv(each_filter_file,sep='\t')
@@ -129,6 +164,69 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
     #for each in onlyfiles:
 
 
+for neweach in run_dict_reverse:
+    each=neweach.replace(".mzML",".pin")
+    if os.path.exists("output/"+each+"_out/"+each):
+        pass #it already exists!
+    else:
+        #Let's go find the pin data...
+        #first, what run group is this in?
+        this_group=run_to_group_dict[neweach]
+        if not os.path.isdir("output/"+each+"_out/"):
+            os.mkdir("output/"+each+"_out/")
+        with open("output/"+each+"_out/"+each,'wb') as filewriter:
+            with open("output/"+this_group+".pin_out/"+this_group+".pin",'rb') as filereader:
+                linectr=0
+                peptide_index=0
+                index_ctr=0
+                expmass_index=0
+                specID_index=0
+                scan_index=0
+                label_index=0
+                charge_indicies={}
+                pin_lines=[]
+                for eachline in filereader:
+                    if linectr==0:
+                        header=eachline.split("\t")
+                        for each_item in header:
+                            if each_item == "Peptide":
+                                peptide_index=index_ctr
+                            elif each_item == "SpecId":
+                                specID_index=index_ctr
+                            elif each_item == "ScanNr":
+                                scan_index=index_ctr
+                            elif each_item == "ExpMass":
+                                expmass_index = index_ctr
+                            elif each_item == "Label":
+                                label_index=index_ctr
+                            elif "Charge" in each_item:
+                                charge_indicies[each_item]=index_ctr
+                            index_ctr+=1
+                        #filewriter.write("SpecId\tlabel\tScanNr\tPeptide\tcharge\n")
+                        filewriter.write(eachline)
+                    elif linectr==1:
+                        filewriter.write(eachline)
+                    else:
+                        #print eachline[specID_index]
+                        if eachline.split("\t")[specID_index].split("_")[1]==str(run_dict_reverse[neweach]):
+                            filewriter.write(eachline)
+                    linectr+=1
+
+
+
+#    os.system("tar -cvf - combined_out/ 2>/dev/null | pigz -9 -p 24 > combined_perco.tar.gz")
+for each in onlyfiles:
+    #if each not in [x.replace(".mzML",".pin") for x in run_dict_reverse.keys()]:
+    if each.replace(".pin",".mzML") not in run_dict_reverse:
+        #If it's not there, then we're going to mask the pin file into a tar.gz
+        os.system("tar -cvf - output/{0}_out/{0} 2>/dev/null | pigz -9 -p 24 > output/{1}.tar.gz".format(each,each.replace(".pin","")))
+        shutil.rmtree("output/{0}".format(each+"_out"))
+
+        #os.mkdir("output/"+each+"_out")
+        #os.rename(folder+"/"+each,"output/"+each+"_out/"+each)
+        #os.chdir("output/"+each+"_out")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ################ To prepare for percolator file output, we're going to read in the percolator pin files
@@ -139,7 +237,9 @@ os.chdir(startingdir)
 pin_list=[]
 
 spectral_expmz={}
-for each in onlyfiles:
+#for each in onlyfiles:
+for neweach in run_dict_reverse:
+    each=neweach.replace(".mzML",".pin")
     os.chdir("output/"+each+"_out")
     with open("temp.tsv",'wb') as filewriter:
         with open(each,'rb') as filereader:
@@ -219,7 +319,10 @@ pin_megaframe.drop('label',axis=1,inplace=True)
 
 
 os.chdir(startingdir)
-for each in onlyfiles:
+#for each in onlyfiles:
+for neweach in run_dict_reverse:
+    each=neweach.replace(".mzML",".pin")
+
     os.chdir("output/"+each+"_out")
     target_psms=[ f for f in listdir("crux-output/") if (isfile(join("crux-output/",f)) and "target.psms.txt" in f)]
     decoy_psms=[ f for f in listdir("crux-output/") if (isfile(join("crux-output/",f)) and "decoy.psms.txt" in f)]
