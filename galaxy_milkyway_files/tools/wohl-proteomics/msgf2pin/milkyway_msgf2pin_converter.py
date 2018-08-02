@@ -1180,8 +1180,8 @@ if options.ppm:
                     print "Reading in ",eachfile+"_ppm"
 
                     new_df=pandas.read_csv(eachfile+"_ppm",sep="\t",skiprows=[1],low_memory=False)
-                    #new_df=new_df[new_df['SpecId'].str.contains("DefaultDirection")==False]
-                    #new_df=new_df[new_df['Label'].str.contains("Label")==False]
+                    new_df=new_df[new_df['SpecId'].str.contains("DefaultDirection")==False]
+                    new_df=new_df[new_df['ppm'].astype(str)!="-"]
                     print "About to clean up NA rows from label data... Be concerned if the following two numbers difference is large:"
                     print "Before: {0}".format(len(new_df))
                     new_df.dropna(subset=['Label'],inplace=True)
