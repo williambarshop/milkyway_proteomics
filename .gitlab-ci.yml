@@ -6,6 +6,6 @@ stages:
 docker build:
   stage: build
   script:
-  - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+  - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.glitterband/api/v4/projects/9/trigger/pipeline
 
 
