@@ -1,5 +1,5 @@
-#!/usr/local/rvm/rubies/ruby-2.4.1/bin/ruby
-ruby_path="/usr/local/rvm/rubies/ruby-2.4.1/bin/" #Please update this if ruby moves.
+#!/usr/local/rvm/rubies/ruby-2.5.1/bin/ruby
+ruby_path="/usr/local/rvm/rubies/ruby-2.5.1/bin/" #Please update this if ruby moves.
 #
 # This file is part of protk
 # Created by Ira Cooke 14/12/2010
