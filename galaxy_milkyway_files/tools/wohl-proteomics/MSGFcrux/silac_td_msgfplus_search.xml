@@ -1,6 +1,7 @@
-<tool id="milkyway_msgfplus_search" name="Target-Decoy MSGF+ MSMS Search" version="1.2.7">
+<tool id="milkyway_msgfplus_search" name="Target-Decoy MSGF+ MSMS Search" version="1.2.85">
     <description>Run a Separate Target-Decoy MSGF+ Search</description>
     <command>
+        source /usr/local/rvm/scripts/rvm ;
         #set $new_output = $input_file.display_name.rsplit(".",1)[0]+"_target"
         #set $new_decoy_output = $input_file.display_name.rsplit(".",1)[0]+"_decoy"
         #set $input_name = $input_file.display_name.rsplit(".",1)[0]
