@@ -88,6 +88,7 @@
 
     </destinations>
     <tools>
+        <tool id="upload1" destination="local" />
         <tool id="wohl_msconvert" destination="win_pulsar" />
         <tool id="msconvert" destination="win_pulsar" />
         <tool id="msconvert_raw" destination="win_pulsar" />
