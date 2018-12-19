@@ -2,7 +2,7 @@
 <!-- A sample job config that explicitly configures job running the way it is configured by default (if there is no explicit config). -->
 <job_conf>
     <plugins workers="4">
-        <plugin id="local" type="runner" load="galaxy.jobs.runners.local:LocalJobRunner" workers="12"/>
+        <plugin id="local" type="runner" load="galaxy.jobs.runners.local:LocalJobRunner" workers="4"/>
         <plugin id="pulsar_rest" type="runner" load="galaxy.jobs.runners.pulsar:PulsarRESTJobRunner">
           <!-- Allow optimized HTTP calls with libcurl (defaults to urllib) -->
           <param id="transport">curl</param>
@@ -88,7 +88,6 @@
 
     </destinations>
     <tools>
-        <tool id="upload1" destination="local" />
         <tool id="wohl_msconvert" destination="win_pulsar" />
         <tool id="msconvert" destination="win_pulsar" />
         <tool id="msconvert_raw" destination="win_pulsar" />
@@ -104,8 +103,8 @@
     <limit type="destination_total_concurrent_jobs" id="win_pulsar">6</limit>
     <limit type="destination_total_concurrent_jobs" id="local">12</limit>
 
-    <limit type="concurrent_jobs">21</limit>
-    <limit type="registered_user_concurrent_jobs">20</limit>
+    <limit type="concurrent_jobs">12</limit>
+    <limit type="registered_user_concurrent_jobs">4</limit>
     <limit type="output_size">250GB</limit>
 
     </limits>
