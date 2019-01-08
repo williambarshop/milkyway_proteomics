@@ -716,8 +716,8 @@ if fractions and options.blib:
 if options.fido_q_threshold is not None:
     os.chdir(basedir)
     #While we're here, let's go ahead and handle database filtering!
-    fido_q_df = pandas.read_csv(options.fido_q_raw,sep=",")
-    #fido_q_df = pandas.read_csv(options.fido_q_raw,sep="\t")
+    #fido_q_df = pandas.read_csv(options.fido_q_raw,sep=",")
+    fido_q_df = pandas.read_csv(options.fido_q_raw,sep="\t")
     fido_q_df=fido_q_df[fido_q_df['q-value']<=options.fido_q_threshold] #filter down...
     proteins_to_keep=fido_q_df['protein group'].unique().tolist()#this is the list of proteins we want to keep.   
 
