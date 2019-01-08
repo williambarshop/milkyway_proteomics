@@ -15,7 +15,7 @@ from subprocess import STDOUT, call
 
 
 #####################################
-#This is the script to add FIDO protein level q-values back into our percolator psms outputs...
+#This is the script to add Percolator protein level q-values back into our percolator psms outputs...
 #We'll add q-values into the .target.psms files, as well as use pyteomics to read some mzid files...
 #
 #VERSION 0.9.0
@@ -24,7 +24,7 @@ version="0.9.0"
 date="1/08/2019"
 #####################################
 print "-----------------------------------------------------------------------"
-print "Welcome to the FIDO q-value insertion tool for Galaxy, Wohlschlegel Lab UCLA"
+print "Welcome to the Percolator q-value insertion tool for Galaxy, Wohlschlegel Lab UCLA"
 print "Written by William Barshop"
 print "Version: ",version
 print "Date: ",date
@@ -178,8 +178,10 @@ def add_Prot_Info(group):
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
         group.loc[index,'flanking aa']=",".join(fixed_aa_list)
         #try:
-        group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
-        group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+        ##group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
+        ##group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+
+
         #except:
         #    group.loc[index,'protein inference group']=eachrow['protein id']
         #    group.loc[index,'protein inference group ID']=0
@@ -379,6 +381,13 @@ for each_psms_file in targetpsms_matches:
     if options.clean:
         this_df['clean_up']=1
         
+
+    this_df['protein inference group ID']=this_df['protein id'].str.split(",").str.get(0).map(protein_to_groupID_dict)
+    this_df['protein inference group']=this_df['protein id'].str.split(",").str.get(0).map(protein_group_dict)
+    #print this_df['protein inference group']
+    #print protein_to_groupID_dict
+
+
     #now we'll iterate over these and grab the groups by groupby
     global grouped_df
     grouped_df=this_df.groupby('file_scan_id')
@@ -395,7 +404,6 @@ for each_psms_file in targetpsms_matches:
     addedProtInfo['statistical protein q-values']=addedProtInfo['protein q-values']
 
 
-    #addedProtInfo['protein inference group']=addedProtInfo[addedProtInfo['protein id'].str.split(",").get(0)]
 
 
     
