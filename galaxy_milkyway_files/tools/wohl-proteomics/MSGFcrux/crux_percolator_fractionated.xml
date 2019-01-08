@@ -1,4 +1,4 @@
-<tool id="milkyway_crux_percolator" version="0.9.5" name="milkyway_crux_percolator" >
+<tool id="milkyway_crux_percolator" version="0.9.6" name="milkyway_crux_percolator" >
 
   <description>
      Milkyway's crux percolator tool
@@ -7,7 +7,8 @@
    cwd=`pwd`;
    tar -zxvf $pin_targz 2>&amp;1;
    python /galaxy-central/tools/wohl-proteomics/MSGFcrux/crux_perco_wrapper.py
-   $separate_percolator
+   <!--$separate_percolator-->
+   F
    newoutput/
    $exp_file 
    crux percolator 
@@ -30,7 +31,6 @@
     --protein T
     $protein.empiricalproteinq
     $protein.fidonopruneproteins
-    $protein.fidogroupproteins
     --fido-gridsearch-depth $protein.fidogridsearchdepth 2>&amp;1;
     #else
     --picked-protein $protein.fasta
@@ -41,7 +41,7 @@
 
   </command>
   <inputs>
-        <param name="separate_percolator" type="boolean" truevalue="T" falsevalue="F" checked="false" label="Run percolator independently for every acqusition?" help="Almost always best (and conservative) to leave this OFF." />
+        <!-- <param name="separate_percolator" type="boolean" truevalue="T" falsevalue="F" checked="false" label="Run percolator independently for every acqusition?" help="Almost always best (and conservative) to leave this OFF." /> -->
         <param name="pin_targz" type="data" label="tab pin files in tar.gz"/>
         <param name="exp_file" type="data" label="Percolator Experimental Group File"/>
         <param name="trainFDR" type="float" value="0.01" label="Training FDR" help="False discovery rate threshold to define positive examples in training. Set by cross validation if 0. Default is 0.01." />
@@ -77,7 +77,6 @@
         <when value="--protein T">
             <param name="empiricalproteinq" type="boolean" truevalue="--fido-empirical-protein-q T" falsevalue="" checked="true" label="Calculate Empirical Protein Q-Values?" />
             <param name="fidonopruneproteins" type="boolean" truevalue="--no-prune-proteins T" falsevalue="" checked="false" label="Fido No Prune Proteins?" help="it does not prune peptides with a very low score (~0.0) which means that if a peptide with a very low score is matching two proteins, when we prune the peptide, it will be duplicated to generate two new protein groups." />
-            <param name="fidogroupproteins" type="boolean" truevalue="--group-proteins T" falsevalue="" checked="false" label="Fido Group Proteins" help="Treat ties as if it were one protein" />
             <param name="fidogridsearchdepth" type="integer" value="0" label="Fido Gridsearch Depth" help="Setting depth 0 or 1 or 2 from low depth to high depth(less computational time) of the grid search for the estimation Alpha,Beta and Gamma Default value is 0." />
         </when>
     </conditional>
