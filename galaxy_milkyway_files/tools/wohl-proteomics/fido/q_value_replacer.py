@@ -468,25 +468,13 @@ if len(protein_matches)<1:
     sys.exit(2)
 else:
     protein_data=pandas.read_csv(protein_matches[0],sep='\t')
-    #print protein_data['ProteinId'].str.split(",",expand=True)
 
     protein_data['proteinIdBkp']=protein_data['ProteinId']
     safe_columns=[x for x in protein_data.columns if x != "ProteinId"]
     protein_data_merged=protein_data.set_index(safe_columns).stack().str.split(",",expand=True).stack().unstack(-2).reset_index(-1,drop=True).reset_index()
-    #protein_data['protein_list']
-    #####protein_data['protein_list']=protein_data['ProteinId'].str.split(",")
-
-#protein_data
-#s = protein_data.apply(lambda x: pandas.Series(x['protein_list']),axis=1).stack().reset_index(level=1)
-#s.name='single_protein'
-#protein_data_merged=protein_data.join(s)
-
-#protein_data_merged=protein_data_merged.drop_duplicates()
-
-protein_data_merged=protein_data_merged.rename(columns={'ProteinId':'protein group','ProteinIdBkp':'Inference Group','ProteinGroupId':'Inference Group ID','posterior_error_prob':"Protein PEP"})
-#print protein_data_merged
-
-protein_data_merged.to_csv("ptoq.csv",sep='\t',index=False)
+    protein_data_merged_write=protein_data_merged.rename(columns={'ProteinId':'protein group','proteinIdBkp':'Inference Group','ProteinGroupId':'Inference Group ID','posterior_error_prob':"Protein PEP"})
+    protein_data_merged_write.to_csv("ptoq.csv",sep='\t',index=False)
+    protein_data['protein_list']=protein_data_merged['ProteinId'].str.split(",")
 
 
 i=1
