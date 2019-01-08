@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import shutil
 import Bio
+import pandas
 from Bio import SeqIO
 
 ###############################################
@@ -372,24 +373,31 @@ if speccount: #We'll do the spectral counting stuff allllllll inside here
     #NBNBNBNBNBNBNBNB:    FOR THE FUTURE, THE BELOW SECTION SHOULD DEFINITELY BE CHANGED TO PANDAS READING IN THE PROTEIN FILE
     #                     AND THEN FILTERING AFTER THAT....
 
-    passing_proteins={} # These are actually protein groups...
-    with open(proteinfile,'r') as protein_file:
-        for each_line in protein_file:
-            line = each_line.split("\t")
-            if "q-value" in line[0]:
-                continue
-            elif float(line[0]) <= qvalue: #and decoy_str not in line[1]:
-                if "," in line[3]:
-                    temp=line[3].replace("{","").replace("}","").split(",")
-                    temp2=[]
-                    for eachone in temp:
-                        if not decoy_str in eachone:
-                            temp2.append(eachone)
-                    if len(temp2)>0:
-                        passing_proteins[','.join(temp2)]=float(line[0])
-                else:
-                    if not decoy_str in line[3]:
-                        passing_proteins[line[3]]=float(line[0])
+    passing_proteins=[] # These are actually protein groups...
+    prot_df=pandas.read_csv(proteinfile,sep='\t')
+    for index,eachrow in prot_df.iterrows():
+        if eachrow['q-value']<= qvalue:
+            #passing_proteins[eachrow['Inference Group'].split(",")]=eachrow['q-value']
+            passing_proteins.append(eachrow['Inference Group'])
+            #passing_proteins.append(eachrow['Inference Group'].split(","))
+
+    #with open(proteinfile,'r') as protein_file:
+    #    for each_line in protein_file:
+    #        line = each_line.split("\t")
+    #        if "q-value" in line[0]:
+    #            continue
+    #        elif float(line[0]) <= qvalue: #and decoy_str not in line[1]:
+    #            if "," in line[3]:
+    #                temp=line[3].replace("{","").replace("}","").split(",")
+    #                temp2=[]
+    #                for eachone in temp:
+    #                    if not decoy_str in eachone:
+    #                        temp2.append(eachone)
+    #                if len(temp2)>0:
+    #                    passing_proteins[','.join(temp2)]=float(line[0])
+    #            else:
+    #                if not decoy_str in line[3]:
+    #                    passing_proteins[line[3]]=float(line[0])
 
     #print passing_proteins,"passing proteins"
 
