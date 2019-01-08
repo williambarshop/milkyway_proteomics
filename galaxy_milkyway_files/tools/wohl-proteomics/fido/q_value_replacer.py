@@ -72,6 +72,7 @@ def add_Prot_Info(group):
             print eachrow
             print "____________________________________________________"
         #print "protein list is ",protein_list
+        groupid_list=[]
         q_list=[]
         emp_q_list=[]
         start_stop_pos=[]
@@ -94,6 +95,9 @@ def add_Prot_Info(group):
             #print "working on ",each
             #try:
             q_list.append(str(protein_q_dict[prot]))
+            groupid_list.append(str(protein_to_groupID_dict[prot]))
+            #this_df['protein inference group ID']=this_df['protein id'].str.split(",").str.get(0).map(protein_to_groupID_dict)
+
             #except:
             #    print "couldnt find in protein q values list:",prot
             #    sys.exit(2)
@@ -166,7 +170,7 @@ def add_Prot_Info(group):
             ######~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         statistical_q=",".join(q_list)
         empirical_q=",".join(emp_q_list)
-
+        group_ids=",".join(groupid_list)
 
         if useEmpirical:
             final_q=statistical_q
@@ -174,6 +178,7 @@ def add_Prot_Info(group):
             final_q=empirical_q
         #group.loc[index,'empirical protein q-values']=empirical_q
         #group.loc[index,'statistical protein q-values']=statistical_q
+        group.loc[index,'protein q-values']=final_q
         group.loc[index,'protein q-values']=final_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
         group.loc[index,'flanking aa']=",".join(fixed_aa_list)
@@ -189,14 +194,152 @@ def add_Prot_Info(group):
         #print fixed_aa_list,"after",q_list
         #print "----------------------------------------------"
 
-
-
-
-
-
-
-
     return group
+
+
+
+def add_Prot_Info_apply(eachrow):
+    #protein_q_dict[protein]=qvalue
+    #grouped_df <--- this is the DF grouped by "mzid_df.groupby('file_scan_id')" so we can .get_group(file_scan_id) to give us the rows back!
+    #print group['file_scan_id'].iloc[0]
+    #print type(group['file_scan_id'].iloc[0])
+    #thisgrp=grouped_df.get_group(group['file_scan_id'].iloc[0])
+
+    #for index,eachrow in group.iterrows():
+    if True:
+        #if isinstance(eachrow['flanking aa'],int):
+        #    print eachrow
+        try:
+            protein_list = eachrow['protein id'].split(",")
+            aa_list = eachrow['flanking aa'].split(",")
+        except:
+            print eachrow['file'],eachrow['scan']
+            print eachrow['flanking aa'],type(eachrow['flanking aa'])
+            print eachrow
+            print "____________________________________________________"
+        #print "protein list is ",protein_list
+        groupid_list=[]
+        q_list=[]
+        emp_q_list=[]
+        start_stop_pos=[]
+        fixed_aa_list=[]
+        fill_with=None
+        if len(aa_list)==1 and len(protein_list)>1:
+            fill_with=aa_list[0]
+
+
+        thisgrp=grouped_df.get_group(eachrow['file_scan_id'])
+
+        for each in itertools.izip_longest(protein_list,aa_list,fillvalue=fill_with):
+            if each[0] is None:
+                print "The protein list SHOULD NOT be smaller than the flanking amino acid list! BREKAING."
+                sys.exit(2)
+            prot=each[0].strip()
+            aa=each[1]
+            if aa is None:
+                print "The flanking sequence aa should not be None... BREAKING!"
+            #print "working on ",each
+            #try:
+            groupid_list.append(str(protein_to_groupID_dict[prot]))
+            q_list.append(str(protein_q_dict[prot]))
+            #except:
+            #    print "couldnt find in protein q values list:",prot
+            #    sys.exit(2)
+            #    q_list.append("1.0")
+            #try:
+            emp_q_list.append(str(empirical_q_dict[prot]))
+            #except:
+            #    print "couldnt find in protein q values list(2):",prot
+            #    sys.exit(2)
+            #    #print "empirical couldnt find ",prot
+            #    emp_q_list.append("1.0")
+
+            #for each in grouped_df.groups:
+            #    print each
+            #if diaumpire:
+            #    corrected_group=eachrow['file_scan_id'].split("_")
+            #    corrected_group[1]=str(int(corrected_group[1])) #no correction, or -1? +1?
+            #    corrected_group="_".join(corrected_group)
+            #    thisgrp=grouped_df.get_group(corrected_group)
+            #else:# eachrow['file_scan_id'] in grouped_df.groups:
+            #    #for eachone in grouped_df.groups:
+            #    #    print eachone
+            #    #print "looking for",eachrow['file_scan_id']
+            ###################################################################thisgrp=grouped_df.get_group(eachrow['file_scan_id'])
+            #sys.exit("FAILURE!")
+            #else:
+            #    print eachrow['file_scan_id'],"FAILURE...."
+            #    print "WARNING: THERE ARE DISCREPANCIES BETWEEN THE SEARCH MZID FILES AND THE PERCOLATOR OUTPUTS"
+            #    #sys.exit(1)
+            #at this point, we need to find the matching unmodified sequence from thisgrp
+            #print "ooking for",eachrow['unmodified sequence']
+            #print thisgrp,"my group..."
+            #filtergrp=thisgrp[numpy.logical_and(thisgrp['Sequence'].str.contains(eachrow['unmodified sequence']),thisgrp['Sequence'].str.len==len(eachrow['unmodified sequence']))]
+            filtergrp=thisgrp[thisgrp['unmodified sequence'] == eachrow['unmodified sequence']]
+            #print filtergrp,"that was filtered group..."
+            if len(filtergrp) <1:
+                pass
+                print "CRAP! no length..."
+                sys.exit(2)
+            else:
+                for innerindex,innerrow in filtergrp.iterrows():
+                    tmp_dict={}
+                    #print innerrow,"this is the row"
+                    #print innerrow['proteinacc_start_stop_pre_post_;']
+                    try:
+                        prot_startstop_list=innerrow['proteinacc_start_stop_pre_post_;'].split(";")
+                    except:
+                        print "FAILED TO SPLIT!"
+                        print innerrow
+                        sys.exit(2)
+                    for eachprot in prot_startstop_list:
+                        this_split=eachprot.rsplit("_",4)
+                        tmp_dict[this_split[0]]=str(this_split[1])+"_"+str(this_split[2])
+                    break
+            #print eachrow,"the row!"
+            #print tmp_dict,"tmp dict..."
+            try:
+            #if each in tmp_dict:
+                start_stop_pos.append(tmp_dict[prot])
+                fixed_aa_list.append(aa)
+            #else:
+            except:
+                if clean:
+                    eachrow['clean_up']=0
+                    
+                    break  # WILL THIS BREAK MESS THINGS UP? <----------------------------------------
+                    #print "WE'LL REMOVE",eachrow['file_scan_id'],"for not having",each
+                else:
+                    pass
+                #group.loc[
+            ######~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        statistical_q=",".join(q_list)
+        empirical_q=",".join(emp_q_list)
+        group_ids=",".join(groupid_list)
+
+        if useEmpirical:
+            final_q=statistical_q
+        else:
+            final_q=empirical_q
+        #group.loc[index,'empirical protein q-values']=empirical_q
+        #group.loc[index,'statistical protein q-values']=statistical_q
+        eachrow['protein inference group ID']=group_ids
+        eachrow['protein q-values']=final_q
+        eachrow['peptide prot-indicies']=",".join(start_stop_pos)
+        eachrow['flanking aa']=",".join(fixed_aa_list)
+        #try:
+        ##group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
+        ##group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+
+
+        #except:
+        #    group.loc[index,'protein inference group']=eachrow['protein id']
+        #    group.loc[index,'protein inference group ID']=0
+        #print aa_list,"b4"
+        #print fixed_aa_list,"after",q_list
+        #print "----------------------------------------------"
+
+    return eachrow
 
 
 ####################################
@@ -396,7 +539,24 @@ for each_psms_file in targetpsms_matches:
     #print this_df,"This is before runnning...."
     #break #~!~~~~~~~~~~~~
     print "Starting adding protein info..."
-    addedProtInfo=applyParallelQuarter(grouped_df,add_Prot_Info)
+
+
+    addedProtInfo=this_df.apply(add_Prot_Info_apply,axis=1)
+
+    print addedProtInfo
+
+
+
+
+
+
+    #addedProtInfo=applyParallelQuarter(grouped_df,add_Prot_Info)
+
+
+
+
+
+
     ##addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info)
     #addedProtInfo=applyParallelOne(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
     del grouped_df
