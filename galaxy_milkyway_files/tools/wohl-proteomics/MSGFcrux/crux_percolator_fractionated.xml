@@ -1,4 +1,4 @@
-<tool id="milkyway_crux_percolator" version="0.9.00" name="milkyway_crux_percolator" >
+<tool id="milkyway_crux_percolator" version="0.9.5" name="milkyway_crux_percolator" >
 
   <description>
      Milkyway's crux percolator tool
@@ -28,13 +28,13 @@
      --tdc F
     #if $protein.protein_mode
     --protein T
-    $protein.allowproteingroup
     $protein.empiricalproteinq
     $protein.fidonopruneproteins
     $protein.fidogroupproteins
     --fido-gridsearch-depth $protein.fidogridsearchdepth 2>&amp;1;
     #else
-    $protein.onlypsms
+    --picked-protein $protein.fasta
+    --protein-enzyme $protein.enzyme
     2>&amp;1;
     #end if
     tar -cvf - output/ 2>/dev/null | pigz -9 -p 24 > $crux_tar_gz 2>&amp;1;
@@ -53,12 +53,28 @@
         <param name="klammer" type="boolean" truevalue="--klammer T" falsevalue="" checked="false" label="Klammer retention time features?" help="Retention time features calculated as in Klammer et al.?" />
         <param name="pattern" type="text" value="Reverse_" label="Decoy protein text pattern" />
     <conditional name="protein">
-        <param name="protein_mode" type="boolean" truevalue="--protein T" falsevalue="" checked="false" label="Protein level probabilities?" help="If this option is not checked, peptide level PEP is calculated" />
-        <when value="">
-        <param name="onlypsms" type="boolean" truevalue="--only-psms T" falsevalue="" checked="false" label="--only-psms" help="Consider all PSMs, not just the highest quality" />
+        <param name="protein_mode" type="boolean" truevalue="--protein T" falsevalue="--picked-protein" checked="false" label="FIDO Protein level probabilities?" help="If this option is not checked, protein probabilities are calculated using picked-protein strategy" />
+        <when value="--picked-protein">
+
+            <param name="enzyme" type="select" optional="false" label="Enzyme Used in Search">
+                <option value="no_enzyme">No Enzyme</option>
+                <option value="elastase">Elastase</option>
+                <option value="pepsin">Pepsin</option>
+                <option value="proteinasek">ProteinaseK</option>
+                <option value="thermolysin">Thermolysin</option>
+                <option value="chymotrypsin">Chymotrypsin</option>
+                <option value="lys-n">Lys-N</option>
+                <option value="lys-c">Lys-C</option>
+                <option value="arg-c">Arg-C</option>
+                <option value="asp-n">Asp-N</option>
+                <option value="glu-c">Glu-C</option>
+                <option value="trypsin">Trypsin</option>
+            </param>
+
+            <param name="fasta" type="data" format="fasta" label="Search FASTA file" />
+
         </when>
         <when value="--protein T">
-            <param name="allowproteingroup" type="boolean" truevalue="--allow-protein-group T" falsevalue="" checked="false" label="Allow Protein Groups?" help="treat ties as if it were one protein" />
             <param name="empiricalproteinq" type="boolean" truevalue="--fido-empirical-protein-q T" falsevalue="" checked="true" label="Calculate Empirical Protein Q-Values?" />
             <param name="fidonopruneproteins" type="boolean" truevalue="--no-prune-proteins T" falsevalue="" checked="false" label="Fido No Prune Proteins?" help="it does not prune peptides with a very low score (~0.0) which means that if a peptide with a very low score is matching two proteins, when we prune the peptide, it will be duplicated to generate two new protein groups." />
             <param name="fidogroupproteins" type="boolean" truevalue="--group-proteins T" falsevalue="" checked="false" label="Fido Group Proteins" help="Treat ties as if it were one protein" />
@@ -70,7 +86,6 @@
     <data name="crux_tar_gz" label="${pin_targz.display_name}" />
   </outputs>
   <help>
-     --feature-file T
 
   </help>
 </tool>
