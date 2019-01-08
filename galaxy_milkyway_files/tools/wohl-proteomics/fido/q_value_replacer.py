@@ -239,15 +239,19 @@ def add_Prot_Info_apply(eachrow):
             if aa is None:
                 print "The flanking sequence aa should not be None... BREAKING!"
             #print "working on ",each
+            try:
+                q_list.append(str(protein_q_dict[prot]))
+            except:
+                q_list.append("1.0")
+            try:
+                groupid_list.append(str(protein_to_groupID_dict[prot]))
+            except:
+                groupid_list.append("-1")
+            try:
+                emp_q_list.append(str(empirical_q_dict[prot]))
+            except:
+                emp_q_list.append("1.0")
             #try:
-            groupid_list.append(str(protein_to_groupID_dict[prot]))
-            q_list.append(str(protein_q_dict[prot]))
-            #except:
-            #    print "couldnt find in protein q values list:",prot
-            #    sys.exit(2)
-            #    q_list.append("1.0")
-            #try:
-            emp_q_list.append(str(empirical_q_dict[prot]))
             #except:
             #    print "couldnt find in protein q values list(2):",prot
             #    sys.exit(2)
@@ -478,9 +482,9 @@ protein_data_merged=protein_data.join(s)
 #protein_data_merged=protein_data_merged.drop_duplicates()
 
 protein_data_merged=protein_data_merged.rename(columns={'single_protein':'protein group','ProteinId':'Inference Group','ProteinGroupId':'Inference Group ID','posterior_error_prob':"Protein PEP"})
-print protein_data_merged
+#print protein_data_merged
 
-protein_data_merged.to_csv("ptoq.csv",sep='\t')
+protein_data_merged.to_csv("ptoq.csv",sep='\t',index=False)
 
 
 i=1
