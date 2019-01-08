@@ -56,6 +56,10 @@ def makeUnmodSeq(group):
 def add_Prot_Info(group):
     #protein_q_dict[protein]=qvalue
     #grouped_df <--- this is the DF grouped by "mzid_df.groupby('file_scan_id')" so we can .get_group(file_scan_id) to give us the rows back!
+    #print group['file_scan_id'].iloc[0]
+    #print type(group['file_scan_id'].iloc[0])
+    thisgrp=grouped_df.get_group(group['file_scan_id'].iloc[0])
+
     for index,eachrow in group.iterrows():
         #if isinstance(eachrow['flanking aa'],int):
         #    print eachrow
@@ -87,11 +91,14 @@ def add_Prot_Info(group):
             try:
                 q_list.append(str(protein_q_dict[prot]))
             except:
-                #print "couldnt find ",prot
+                print "couldnt find in protein q values list:",prot
+                sys.exit(2)
                 q_list.append("1.0")
             try:
                 emp_q_list.append(str(empirical_q_dict[prot]))
             except:
+                print "couldnt find in protein q values list(2):",prot
+                sys.exit(2)
                 #print "empirical couldnt find ",prot
                 emp_q_list.append("1.0")
             #for each in grouped_df.groups:
@@ -105,7 +112,7 @@ def add_Prot_Info(group):
             #    #for eachone in grouped_df.groups:
             #    #    print eachone
             #    #print "looking for",eachrow['file_scan_id']
-            thisgrp=grouped_df.get_group(eachrow['file_scan_id'])
+            ###################################################################thisgrp=grouped_df.get_group(eachrow['file_scan_id'])
             #sys.exit("FAILURE!")
             #else:
             #    print eachrow['file_scan_id'],"FAILURE...."
@@ -124,7 +131,13 @@ def add_Prot_Info(group):
                 for innerindex,innerrow in filtergrp.iterrows():
                     tmp_dict={}
                     #print innerrow,"this is the row"
-                    prot_startstop_list=innerrow['proteinacc_start_stop_pre_post_;'].split(";")
+                    #print innerrow['proteinacc_start_stop_pre_post_;']
+                    try:
+                        prot_startstop_list=innerrow['proteinacc_start_stop_pre_post_;'].split(";")
+                    except:
+                        print "FAILED TO SPLIT!"
+                        print innerrow
+                        sys.exit(2)
                     for eachprot in prot_startstop_list:
                         this_split=eachprot.rsplit("_",4)
                         tmp_dict[this_split[0]]=str(this_split[1])+"_"+str(this_split[2])
@@ -154,12 +167,12 @@ def add_Prot_Info(group):
         group.loc[index,'empirical protein q-values']=empirical_q
         group.loc[index,'statistical protein q-values']=statistical_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
-        try:
-            group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
-            group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
-        except:
-            group.loc[index,'protein inference group']=eachrow['protein id']
-            group.loc[index,'protein inference group ID']=0
+        #try:
+        group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
+        group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+        #except:
+        #    group.loc[index,'protein inference group']=eachrow['protein id']
+        #    group.loc[index,'protein inference group ID']=0
         #print aa_list,"b4"
         group.loc[index,'flanking aa']=",".join(fixed_aa_list)
         #print fixed_aa_list,"after",q_list
@@ -180,11 +193,9 @@ def add_Prot_Info(group):
 
 
 parser = optparse.OptionParser()
-parser.add_option("--fidoq",action="store",type="string",dest="fidoq")
 parser.add_option("--index",action="store_true", dest="index")
 parser.add_option("--useEmpirical",action="store_true", dest="useEmpirical")
 parser.add_option("--clean",action="store_true", dest="clean") #This is going to be to clean up after crux percolator's problem with --top-match filters!  ONLY ENABLE IF TOP-MATCH IS SUPPOSED TO BE = 1!
-parser.add_option("--diaumpire",action="store_true", dest="diaumpire")
 
 (options,args) = parser.parse_args()
 global clean
@@ -197,11 +208,6 @@ if options.useEmpirical:
     useEmpirical=True
 if options.index:
     add_index=True
-global diaumpire
-if options.diaumpire:
-    diaumpire=True
-else:
-    diaumpire=False
 
 
 #We'll start by building a list of mzid files...
@@ -270,34 +276,58 @@ for each_match in mzid_matches:
 global protein_q_dict #again, for joblib to copy into each instance...
 global empirical_q_dict
 global protein_group_dict
-global protein_groupID_dict
+#global protein_groupID_dict
 
 protein_q_dict={}
 empirical_q_dict={}
 protein_group_dict={}
-protein_groupID_dict={}
+#protein_groupID_dict={}
 protein_to_groupID_dict={}
 
-protein_q_df=pandas.read_csv(options.fidoq,sep='\t')
+#protein_q_df=pandas.read_csv(options.fidoq,sep='\t')
+
+
+
+
+
+
+protein_matches = []
+for root, dirnames, filenames in os.walk('output'):
+    for filename in fnmatch.filter(filenames, 'combined_analysis.percolator.target.proteins.txt'):
+        protein_matches.append(os.path.join(root, filename))
+print protein_matches
+if len(protein_matches)<1:
+    print "There aren't any protein outputs from the combined percolator set.  I can't work without protein q-values!"
+    sys.exit(2)
+else:
+    protein_data=pandas.read_csv(protein_matches[0],sep='\t')
+    protein_data['protein_list']=protein_data['ProteinId'].str.split(",")
+    protein_data['protein_list']
+    #print protein_data
+
+    #sys.exit(2)    
+
+
 i=1
 
-for index,row in protein_q_df.iterrows():
-    protein_group_list=[x.strip() for x in row['protein group'].split("\t")]
+for index,row in protein_data.iterrows():
+    protein_group_list=[x.strip() for x in row['protein_list']]
     for each_protein in protein_group_list:
         protein_q_dict[each_protein]=row['q-value']
-        empirical_q_dict[each_protein]=row['empirical q-value']
-        protein_group_dict[each_protein]=";".join(row['protein group'])
-        if str(row['protein group']) not in protein_groupID_dict:
-            #group_list.append(str(each_group))
-            protein_groupID_dict[str(row['protein group'])]=i
-            protein_to_groupID_dict[each_protein]=i
-            i+=1
-        else:
-            protein_to_groupID_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
+        empirical_q_dict[each_protein]=row['q-value']
+        protein_group_dict[each_protein]=";".join(row['protein_list'])
+        #if str(row['ProteinId']) not in protein_groupID_dict:
+        #    #group_list.append(str(each_group))
+        #protein_groupID_dict[str(row['ProteinId'])]=row['proteinGroupId']
+        protein_to_groupID_dict[each_protein]=row['ProteinGroupId']
+        #    i+=1
+        #else:
+        #    protein_to_groupID_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
 
-        protein_group_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
+        #protein_group_dict[each_protein]=protein_groupID_dict[str(row['protein group'])]
 
 #Okay, now that we have that, we'll need to read in the percolator psms txt files (we'll do this one at a time to make things easy for us.)
+
 
 targetpsms_matches = []
 for root, dirnames, filenames in os.walk('output'):
@@ -319,7 +349,9 @@ for each_psms_file in targetpsms_matches:
     #    remove_unmod=True
 
     this_df_group=this_df.groupby(numpy.arange(len(this_df))//multiprocessing.cpu_count())
+    print "Making unmodified sequences..."
     this_df=applyParallel(this_df_group,makeUnmodSeq)
+    print "Done!"
     this_df['proteinacc_start_stop_pre_post_;']=this_df['unmodified sequence'].map(pep_mappings)
     
     this_df['file_scan_id']=this_df['file']+"_"+this_df['scan']+"_"+this_df['unmodified sequence']
@@ -332,11 +364,13 @@ for each_psms_file in targetpsms_matches:
     #now we'll iterate over these and grab the groups by groupby
     global grouped_df
     grouped_df=this_df.groupby('file_scan_id')
-    eachpsms_grouped_df=this_df.groupby('file_scan_id')
+    #eachpsms_grouped_df=this_df.groupby('file_scan_id')
     #this_df.to_csv("TESTING.csv")
     #print this_df,"This is before runnning...."
     #break #~!~~~~~~~~~~~~
-    addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info)
+    print "Starting adding protein info..."
+    addedProtInfo=applyParallelQuarter(grouped_df,add_Prot_Info)
+    ##addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info)
     #addedProtInfo=applyParallelOne(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
     del grouped_df
     print "Done adding protein information...",addedProtInfo
