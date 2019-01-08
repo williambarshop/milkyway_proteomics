@@ -465,10 +465,22 @@ if len(protein_matches)<1:
 else:
     protein_data=pandas.read_csv(protein_matches[0],sep='\t')
     protein_data['protein_list']=protein_data['ProteinId'].str.split(",")
-    protein_data['protein_list']
+    #protein_data['protein_list']
     #print protein_data
 
     #sys.exit(2)    
+
+#protein_data
+s = protein_data.apply(lambda x: pandas.Series(x['protein_list']),axis=1).stack().reset_index(level=1, drop=True)
+s.name='single_protein'
+protein_data_merged=protein_data.join(s)
+
+#protein_data_merged=protein_data_merged.drop_duplicates()
+
+protein_data_merged=protein_data_merged.rename(columns={'single_protein':'protein group','ProteinId':'Inference Group','ProteinGroupId':'Inference Group ID','posterior_error_prob':"Protein PEP"})
+print protein_data_merged
+
+protein_data_merged.to_csv("ptoq.csv",sep='\t')
 
 
 i=1
@@ -543,7 +555,7 @@ for each_psms_file in targetpsms_matches:
 
     addedProtInfo=this_df.apply(add_Prot_Info_apply,axis=1)
 
-    print addedProtInfo
+    #print addedProtInfo
 
 
 

@@ -7,6 +7,7 @@
    #end for
     tar -xzvf $crux_perco_targz ;
     python /galaxy-central/tools/wohl-proteomics/fido/q_value_replacer.py --clean --index ;
+    mv ptoq.csv $p_to_q ;
     tar -cvf - output/ 2>/dev/null | pigz -9 -p 32 > $crux_tar_gz 2>&amp;1;
     </command>
     <inputs>
@@ -14,7 +15,6 @@
         <param name="targz_input" type="data" multiple="true" label="target decoy targz inputs from msgf+" />
     </inputs>
     <outputs>
-        <data name="fidoout_q"/>
         <data name="p_to_q" label="FIDO p-to-q value csv" format="csv"/>
         <data name="crux_tar_gz"/>
     </outputs>
