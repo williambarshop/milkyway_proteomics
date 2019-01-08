@@ -18,10 +18,10 @@ from subprocess import STDOUT, call
 #This is the script to add FIDO protein level q-values back into our percolator psms outputs...
 #We'll add q-values into the .target.psms files, as well as use pyteomics to read some mzid files...
 #
-#VERSION 0.8.1
-version="0.8.1"
-#DATE: 11/21/2017
-date="11/21/2017"
+#VERSION 0.9.0
+version="0.9.0"
+#DATE: 1/08/2019
+date="1/08/2019"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the FIDO q-value insertion tool for Galaxy, Wohlschlegel Lab UCLA"
@@ -58,7 +58,7 @@ def add_Prot_Info(group):
     #grouped_df <--- this is the DF grouped by "mzid_df.groupby('file_scan_id')" so we can .get_group(file_scan_id) to give us the rows back!
     #print group['file_scan_id'].iloc[0]
     #print type(group['file_scan_id'].iloc[0])
-    thisgrp=grouped_df.get_group(group['file_scan_id'].iloc[0])
+    #thisgrp=grouped_df.get_group(group['file_scan_id'].iloc[0])
 
     for index,eachrow in group.iterrows():
         #if isinstance(eachrow['flanking aa'],int):
@@ -79,6 +79,10 @@ def add_Prot_Info(group):
         fill_with=None
         if len(aa_list)==1 and len(protein_list)>1:
             fill_with=aa_list[0]
+
+
+        thisgrp=grouped_df.get_group(eachrow['file_scan_id'])
+
         for each in itertools.izip_longest(protein_list,aa_list,fillvalue=fill_with):
             if each[0] is None:
                 print "The protein list SHOULD NOT be smaller than the flanking amino acid list! BREKAING."
@@ -88,19 +92,20 @@ def add_Prot_Info(group):
             if aa is None:
                 print "The flanking sequence aa should not be None... BREAKING!"
             #print "working on ",each
-            try:
-                q_list.append(str(protein_q_dict[prot]))
-            except:
-                print "couldnt find in protein q values list:",prot
-                sys.exit(2)
-                q_list.append("1.0")
-            try:
-                emp_q_list.append(str(empirical_q_dict[prot]))
-            except:
-                print "couldnt find in protein q values list(2):",prot
-                sys.exit(2)
-                #print "empirical couldnt find ",prot
-                emp_q_list.append("1.0")
+            #try:
+            q_list.append(str(protein_q_dict[prot]))
+            #except:
+            #    print "couldnt find in protein q values list:",prot
+            #    sys.exit(2)
+            #    q_list.append("1.0")
+            #try:
+            emp_q_list.append(str(empirical_q_dict[prot]))
+            #except:
+            #    print "couldnt find in protein q values list(2):",prot
+            #    sys.exit(2)
+            #    #print "empirical couldnt find ",prot
+            #    emp_q_list.append("1.0")
+
             #for each in grouped_df.groups:
             #    print each
             #if diaumpire:
@@ -127,6 +132,7 @@ def add_Prot_Info(group):
             if len(filtergrp) <1:
                 pass
                 print "CRAP! no length..."
+                sys.exit(2)
             else:
                 for innerindex,innerrow in filtergrp.iterrows():
                     tmp_dict={}
@@ -160,13 +166,17 @@ def add_Prot_Info(group):
             ######~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         statistical_q=",".join(q_list)
         empirical_q=",".join(emp_q_list)
+
+
         if useEmpirical:
-            group.loc[index,'protein q-values']=statistical_q
+            final_q=statistical_q
         else:
-            group.loc[index,'protein q-values']=empirical_q
-        group.loc[index,'empirical protein q-values']=empirical_q
-        group.loc[index,'statistical protein q-values']=statistical_q
+            final_q=empirical_q
+        #group.loc[index,'empirical protein q-values']=empirical_q
+        #group.loc[index,'statistical protein q-values']=statistical_q
+        group.loc[index,'protein q-values']=final_q
         group.loc[index,'peptide prot-indicies']=",".join(start_stop_pos)
+        group.loc[index,'flanking aa']=",".join(fixed_aa_list)
         #try:
         group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
         group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
@@ -174,9 +184,16 @@ def add_Prot_Info(group):
         #    group.loc[index,'protein inference group']=eachrow['protein id']
         #    group.loc[index,'protein inference group ID']=0
         #print aa_list,"b4"
-        group.loc[index,'flanking aa']=",".join(fixed_aa_list)
         #print fixed_aa_list,"after",q_list
         #print "----------------------------------------------"
+
+
+
+
+
+
+
+
     return group
 
 
@@ -284,6 +301,7 @@ protein_group_dict={}
 #protein_groupID_dict={}
 protein_to_groupID_dict={}
 
+
 #protein_q_df=pandas.read_csv(options.fidoq,sep='\t')
 
 
@@ -373,6 +391,20 @@ for each_psms_file in targetpsms_matches:
     ##addedProtInfo=applyParallel(eachpsms_grouped_df,add_Prot_Info)
     #addedProtInfo=applyParallelOne(eachpsms_grouped_df,add_Prot_Info) # CHANGE BACK TO QUARTER...
     del grouped_df
+    addedProtInfo['empirical protein q-values']=addedProtInfo['protein q-values']
+    addedProtInfo['statistical protein q-values']=addedProtInfo['protein q-values']
+
+
+    #addedProtInfo['protein inference group']=addedProtInfo[addedProtInfo['protein id'].str.split(",").get(0)]
+
+
+    
+    #    group.loc[index,'protein inference group']=protein_group_dict[prot] #will be the same for any protein in the group.
+    #    group.loc[index,'protein inference group ID']=protein_to_groupID_dict[prot]
+
+
+
+
     print "Done adding protein information...",addedProtInfo
     if options.clean:
         addedProtInfo=addedProtInfo[addedProtInfo['clean_up']==1]
