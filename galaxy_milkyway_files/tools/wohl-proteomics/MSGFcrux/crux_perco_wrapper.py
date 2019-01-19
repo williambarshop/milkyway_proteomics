@@ -6,6 +6,54 @@ import pandas
 from os import listdir
 from os.path import isfile, join
 
+def find_charge_range(input_pin_files): #This function is called to return information on the max an min charges considered among a collection of percolator 'pin' input files
+    all_max_charge=2
+    all_min_charge=2
+    for each in onlyfiles:
+        line_ctr=0
+        with open(folder+"/"+each,'rb') as pin_reader:
+            peptide_index=0
+            index_ctr=0
+            expmass_index=0
+            specID_index=0
+            scan_index=0
+            label_index=0
+            charge_indicies={}
+            charges=[]
+            pin_lines=[]
+            for eachline in pin_reader:
+                if line_ctr==0:
+                    header=eachline.split("\t")
+                    for each_item in header:
+                        if each_item == "Peptide":
+                            peptide_index=index_ctr
+                        elif each_item == "SpecId":
+                            specID_index=index_ctr
+                        elif each_item == "ScanNr":
+                            scan_index=index_ctr
+                        elif each_item == "ExpMass":
+                            expmass_index = index_ctr
+                        elif each_item == "Label":
+                            label_index=index_ctr
+                        elif "Charge" in each_item:
+                            charge_indicies[each_item]=index_ctr
+                            charges.append(int(each_item.replace("Charge","")))
+                        index_ctr+=1
+                else:
+                    break
+            line_ctr=0
+            charge_index_max=max(charge_indicies.values())
+            charge_index_min=min(charge_indicies.values())
+            charge_max=max(charges)
+            charge_min=min(charges)
+            if charge_max>all_max_charge:
+                all_max_charge=charge_max
+            if charge_min<all_min_charge:
+                all_min_charge=charge_min
+    return all_max_charge,all_min_charge
+
+
+
 arguments=sys.argv
 print arguments
 arguments=arguments[1:]
@@ -106,6 +154,8 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
     #2. Run crux percolator for the aggregated data
     #3. Read in the outputs [psms:[targets, decoys],peptides:[targets,decoys] as a single dataframes, and then split them by file and output them to proper folders]
     #4. Copy the XML files and other outputs to each folder for completeness.
+    all_max_charge,all_min_charge=find_charge_range(onlyfiles)
+    print "Max charge is {0} and min charge is {1}".format(all_max_charge,all_min_charge)
     os.mkdir("output/combined_out")
     first_file=True
     with open("output/combined_out/combined_input.pin",'wb') as pin_writer:
@@ -114,10 +164,96 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
         for each in onlyfiles:
             line_ctr=0
             with open(folder+"/"+each,'rb') as pin_reader:
+                peptide_index=0
+                index_ctr=0
+                expmass_index=0
+                specID_index=0
+                scan_index=0
+                label_index=0
+                charge_indicies={}
+                charges=[]
+                pin_lines=[]
+                for eachline in pin_reader:
+                    if line_ctr==0:
+                        header=eachline.split("\t")
+                        for each_item in header:
+                            if each_item == "Peptide":
+                                peptide_index=index_ctr
+                            elif each_item == "SpecId":
+                                specID_index=index_ctr
+                            elif each_item == "ScanNr":
+                                scan_index=index_ctr
+                            elif each_item == "ExpMass":
+                                expmass_index = index_ctr
+                            elif each_item == "Label":
+                                label_index=index_ctr
+                            elif "Charge" in each_item:
+                                charge_indicies[each_item]=index_ctr
+                                charges.append(int(each_item.replace("Charge","")))
+                            index_ctr+=1
+                    else:
+                        break
+                line_ctr=0
+                charge_index_max=max(charge_indicies.values())
+                charge_index_min=min(charge_indicies.values())
+                charge_max=max(charges)
+                charge_min=min(charges)
+                add_before=[]
+                add_after=[]
+                add_header_before=[]
+                add_header_after=[]
+                add_direction_before=[]
+                add_direction_after=[]
+                if charge_min>all_min_charge:
+                    for i in xrange(all_min_charge,charge_min):
+                        add_before.append("0")
+                        add_header_before.append("Charge{0}".format(i))
+                        add_direction_before.append("0")
+                if charge_max<all_max_charge:
+                    for i in xrange(charge_max+1,all_charge_max+1):
+                        add_after.append("0")
+                        add_header_after.append("Charge{0}".format(i))
+                        add_direction_after.append("0")
+                pin_reader.seek(0)
                 for each_line in pin_reader:
                     if line_ctr <2 and first_file:
+                        if line_ctr==0:
+                            front_half=each_line.split("\t")[:charge_index_min]
+                            charges=each_line.split("\t")[charge_index_min:charge_index_max+1]
+                            back_half=each_line.split("\t")[charge_index_max+1:]
+                            #After this segment, ensure that line is split properly, add charges missing into the charges middle section, and then re-concat them back together and replace each_line
+                            front_half.extend(add_header_before)
+                            front_half.extend(charges)
+                            front_half.extend(add_header_after)
+                            front_half.extend(back_half)
+                            each_line="\t".join(front_half)
+                            
+                        else:
+                            front_half=each_line.split("\t")[:charge_index_min]
+                            charges=each_line.split("\t")[charge_index_min:charge_index_max+1]
+                            back_half=each_line.split("\t")[charge_index_max+1:]
+                            #After this segment, ensure that line is split properly, add charges missing into the charges middle section, and then re-concat them back together and replace each_line
+                            front_half.extend(add_direction_before)
+                            front_half.extend(charges)
+                            front_half.extend(add_direction_after)
+                            front_half.extend(back_half)
+                            each_line="\t".join(front_half)
+                        print each_line#################################################
                         pin_writer.write(each_line)
                     elif line_ctr >=2:
+                        split_line=each_line.split("\t")
+
+                        front_half=each_line.split("\t")[:charge_index_min]
+                        charges=each_line.split("\t")[charge_index_min:charge_index_max+1]
+                        back_half=each_line.split("\t")[charge_index_max+1:]
+                        #After this segment, ensure that line is split properly, add charges missing into the charges middle section, and then re-concat them back together and replace each_line
+                        front_half.extend(add_before)
+                        front_half.extend(charges)
+                        front_half.extend(add_after)
+                        front_half.extend(back_half)
+                        each_line="\t".join(front_half)
+
+                        #each_line="\t".join(split_line)
                         pin_writer.write(each_line)
 
                     if line_ctr == 1 and first_file:
@@ -148,6 +284,7 @@ else:  #This assumes =="F", and we'll run percolator ONCE on the AGGREGATE DATA.
         os.chdir(startingdir+"/output/"+each.replace(".mzML",".pin")+"_out/crux-output")
         #Now we'll load each of the following files and filter them out, and rename them....
         for each_filter_file in files_to_filter:
+            print "Reading file {0}".format(each_filter_file)
             this_pin_df=pandas.read_csv(each_filter_file,sep='\t')
             this_pin_df=this_pin_df[this_pin_df['file_idx']==run_dict_reverse[each.rsplit(".",1)[0]+".mzML"]]
             this_pin_df.to_csv(each.rsplit(".",1)[0]+'.'+'.'.join(each_filter_file.rsplit(".",4)[1:]),sep='\t',index=False)
