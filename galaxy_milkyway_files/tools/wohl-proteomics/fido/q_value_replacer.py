@@ -475,6 +475,7 @@ else:
     protein_data_merged_write=protein_data_merged.rename(columns={'ProteinId':'protein group','proteinIdBkp':'Inference Group','ProteinGroupId':'Inference Group ID','posterior_error_prob':"Protein PEP"})
     protein_data_merged_write=protein_data_merged_write.sort_values(by="q-value",ascending=True,na_position="last")
     protein_data_merged_write.drop_duplicates(subset="protein group",keep="first",inplace=True)
+    protein_data_merged_write.drop(labels="peptideIds",inplace=True,axis=1)
     protein_data_merged_write.to_csv("ptoq.csv",sep='\t',index=False)
     protein_data['protein_list']=protein_data_merged['ProteinId'].str.split(",")
 
