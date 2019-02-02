@@ -1315,7 +1315,7 @@ if options.ppm:
         print "Writing out the ppm corrections per file for later use..."
         print all_corrected_ppm
         all_corrected_ppm.index=all_corrected_ppm.index+".mzML"
-        all_corrected_ppm.to_csv("ppm_shifts.csv",sep=',')
+        all_corrected_ppm.to_csv("ppm_shifts.csv",sep=',',header=True)
 
 
 print "We have finished running MSGF2PIN a bunch of times, the output should be in "+outputfolder
