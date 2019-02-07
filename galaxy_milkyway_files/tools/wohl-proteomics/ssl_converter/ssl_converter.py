@@ -475,9 +475,9 @@ if not fractions: #This is for all times when we have 1-D runs to compare.
             for file in files:
                 if file.endswith(".pin"):
                     pin_files.append(os.path.join(root,file))
-        cols = pandas.read_csv(pin_files[0], nrows=1,sep="\t",index_col=False).columns.tolist()[:-1]
         pins_df=[]
         for each_pin in pin_files:
+            cols = pandas.read_csv(each_pin, nrows=1,sep="\t",index_col=False).columns.tolist()[:-1]
             pins_df.append(pandas.read_csv(each_pin,usecols=cols,index_col=False,sep="\t",skiprows=[1],engine='python'))
         merged_pins=pandas.concat(pins_df)
         merged_pins['file_idx']=merged_pins['SpecId'].str.split("_").str.get(1)
