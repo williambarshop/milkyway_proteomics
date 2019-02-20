@@ -205,5 +205,7 @@
         <tool id="msconvert_dia_demux" destination="win_pulsar" />
     </tools>
     <limits>
+        <limit type="destination_total_concurrent_jobs" id="slurm">6</limit>
+        <limit type="destination_total_concurrent_jobs" id="win_pulsar">6</limit>
     </limits>
 </job_conf>
