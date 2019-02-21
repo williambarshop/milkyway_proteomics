@@ -7,7 +7,7 @@
    #set $mzml_list = ""
    #for $each in $mzml_files:
        #set $mzml_list+= "\""
-       ln -s '$each' '${each.display_name}';
+       ln -s -f '$each' '${each.display_name}';
        #set $mzml_list+=$str($each.display_name)
        #set $mzml_list+= "\""
        #set $mzml_list+= ","
@@ -17,7 +17,7 @@
    #set $dia_mzml_list = ""
    #for $each in $dia_files:
        #set $dia_mzml_list+= "\""
-       ln -s '$each' '${each.display_name}';
+       ln -s -f '$each' '${each.display_name}';
        #set $dia_mzml_list+=$str($each.display_name)
        #set $dia_mzml_list+= "\""
        #set $dia_mzml_list+= ","
