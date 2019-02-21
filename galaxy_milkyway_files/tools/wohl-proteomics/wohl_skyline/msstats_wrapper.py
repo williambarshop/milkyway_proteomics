@@ -670,10 +670,14 @@ with open("MSstats_Script.R",'wb') as script_writer:
     elif "equalizeMedians" in options.normalization:
         script_writer.write("normalization=\"equalizeMedians\",")
     elif "globalStandards" in options.normalization:
-        script_writer.write("normalization=\"globalStandards\",")
         norm_peptide_set=set(combined_results[combined_results["StandardType"]=="globalStandard"]["PeptideSequence"])
-        peptide_norm_string="c(\""+"\",\"".join(norm_peptide_set)+"\")"
-        script_writer.write("nameStandards="+peptide_norm_string+",")
+        if len(norm_peptide_set)>0:
+            script_writer.write("normalization=\"globalStandards\",")
+            peptide_norm_string="c(\""+"\",\"".join(norm_peptide_set)+"\")"
+            script_writer.write("nameStandards="+peptide_norm_string+",")
+        else:
+            os.write(2, "\n\nERROR::: The user requested global standard normalization, but no targets were included after filtering.\nPlease change the targets or the filter settings and try again!\n")
+            sys.exit(2)
     elif "false" in options.normalization:
         script_writer.write("normalization=FALSE,")
 
