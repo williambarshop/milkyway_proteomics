@@ -489,7 +489,7 @@ with open("Rdata_Script.R",'wb') as script_writer:
     script_writer.write("nsaf_table<-read.csv(\"{0}\",check.names=FALSE,sep=\"\\t\")\n".format(options.nsaf_table))
     script_writer.write("peptide_spc_table<-read.csv(\"{0}\",check.names=FALSE,sep=\"\\t\")\n".format(options.peptide_spc_table))
     script_writer.write("peptide_nsaf_table<-read.csv(\"{0}\",check.names=FALSE,sep=\"\\t\")\n".format(options.peptide_nsaf_table))
-    script_writer.write("fido_roc<-read.csv(\"{0}\",check.names=FALSE)\n".format(options.fido_roc))
+    script_writer.write("fido_roc<-read.csv(\"{0}\",check.names=FALSE,sep=\"\\t\")\n".format(options.fido_roc))
     script_writer.write("ms2_dataset_id<-\"{0}\"\n".format(options.MS2Output_id))
     #script_writer.write("library(Biostrings)\n")
     script_writer.write("fasta_df <- read.csv(\"{0}\",check.names=FALSE,sep=\"\\t\")\n".format("fasta_df.tsv"))
