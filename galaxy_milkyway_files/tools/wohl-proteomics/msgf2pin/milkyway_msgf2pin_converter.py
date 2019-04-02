@@ -3,8 +3,8 @@
 ## Written by William Barshop
 ## For use in Galaxy-Proteomics Workflows
 ##
-version="1.08"
-##Date : 2018-05-08
+version="1.09"
+##Date : 2019-04-02
 ##
 ######################################
 from optparse import OptionParser
@@ -278,7 +278,7 @@ if not silac:
         for eachgroup in target_run_groups:
             this_group_list=run_groups[eachgroup]
             for each_item in this_group_list:
-                if each_item in eachfile:
+                if each_item == eachfile.rsplit("_",1)[0].split("/",1)[1] and not "targets/" in eachfile:
                     decoy_run_groups[eachgroup].append(eachfile)
                     break
 
