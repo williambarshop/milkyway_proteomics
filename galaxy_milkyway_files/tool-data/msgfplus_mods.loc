@@ -106,4 +106,6 @@ KBHeavy K	KBHeavy_k_	470.26331,K,opt,any,KBHeavyK,___	KBHeavy_k_
 KBLight K	KBLight_k_	464.2491,K,opt,any,KBLightK,___	KBLight_k_
 KBHeavy C	KBHeavy_c_	527.321225,C,opt,any,KBHeavyC,___	KBHeavy_c_
 KBLight C	KBLight_c_	521.307416,C,opt,any,KBLightC,___	KBLight_c_
+Argininylation ProtNterm	Arg_Prot-N-Term_	C6H12N4O1,R,opt,Prot-N-Term,argProtNterm,___	Arg_ProtNTerm_
+Argininylation PepNterm	Arg_PepNTerm_	C6H12N4O1,R,opt,N-term,argPepNterm,___	Arg_PepNTerm_
 #No-Mod X	nomod_x_	,,,,___	nomod_x_
