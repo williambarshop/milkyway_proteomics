@@ -1,0 +1,61 @@
+<tool id="specter" version="0.0.1" name="Specter" >
+
+  <description>
+     Specter DIA Spectral Library Search
+  </description>
+  <command>
+   /tool_deps/_conda/condabin/conda activate SpecterEnv ; 
+   #set $mzml_list = ""
+   #for $each in $mzml_files:
+       #set $mzml_list+= "\""
+       ln -s -f '$each' '${each.display_name}';
+       #set $mzml_list+=$str($each.display_name)
+       #set $mzml_list+= "\""
+       #set $mzml_list+= ","
+   #end for
+   #set $mzml_list=mzml_list[:-1]
+
+   #set $dia_mzml_list = ""
+   #for $each in $dia_files:
+       #set $dia_mzml_list+= "\""
+       ln -s -f '$each' '${each.display_name}';
+       #set $dia_mzml_list+=$str($each.display_name)
+       #set $dia_mzml_list+= "\""
+       #set $dia_mzml_list+= ","
+   #end for
+   #set $dia_mzml_list=dia_mzml_list[:-1]
+   tar -xvf $ssl_gz &amp;&amp;
+   python /galaxy-central/tools/wohl-proteomics/specter/specter.py
+   --psmtsv $psm_tsv
+   --ms2searchppm $ms2searchppm
+   --num_processors $num_processors
+   --instrument_type $instrument_type
+   --diafiles $dia_mzml_list
+   --mzmlfiles $mzml_list
+   --tool_path $__tool_directory__
+   --fdrtofilter $fdrtofilter
+    ;
+    tar -cvf - ssl_files/ 2>/dev/null | pigz -9 -p 32 > $ssl_output 2>&amp;1;
+  </command>
+  <inputs>
+        <param name="ssl_gz" type="data" label="SSL Converter Output in tar.gz"/>
+        <param name="psm_tsv" type="data" label="PSM Extraction Table"/>
+        <param name="mzml_files" type="data" multiple="true" label="uncorrected mzML files used in search"/>
+        <param name="dia_files" type="data" multiple="true" label="DIA mzML files to search"/>
+        <param name="ms2searchppm" type="float" label="Search MS2 Mass Accuracy (ppm)" value="15" min="0.00"/>
+        <param name="fdrtofilter" type="float" label="q-value (FDR) to filter outputs" value="0.01" />
+        <param name="num_processors" type="integer" label="Number of Processor Cores to Use" value="8" min="0" max="64" />
+        <param name="instrument_type" type="select" label="Instrument Type" >
+             <option value="orbitrap">Orbitrap</option>
+             <option value="tof">TOF</option>
+             <option value="other">Other</option>
+        </param>
+      
+  </inputs>
+  <outputs>
+    <!--<data name="crux_tar_gz" />-->
+    <data name="ssl_output" />
+  </outputs>
+  <help>
+  </help>
+</tool>
