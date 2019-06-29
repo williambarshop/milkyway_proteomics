@@ -1,5 +1,4 @@
-import orangecontrib
-from orangecontrib.bio.ontology import OBOParser
+from obo_parser import obo_parser
 import sys
 import csv
 import getopt
@@ -145,7 +144,8 @@ print output,"this is output"
 for eachfiles in zipped:
     with open(mod_obo,"r") as unimod_obo:
         peptide_index=0
-        obo_parser=orangecontrib.bio.ontology.OBOParser(unimod_obo)
+        obo_parser_obj=obo_parser()
+        obo_parser_obj.consumeGO(mod_obo) #This will load the obo files into dictionaries...
         with open("output/"+eachfiles[0],"r") as openfile:
             with open(eachfiles[1],"wb") as outputwriter:
                 for eachline in openfile:
@@ -197,6 +197,7 @@ for eachfiles in zipped:
 
 
                     new_peptide=None
+                    mod_dict=obo_parser_obj.unimod_int_to_modstr_dict
                     #print "LIN53",line[peptide_index]
                     #print line, peptide_index
                     #print "line len",len(line)
@@ -214,62 +215,9 @@ for eachfiles in zipped:
                             if each_mod in mod_dict:
                                 new_peptide=new_peptide.replace("UNIMOD:"+each_mod,mod_dict[each_mod],1)
                             else:
-                                mass=""
-                                print each_mod," was not in the dictionary!"
-                                #print obo_parser,type(obo_parser),"this is obo parser"
-                                trigger=False
-                                unimod_obo.seek(0)
-                                for event,value in obo_parser:
-                                    if "TAG_VALUE" in event and not trigger:
-                                        #print event,value,"this is event"
-                                        if "UNIMOD:"+each_mod == value[1]:
-                                            #print "YO",value[1],"and each mod is","UNIMOD:"+each_mod,"and",value
-                                            trigger=True
-                                            #pass
-                                    elif trigger:
-                                        #print event,value,"these are event and value..."
-                                        if "delta_mono_mass" in value[1]:
-                                            print value[1],"val1 should be the mass"
+                                print "ERROR: Modification UNIMOD:{0} was NOT FOUND in our obo file!".format(each_mod)
+                                sys.exit(2)
 
-                                            mass="+"
-                                            mass+=value[1].split("\"")[1]
-                                            #print mass
-                                            if "-" in mass:
-                                                mass=mass.replace("+","")
-                                                #print "The mass was below zero..."
-                                            #mass+="]"
-                                            #print mass,"THIS IS MAH MASS"
-                                            trigger=False
-                                            break
-                                    else:
-                                        continue
-                                if mass=="":
-                                    print "ERROR: ERROR: ERROR: THE MASS FOR THIS MOD WAS NOT FOUND IN THE UNIMOD OBO FILE..."
-                                    sys.exit(2)    
-                                mod_dict[each_mod]=mass
-                                new_peptide=new_peptide.replace("UNIMOD:"+each_mod,mod_dict[each_mod],1)
-
-
-
-                        #split_peptide=re.split(mod_bracket_re,line[peptide_index])
-                        ##print split_peptide
-                        #new_peptide=[]
-                        #for each_split in split_peptide:
-                        #    if "UNIMOD" in each_split:
-                        #        if each_split in mod_dict:
-                        #            new_peptide.append(mod_dict[each_split])
-                        #        else:
-                        #                
-                        #    else:
-                        #        new_peptide.append(each_split)
-                        #new_peptide=''.join(new_peptide)
-                        
-
-        
-                    #print mod_dict,"this is the mod dict..."
-        
-
-                                    
 
 
                     #print line[0],"this is what we're splitting"

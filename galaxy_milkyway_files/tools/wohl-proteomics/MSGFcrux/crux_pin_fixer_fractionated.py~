@@ -112,7 +112,7 @@ with open(mod_obo,"r") as unimod_obo:
         peptide_index=0
         #obo_parser=orangecontrib.bio.ontology.OBOParser(unimod_obo)
         obo_parser_obj=obo_parser()
-        obo_parser_obj.consumeGO("unimod.obo") #This will load the obo files into dictionaries...
+        obo_parser_obj.consumeGO(mod_obo) #This will load the obo files into dictionaries...
 
         with open(input,"r") as openfile:
             with open(output,"wb") as outputwriter:

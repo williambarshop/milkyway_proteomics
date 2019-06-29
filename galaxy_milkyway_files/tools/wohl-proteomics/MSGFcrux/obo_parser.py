@@ -18,6 +18,8 @@ class obo_parser:
     def __init__(self):
         self.unimod_to_mass_dict={}
         self.unimod_to_modstr_dict={}
+        self.unimod_int_to_modstr_dict={}
+        self.unimod_int_to_mass_dict={}
 
     def processGOTerm(self,goTerm):
         """
@@ -77,4 +79,6 @@ class obo_parser:
             #print mass_float
             self.unimod_to_mass_dict[each['id']]=mass_float
             self.unimod_to_modstr_dict[each['id']]=mass_str
+            self.unimod_int_to_mass_dict[each['id'].rsplit(":",1)[1]]=mass_float
+            self.unimod_int_to_modstr_dict[each['id'].rsplit(":",1)[1]]=mass_str
         pass #Here's the place to add them to the unimod_to_mass_dict and modstr_dict
