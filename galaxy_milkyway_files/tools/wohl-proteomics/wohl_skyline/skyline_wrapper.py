@@ -40,10 +40,10 @@ warnings.showwarning = customwarn
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.81A
-version="0.81A"
-#DATE: 3/08/2018
-date="3/08/2018"
+#VERSION 0.85
+version="0.85"
+#DATE: 08/01/2019
+date="08/01/2019"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -1414,6 +1414,7 @@ if options.fractions:
         single_cfgwriter.write("--reintegrate-overwrite-peaks\n")
         if options.msstats is not None:
             single_cfgwriter.write("--report-name=Wohl_MSstats_Input\n")
+            single_cfgwriter.write("--report-invariant\n")
             single_cfgwriter.write("--report-file=MSstats_"+each_fraction_fldr+".csv\n")
         single_cfgwriter.write("--out=docker_protection_temporary.sky\n")
         #single_cfgwriter.write("--save\n")
@@ -1833,6 +1834,7 @@ else:
         #single_cfgwriter.write("--report-add=\"/galaxy-central/tools/wohl-proteomics/wohl_skyline/WOHL_MSSTATS_REPORT.skyr\"\n")
         single_cfgwriter.write("--report-conflict-resolution=overwrite\n")
         single_cfgwriter.write("--report-name=Wohl_MSstats_Input\n")
+        single_cfgwriter.write("--report-invariant\n")
         single_cfgwriter.write("--report-file=MSstats_input.csv\n")
 
 
@@ -1899,6 +1901,7 @@ else:
     peak_cfgwriter.write("--report-conflict-resolution=overwrite\n")
     peak_cfgwriter.write("--report-add=peak_boundaries.skyr\n")
     peak_cfgwriter.write("--report-name=Peak_Boundaries\n")
+    peak_cfgwriter.write("--report-invariant\n")
     peak_cfgwriter.write("--report-file={0}\n".format(options.peak_boundaries))
     peak_cfgwriter.close()
 
@@ -1944,6 +1947,7 @@ if options.msstats is not None:
         os.chdir(basedir)
         if options.exp_file is not None:
             msstats_df=pandas.read_csv("MSstats_input.csv")
+            print msstats_df.columns,"THIS WAS THE COLUMNS"
             exp_structure=pandas.read_csv(options.exp_file,sep="\t",low_memory=False)
             exp_structure['Original File Name']=exp_structure['Original File Name']+".mzML"
             exp_structure.set_index(keys='Original File Name',inplace=True)
@@ -1958,15 +1962,15 @@ if options.msstats is not None:
                 #k+=1
             print "name to biocond",name_to_biocond
             #for eachkey in name_to_biocond:
-            #    msstats_df.loc[msstats_df['File Name'] == eachkey, 'Condition'] = name_to_biocond[eachkey]
-            msstats_df['Condition']=msstats_df['File Name'].map(name_to_biocond)
-            #    #filter=msstats_df[msstats_df['File Name']==eachkey]
+            #    msstats_df.loc[msstats_df['FileName'] == eachkey, 'Condition'] = name_to_biocond[eachkey]
+            msstats_df['Condition']=msstats_df['FileName'].map(name_to_biocond)
+            #    #filter=msstats_df[msstats_df['FileName']==eachkey]
             #    #filter['Condition']=name_to_biocond[eachkey]
-            #msstats_df['BioReplicate']=msstats_df['File Name'].map(group_to_biorep)
+            #msstats_df['BioReplicate']=msstats_df['FileName'].map(group_to_biorep)
             print "group to biorep",group_to_biorep
             for eachgroup in group_to_biorep:
-                msstats_df.loc[msstats_df['File Name'].str.contains(eachgroup), 'BioReplicate'] = group_to_biorep[eachgroup]
-            #    #filter=msstats_df[msstats_df['File Name'].str.contains(eachgroup)]
+                msstats_df.loc[msstats_df['FileName'].str.contains(eachgroup), 'BioReplicate'] = group_to_biorep[eachgroup]
+            #    #filter=msstats_df[msstats_df['FileName'].str.contains(eachgroup)]
             #    #filter['BioReplicate']=group_to_biorep[eachgroup]
             os.remove("MSstats_input.csv")
             msstats_df.to_csv("MSstats_input.csv",index=False)

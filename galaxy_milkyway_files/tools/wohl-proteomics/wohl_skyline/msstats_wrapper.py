@@ -20,10 +20,10 @@ warnings.showwarning = customwarn
 #This is a script to combine the output reports from
 #Skyline, in preparation for MSstats!  Let's get started.
 #
-#VERSION 0.92
-version="0.92"
-#DATE: 10/02/2017
-date="10/02/2017"
+#VERSION 0.96
+version="0.96"
+#DATE: 08/01/2019
+date="08/01/2019"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the MSstats wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -82,6 +82,11 @@ parser.add_option("--normalization_protein",action="store",type="string",dest="n
 parser.add_option("--maxQuantileforCensored",action="store",type="string",dest="maxQuantileforCensored")   # Can be used to emulate 3.4 behavior
 parser.add_option("--fillMissingFeatures",action="store_true",dest="fillMissingFeatures")
 
+
+
+
+
+
 ################# OUTPUTS ################################
 parser.add_option("--processedDataOutput",action="store",type="string",dest="processedOutput")
 parser.add_option("--comparisonOutput",action="store",type="string",dest="comparisonOutput")
@@ -103,7 +108,7 @@ parser.add_option("--conditionPlotCSVOutput",action="store",type="string",dest="
 #parser.add_option("--xlimUp",action="store",type="float",dest="xlimUp") # xlimUp threshold for Volcano plots
 #parser.add_option("--numProtein",action="store",type="int",dest="numProtein",default=180) # Number of proteins per heatmap... Max is 180
 #parser.add_option("--clustering",action="store",type="string",dest="clustering",default="protein") # clustering type for heatmap... Can be "protein", "comparison", "both"
-#parser.add_option("--proteinName",action="store_true",dest="proteinName") # On volcano plot, draw protein names?
+#parser.add_option("--proteinName",action="store_true",dest="proteinName") # On volcano plot, draw ProteinNames?
 
 #parser.add_option("--dotSize",action="store",type="int",dest="dotSize",default=3)
 #parser.add_option("--textSize",action="store",type="int",dest="textSize",default=4)
@@ -129,19 +134,19 @@ if options.operation_folder is None:
 
 def appendFraction(x):
     try:
-        #appended_name=str(x['Peptide Modified Sequence']+"_"+str(x['File Name'].split(".")[0].rsplit("-",1)[1]))# MAY HAVE TO CHANGE x['FILE NAME'] TO STR(x['FILE NAME']).... !!!!!!!!!!!! # 3/3/2016 -- BACK TO THIS... See: https://groups.google.com/forum/#!searchin/msstats/multiple$20methods/msstats/ZzP3Q8hGXBY/oTYo60cfovMJ
-        appended_name=str(x['Peptide Modified Sequence']+"-Frac"+str(x['File Name'].split(".")[0].rsplit("-",1)[1]))# MAY HAVE TO CHANGE x['FILE NAME'] TO STR(x['FILE NAME']).... !!!!!!!!!!!!   # 3/3/2016 changed to - to make sure we aren't screwing with MSstats
+        #appended_name=str(x['PeptideModifiedSequence']+"_"+str(x['File Name'].split(".")[0].rsplit("-",1)[1]))# MAY HAVE TO CHANGE x['FILE NAME'] TO STR(x['FILE NAME']).... !!!!!!!!!!!! # 3/3/2016 -- BACK TO THIS... See: https://groups.google.com/forum/#!searchin/msstats/multiple$20methods/msstats/ZzP3Q8hGXBY/oTYo60cfovMJ
+        appended_name=str(x['PeptideModifiedSequence']+"-Frac"+str(x['FileName'].split(".")[0].rsplit("-",1)[1]))# MAY HAVE TO CHANGE x['FILE NAME'] TO STR(x['FILE NAME']).... !!!!!!!!!!!!   # 3/3/2016 changed to - to make sure we aren't screwing with MSstats
         return appended_name
     except:
         print "FAILED ON CORRECTING FRACTION NAMES ON",x
         sys.exit(0)
 
 def fixFileName(x):
-    return str(x['File Name'].split('.')[0].rsplit("-",1)[0])#[:-3])
+    return str(x['FileName'].split('.')[0].rsplit("-",1)[0])#[:-3])
 
 def peptide_level_fixer(x):
     return x.split("_")[0]
-    #return x['Peptide Modified Sequence'].split("_")[0]
+    #return x['PeptideModifiedSequence'].split("_")[0]
 
 os.chdir(options.operation_folder)
 if options.galaxy_csv is not None:
@@ -175,27 +180,27 @@ for eachfile in infiles:
     gc.collect()
 os.chdir(basedir)
 print "done reading csvs..."
-#Peptide Modified Sequence <----- This will be the column to edit... and it'll be based on "File Name".split(".")[0].rsplit("-",1)[1] which should be like "F1" or "F2", etc...
+#PeptideModifiedSequence <----- This will be the column to edit... and it'll be based on "File Name".split(".")[0].rsplit("-",1)[1] which should be like "F1" or "F2", etc...
 combined_results=pandas.concat(dataframe_vector)
 if options.remove_decoys:
-    combined_results.rename(columns={'Protein Name':'ProteinName'},inplace=True)
+    combined_results.rename(columns={'ProteinName':'ProteinName'},inplace=True)
     mask=combined_results[numpy.invert(combined_results.ProteinName.str.contains("Decoys"))]
     combined_results=mask
-    combined_results.rename(columns={'ProteinName':'Protein Name'},inplace=True)
+    combined_results.rename(columns={'ProteinName':'ProteinName'},inplace=True)
 if options.remove_precursors:
-    combined_results.rename(columns={'Fragment Ion':'FragmentIon'},inplace=True)
+    combined_results.rename(columns={'FragmentIon':'FragmentIon'},inplace=True)
     mask=combined_results[numpy.invert(combined_results.FragmentIon.str.contains("precursor"))]
     combined_results=mask
-    combined_results.rename(columns={'FragmentIon':'Fragment Ion'},inplace=True)
+    combined_results.rename(columns={'FragmentIon':'FragmentIon'},inplace=True)
 if options.fractionated:
     fixed_peptide_names=combined_results.apply(appendFraction,axis=1)    
     fixed_file_names=combined_results.apply(fixFileName,axis=1)   
-    combined_results['Peptide Modified Sequence']=fixed_peptide_names
-    combined_results['File Name']=fixed_file_names
+    combined_results['PeptideModifiedSequence']=fixed_peptide_names
+    combined_results['FileName']=fixed_file_names
     combined_results=combined_results.copy(deep=True)
 
 if options.normalization=="globalStandards":
-    combined_results["Stanard Type"]=combined_results["Standard Type"].astype(str)
+    combined_results["StanardType"]=combined_results["StandardType"].astype(str)
     protein_norm_dict={}
     for each_item in options.normalize_protein.split(","):
         if "::" in each_item:
@@ -207,50 +212,50 @@ if options.normalization=="globalStandards":
         this_pep_list=protein_norm_dict[each_protein]
         if len(this_pep_list)==0:
             #combined_results##############################################
-            combined_results.loc[combined_results['Protein Name'].str.contains(each_protein),"Standard Type"]="globalStandard"
+            combined_results.loc[combined_results['ProteinName'].str.contains(each_protein),"StandardType"]="globalStandard"
         else:
             for each_peptide in this_pep_list:
-                combined_results.loc[numpy.logical_and(combined_results['Protein Name'].str.contains(each_protein),combined_results['Peptide Modified Sequence']==each_peptide),"Standard Type"]="globalStandard"
+                combined_results.loc[numpy.logical_and(combined_results['ProteinName'].str.contains(each_protein),combined_results['PeptideModifiedSequence']==each_peptide),"StandardType"]="globalStandard"
 print "about to remove proteins by text..."
 if options.remove_proteins_by_text is not None and options.remove_proteins_by_text is not "":
     proteins_to_remove=options.remove_proteins_by_text.split(",")
     for each_protein in proteins_to_remove:
         each_protein=each_protein.strip()
         print "Removing protein",each_protein,"from the analysis."
-        combined_results=combined_results[numpy.invert(combined_results['Protein Name'].str.contains(each_protein))]
+        combined_results=combined_results[numpy.invert(combined_results['ProteinName'].str.contains(each_protein))]
 
 print "about to filter to keep proteins by text..."
-print "Starting with",len(combined_results['Protein Name'].unique())
+print "Starting with",len(combined_results['ProteinName'].unique())
 if options.keep_proteins_by_text is not None and options.remove_proteins_by_text is not "":
     proteins_to_keep=options.keep_proteins_by_text.split(",")
     #for each_protein in proteins_to_keep:
     #    each_protein=each_protein.strip()
     #    print "Keeping protein",each_protein,"in the analysis."
-    combined_results=combined_results[combined_results['Protein Name'].str.contains("|".join(proteins_to_keep))]
-print "Ending with",len(combined_results['Protein Name'].unique())
+    combined_results=combined_results[combined_results['ProteinName'].str.contains("|".join(proteins_to_keep))]
+print "Ending with",len(combined_results['ProteinName'].unique())
 
 
 #Finally, we'll filter out any protein which doesn't have enough peptides based on the optional input.
 
 
 
-#combined_results.sort(columns='Protein Name',inplace=True)
-combined_results.sort_values(by='Protein Name',inplace=True)
+#combined_results.sort(columns='ProteinName',inplace=True)
+combined_results.sort_values(by='ProteinName',inplace=True)
 
 
-############## We're going to try to extract uniprot acc's from each protein name!
+############## We're going to try to extract uniprot acc's from each ProteinName!
 #######
 #combined_results['gene_name']=
 #uni.map([x for x in combined_results['uniprot_acc'] if x is not numpy.nan])
 
-#combined_results.loc[combined_results['uniprot_acc'] == numpy.nan]['uniprot_acc']=combined_results['Protein Name']
+#combined_results.loc[combined_results['uniprot_acc'] == numpy.nan]['uniprot_acc']=combined_results['ProteinName']
 
-#combined_results['Protein Name']=combined_results.apply(lambda x: 
-combined_results['backup']=combined_results['Protein Name']
+#combined_results['ProteinName']=combined_results.apply(lambda x: 
+combined_results['backup']=combined_results['ProteinName']
 uni_mapping_dict={}
 uniprot_pattern=r'([A-NR-Z][0-9][A-Z][A-Z0-9][A-Z0-9][0-9]|[OPQ][0-9][A-Z0-9][A-Z0-9][A-Z0-9][0-9])'
 if "accToGene" in options.renameProteinType or options.renameProteinType is None: #This means we'll take the acc's and replace with GENE NAMES
-    combined_results['uniprot_acc']=combined_results['Protein Name'].str.extract(uniprot_pattern)
+    combined_results['uniprot_acc']=combined_results['ProteinName'].str.extract(uniprot_pattern)
     #print combined_results['uniprot_acc']
     uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='ACC',t='GENENAME')
     for each_acc in uni_mapping_dict_combined:
@@ -282,16 +287,16 @@ if "accToGene" in options.renameProteinType or options.renameProteinType is None
                 #print catch,type(catch)
                 uni_mapping_dict[str(each_acc)]=str(catch.pop())
 
-    combined_results['Protein Name']=combined_results['uniprot_acc'].map(uni_mapping_dict)
+    combined_results['ProteinName']=combined_results['uniprot_acc'].map(uni_mapping_dict)
     combined_results.drop('uniprot_acc',axis=1,inplace=True)
-    missing_protein_names=combined_results[combined_results['Protein Name'].isnull()]
+    missing_protein_names=combined_results[combined_results['ProteinName'].isnull()]
     for each_key,each_row in missing_protein_names.iterrows():
-        combined_results.loc[each_key,'Protein Name']=combined_results.loc[each_key,'backup']
+        combined_results.loc[each_key,'ProteinName']=combined_results.loc[each_key,'backup']
 
 
 
-elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH PROTEIN NAMES
-    combined_results['uniprot_acc']=combined_results['Protein Name'].str.extract(uniprot_pattern)
+elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH ProteinNameS
+    combined_results['uniprot_acc']=combined_results['ProteinName'].str.extract(uniprot_pattern)
     #print combined_results['uniprot_acc']
     uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='ACC',t='ID')
     for each_acc in uni_mapping_dict_combined:
@@ -323,15 +328,15 @@ elif "accToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND R
                 #print catch,type(catch)
                 uni_mapping_dict[str(each_acc)]=str(catch.pop())
 
-    combined_results['Protein Name']=combined_results['uniprot_acc'].map(uni_mapping_dict)
+    combined_results['ProteinName']=combined_results['uniprot_acc'].map(uni_mapping_dict)
     combined_results.drop('uniprot_acc',axis=1,inplace=True)
-    missing_protein_names=combined_results[combined_results['Protein Name'].isnull()]
+    missing_protein_names=combined_results[combined_results['ProteinName'].isnull()]
     for each_key,each_row in missing_protein_names.iterrows():
-        combined_results.loc[each_key,'Protein Name']=combined_results.loc[each_key,'backup']
+        combined_results.loc[each_key,'ProteinName']=combined_results.loc[each_key,'backup']
 
 
 elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND REPLACE WITH PROTEIN NAMES
-    combined_results['uniprot_acc']=combined_results['Protein Name'].str.extract(uniprot_pattern)
+    combined_results['uniprot_acc']=combined_results['ProteinName'].str.extract(uniprot_pattern)
     #print combined_results['uniprot_acc']
     uni_mapping_dict_combined=uni.map(list(combined_results['uniprot_acc'].unique()),f='GENENAME',t='ID')
     for each_acc in uni_mapping_dict_combined:
@@ -363,11 +368,11 @@ elif "geneToProtein" in options.renameProteinType:  # THIS MEANS WE'LL TAKE AND 
                 #print catch,type(catch)
                 uni_mapping_dict[str(each_acc)]=str(catch.pop())
 
-    combined_results['Protein Name']=combined_results['uniprot_acc'].map(uni_mapping_dict)
+    combined_results['ProteinName']=combined_results['uniprot_acc'].map(uni_mapping_dict)
     combined_results.drop('uniprot_acc',axis=1,inplace=True)
-    missing_protein_names=combined_results[combined_results['Protein Name'].isnull()]
+    missing_protein_names=combined_results[combined_results['ProteinName'].isnull()]
     for each_key,each_row in missing_protein_names.iterrows():
-        combined_results.loc[each_key,'Protein Name']=combined_results.loc[each_key,'backup']
+        combined_results.loc[each_key,'ProteinName']=combined_results.loc[each_key,'backup']
 
 
 elif "norename" in options.renameProteinType:
@@ -387,11 +392,11 @@ combined_results.drop('backup',axis=1,inplace=True)
 #    if combined_results.loc[index,'uniprot_acc'] is numpy.nan:
 #        pass
 #    else:
-#       combined_results.loc[index,'Protein Name']=uni.map(row['uniprot_acc'],f='ACC',t='GENENAME')
+#       combined_results.loc[index,'ProteinName']=uni.map(row['uniprot_acc'],f='ACC',t='GENENAME')
 
 
 #print uni_mapping_dict
-#print combined_results[combined_results['Peptide Modified Sequence']=="INTQWLLTSGTTEANAWK"]
+#print combined_results[combined_results['PeptideModifiedSequence']=="INTQWLLTSGTTEANAWK"]
 
 #combined_results.to_csv("testing_output.csv")
 
@@ -402,35 +407,39 @@ combined_results.drop('backup',axis=1,inplace=True)
 
 
 
-if options.mprophet_q is not None:
-    #We'll take the results below the Q-value cutoff and set them to zero
-    #combined_results=combined_results[combined_results['annotation_QValue']<=options.mprophet_q]
-    #combined_results=combined_results.copy(deep=True)  # BAD
-    #combined_results[combined_results['annotation_QValue']>options.mprophet_q]['Area']=numpy.nan #ADVISED TO CHANGE TO ZERO VALUES IN SKYLINE BY M. CHOI
-    #combined_results[combined_results['annotation_QValue']>options.mprophet_q]['Area']=0
-    combined_results.loc[combined_results['annotation_QValue']>options.mprophet_q,'Area']=0
-    #combined_results=combined_results.copy(deep=True)  # BAD PRACTICE...
-    #combined_results.loc[combined_results['annotation_QValue']>options.mprophet_q,'Area']=numpy.nan
+#if options.mprophet_q is not None:
+#    #We'll take the results below the Q-value cutoff and set them to zero
+#    #combined_results=combined_results[combined_results['annotation_QValue']<=options.mprophet_q]
+#    #combined_results=combined_results.copy(deep=True)  # BAD
+#    #combined_results[combined_results['annotation_QValue']>options.mprophet_q]['Area']=numpy.nan #ADVISED TO CHANGE TO ZERO VALUES IN SKYLINE BY M. CHOI
+#    #combined_results[combined_results['annotation_QValue']>options.mprophet_q]['Area']=0
+#    if int(options.censoredInt)==0:
+#        combined_results.loc[combined_results['annotation_QValue']>options.mprophet_q,'Area']=0
+#    else:
+#        combined_results.loc[combined_results['annotation_QValue']>options.mprophet_q,'Area']=numpy.nan
+#    #combined_results=combined_results.copy(deep=True)  # BAD PRACTICE...
+#    #combined_results.loc[combined_results['annotation_QValue']>options.mprophet_q,'Area']=numpy.nan
 
 
 if options.remove_truncated_peaks:
-    combined_results['Area']
+    print "TRUNCATED PEAK REMOVAL IS NOT IMPLEMENETED HERE<<<<<<<<<<<<<<<<<<<<<<<<<<"
+    #combined_results['Area']
 
 
 
 if options.merge_isotopes:
-    combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(str)
-    combined_results['unique_name']=combined_results['Peptide Modified Sequence']+"_"+combined_results['Precursor Charge']+"_"+combined_results['File Name']+"_"+combined_results['Protein Name']
-    combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(int)
+    combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(str)
+    combined_results['unique_name']=combined_results['PeptideModifiedSequence']+"_"+combined_results['PrecursorCharge']+"_"+combined_results['FileName']+"_"+combined_results['ProteinName']
+    combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(int)
     groups=combined_results.groupby(by=['unique_name'],as_index=False).agg({'Area':numpy.sum})
     #ADD MASK HERE TO SUM PRECURSOR AREAS IN A FUTURE UPDATE TO ALLOW FOR DIA DATA
     combined_results.drop('Area',1,inplace=True)
     merged_results=pandas.merge(combined_results,groups,on=['unique_name'])
     merged_results.drop_duplicates(subset='unique_name',inplace=True)
-    merged_results['Fragment Ion']="sum"
+    merged_results['FragmentIon']="sum"
     combined_results=merged_results
     column_list=combined_results.columns.tolist()
-    column_list.append(column_list.pop(column_list.index('Standard Type')))
+    column_list.append(column_list.pop(column_list.index('StandardType')))
     column_list.append(column_list.pop(column_list.index('Truncated')))
     combined_results.reindex(columns=column_list)
     combined_results.drop('unique_name',1,inplace=True)
@@ -438,17 +447,17 @@ if options.merge_isotopes:
 
 
 if options.peptide_level:
-    fixed_names=combined_results['Peptide Modified Sequence'].apply(peptide_level_fixer)
+    fixed_names=combined_results['PeptideModifiedSequence'].apply(peptide_level_fixer)
     #fixed_names=[row[0] for row in fixed_names_list]
-    combined_results['Protein Name']=fixed_names
+    combined_results['ProteinName']=fixed_names
     combined_results=combined_results.copy(deep=True)
-    combined_results.sort_values(by='Protein Name',inplace=True)
+    combined_results.sort_values(by='ProteinName',inplace=True)
     
 
 if options.remove_repeated_peptides:
-    combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(str)
-    combined_results['unique_name']=combined_results['Peptide Modified Sequence']+"_"+combined_results['Precursor Charge']+"_"+combined_results['Fragment Ion']+"_"+combined_results['File Name']
-    combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(int)
+    combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(str)
+    combined_results['unique_name']=combined_results['PeptideModifiedSequence']+"_"+combined_results['PrecursorCharge']+"_"+combined_results['FragmentIon']+"_"+combined_results['FileName']
+    combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(int)
     print "Removing duplicate peptides...",len(combined_results)
     combined_results.drop_duplicates(subset='unique_name',keep=False,inplace=True)
     print "Done!",len(combined_results)
@@ -456,21 +465,21 @@ if options.remove_repeated_peptides:
 
     
 if options.minimum_peptide_count is not None and options.minimum_peptide_count > 0:
-    #unique_peps_only=combined_results.drop_duplicates(subset="Peptide Modified Sequence")
-    protein_groups=combined_results.groupby("Protein Name")
-    passing_proteins=protein_groups.filter(lambda x: len(x["Peptide Modified Sequence"].unique()) >= options.minimum_peptide_count)
+    #unique_peps_only=combined_results.drop_duplicates(subset="PeptideModifiedSequence")
+    protein_groups=combined_results.groupby("ProteinName")
+    passing_proteins=protein_groups.filter(lambda x: len(x["PeptideModifiedSequence"].unique()) >= options.minimum_peptide_count)
 
-    passing_proteins_list=passing_proteins["Protein Name"].unique().tolist()
-    combined_results=combined_results[combined_results["Protein Name"].isin(passing_proteins_list)]
+    passing_proteins_list=passing_proteins["ProteinName"].unique().tolist()
+    combined_results=combined_results[combined_results["ProteinName"].isin(passing_proteins_list)]
 
 
 if options.remove_empty:
     if options.merge_isotopes:
         #mask = combined_results['Area'].apply(lambda x: numpy.isnan(x))
         #combined_results=combined_results[mask]
-        combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(str)
-        combined_results['unique_name']=combined_results['Peptide Modified Sequence']+"_"+combined_results['Precursor Charge']+"_"+combined_results['Protein Name']
-        combined_results['Precursor Charge']=combined_results['Precursor Charge'].astype(int)
+        combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(str)
+        combined_results['unique_name']=combined_results['PeptideModifiedSequence']+"_"+combined_results['PrecursorCharge']+"_"+combined_results['ProteinName']
+        combined_results['PrecursorCharge']=combined_results['PrecursorCharge'].astype(int)
         groups=combined_results.groupby(by=['unique_name'],as_index=False).agg({'Area':numpy.nansum}) # CHANGED TO NANSUM
         groups.rename(columns={'Area':'TransitionAreaSum'},inplace=True)
         merged_results=pandas.merge(combined_results,groups,on=['unique_name'])
@@ -506,9 +515,9 @@ if options.remove_empty:
         
 
 
-    protein_groups=combined_results.groupby(by='Protein Name',as_index=False).agg({'Area':numpy.nansum})#['Area'].sum()
+    protein_groups=combined_results.groupby(by='ProteinName',as_index=False).agg({'Area':numpy.nansum})#['Area'].sum()
     protein_groups.rename(columns={'Area':'ProteinAreaSum'},inplace=True)
-    merged_results=pandas.merge(combined_results,protein_groups,on=['Protein Name'])
+    merged_results=pandas.merge(combined_results,protein_groups,on=['ProteinName'])
     combined_results=merged_results[merged_results['ProteinAreaSum']>0]
     combined_results.drop('ProteinAreaSum',1,inplace=True)   # DROP TRANSITION AREA SUM, TOO.... BUT LEFT FOR NOW FOR TESTING
     
@@ -526,11 +535,11 @@ if options.remove_empty:
     #        if "AIPT[+80]VNHSGTFSPQAPVPTTVPVVDVR" in str(index):
     #            print each,"THIS IS IT FOR AIPT[+80]VNHSGTFSPQAPVPTTVPVVDVR"
     #        empty_proteins.append(str(index))
-    #combined_results.rename(columns={'Protein Name':'ProteinName'},inplace=True)#
+    #combined_results.rename(columns={'ProteinName':'ProteinName'},inplace=True)#
     #
     #for eachprotein in empty_proteins:
     #    combined_results=combined_results[numpy.invert(combined_results.ProteinName.str.contains(eachprotein))]
-    #   combined_results.rename(columns={'ProteinName':'Protein Name'},inplace=True)
+    #   combined_results.rename(columns={'ProteinName':'ProteinName'},inplace=True)
 
 if options.zeros:
     print "We're going to replace all zero values with np.nan!"
@@ -546,17 +555,17 @@ elif options.zero_to_one:
 #    print "CAUTION: THERE MAY BE ZEROS IN DATASET WHICH MAY INTERFERE WITH STATISTICAL ANALYSIS."
 
 if options.remove_single_run:
-    feature_groups=combined_results.groupby(by=['Protein Name','Peptide Modified Sequence'],as_index=False).count()
+    feature_groups=combined_results.groupby(by=['ProteinName','PeptideModifiedSequence'],as_index=False).count()
     #if options.merge_isotopes:
     #    feature_groups=feature_groups[feature_groups['Area']>1] #>1 means at least 2 runs have data (summed isotopes)
     #else:
     #    feature_groups=feature_groups[feature_groups['Area']>3] #>3 means at least 2 runs have data with 3 isotopes
-    feature_groups['unique_name']=feature_groups['Protein Name']+feature_groups['Peptide Modified Sequence']
+    feature_groups['unique_name']=feature_groups['ProteinName']+feature_groups['PeptideModifiedSequence']
     feature_groups=feature_groups[['Area','unique_name']]
     feature_groups.rename(columns={'Area':'AreaCount'},inplace=True)
     #feature_groups['keep']=1
     
-    combined_results['unique_name']=combined_results['Protein Name']+combined_results['Peptide Modified Sequence']
+    combined_results['unique_name']=combined_results['ProteinName']+combined_results['PeptideModifiedSequence']
     
     #merged_results=pandas.merge(combined_results,groups,on=['unique_name'])
     combined_results=pandas.merge(combined_results,feature_groups,on=['unique_name'])#,indicator=True)#,how="right")
@@ -574,19 +583,20 @@ if options.remove_single_run:
     
 #Okay, now we'll go ahead and print out the final MSstats input file!
 if options.rename:
-    combined_results.rename(columns={'Protein Name':'ProteinName','Peptide Modified Sequence':'PeptideSequence','Precursor Charge':'PrecursorCharge','Fragment Ion':'FragmentIon','Product Charge':'ProductCharge','Isotope Label Type':'IsotopeLabelType','Standard Type':'StandardType','File Name':'Run','Area':'Intensity'},inplace=True)
+    combined_results.rename(columns={'annotation_QValue':'DetectionQValue'})
+#    combined_results.rename(columns={'ProteinName':'ProteinName','PeptideModifiedSequence':'PeptideSequence','PrecursorCharge':'PrecursorCharge','FragmentIon':'FragmentIon','ProductCharge':'ProductCharge','IsotopeLabelType':'IsotopeLabelType','StandardType':'StandardType','File Name':'Run','Area':'Intensity'},inplace=True)
 
 
 if options.mprophet_q is not None:
-    combined_results = combined_results.drop('annotation_QValue', 1)
+#    combined_results = combined_results.drop('annotation_QValue', 1)
     combined_results = combined_results.drop('annotation_Score',1)
 	
 #if options.remove_decoys:
 #    if not options.rename:
-#        combined_results.rename(columns={'Protein Name':'ProteinName'},inplace=True)
+#        combined_results.rename(columns={'ProteinName':'ProteinName'},inplace=True)
 #    mask=combined_results[numpy.invert(combined_results.ProteinName.str.contains("Decoys"))]
 #    if not options.rename:
-#        mask.rename(columns={'ProteinName':'Protein Name'},inplace=True)
+#        mask.rename(columns={'ProteinName':'ProteinName'},inplace=True)
 #    mask.to_csv(str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv",sep=",",index=False)
 #else:
 
@@ -594,21 +604,24 @@ if options.fillMissingFeatures:
     bioreplicate_dict={}
     condition_dict={}
 
-    for each_run in combined_results['Run'].unique():
-        temp=combined_results[combined_results['Run']==each_run]
+#    for each_run in combined_results['Run'].unique():
+#        temp=combined_results[combined_results['Run']==each_run]
+    for each_run in combined_results['FileName'].unique():
+        temp=combined_results[combined_results['FileName']==each_run]
         bioreplicate_dict[each_run]=temp['BioReplicate'].unique()[0]
         condition_dict[each_run]=temp['Condition'].unique()[0]
 
-    grouped_df=combined_results.groupby(["PeptideSequence","PrecursorCharge","FragmentIon","ProductCharge"])
+    grouped_df=combined_results.groupby(["PeptideModifiedSequence","PrecursorCharge","FragmentIon","ProductCharge"])
     concat_list=[]
     correct_length=len(bioreplicate_dict.keys())
     for name,eachgroup in grouped_df:
         if len(eachgroup)!=correct_length:
             for each_name in bioreplicate_dict.keys():#name_list:
-                if each_name not in eachgroup['Run'].unique():
+                if each_name not in eachgroup['FileName'].unique():
                     new_row=eachgroup.head(n=1).copy(deep=True)
-                    new_row['Run']=each_name
-                    new_row['Intensity']=numpy.nan
+                    new_row['FileName']=each_name
+                    new_row['Intensity']=0.0
+                    #new_row['Intensity']=numpy.nan
                     new_row['Condition']=condition_dict[each_name]
                     new_row['BioReplicate']=bioreplicate_dict[each_name]
                     concat_list.append(new_row)
@@ -618,8 +631,8 @@ if options.fillMissingFeatures:
     #combined_results=pandas.concat([combined_results,new_row])
 
 
-combined_results=combined_results.drop('Mass Error PPM', 1)
-combined_results=combined_results.drop('Average Mass Error PPM', 1)
+combined_results=combined_results.drop('MassErrorPPM', 1)
+combined_results=combined_results.drop('AverageMassErrorPPM', 1)
 
 combined_results.to_csv(str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv",sep=",",index=False)
 
@@ -637,10 +650,30 @@ with open("MSstats_Script.R",'wb') as script_writer:
     script_writer.write("library(preprocessCore)\n")
     if os.name=="nt":
         script_writer.write(str("setwd(\""+str(os.path.join(basedir,options.operation_folder))+"\")\n").replace("\\","\\\\"))   #We're going to set the current directory...
-        script_writer.write(str("raw<-read.csv(\""+str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv"+"\")\n").replace("\\","\\\\"))   #We will load in the input CSV file! (In this case by absolute path, though that's not necessary...)
+        script_writer.write(str("raw_skyline<-read.csv(\""+str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv"+"\")\n").replace("\\","\\\\"))   #We will load in the input CSV file! (In this case by absolute path, though that's not necessary...)
     else:
         script_writer.write("setwd(\""+str(os.path.join(basedir,options.operation_folder))+"\")\n")   #We're going to set the current directory...
-        script_writer.write("raw<-read.csv(\""+str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv"+"\")\n")   #We will load in the input CSV file! (In this case by absolute path, though that's not necessary...)
+        script_writer.write("raw_skyline<-read.csv(\""+str(os.path.join(basedir,options.operation_folder))+"/MSstats_combined_input.csv"+"\")\n")   #We will load in the input CSV file! (In this case by absolute path, though that's not necessary...)
+
+    ##### Now we use MSstats's conversion tool to their format.... #####
+    if options.remove_repeated_peptides:
+        only_unique_peptides="TRUE"
+    else:
+        only_unique_peptides="FALSE"
+
+    if options.remove_single_run:
+        remove_single_run_str="\"remove\""
+    else:
+        remove_single_run_str="\"keep\""
+
+    if options.minimum_peptide_count>=2:
+        removeProtein_with1Feature="TRUE"
+    else:
+        removeProtein_with1Feature="FALSE"
+
+    script_writer.write("raw<-SkylinetoMSstatsFormat(raw_skyline, annotation=NULL,qvalue_cutoff={0},useUniquePeptide = {1}, fewMeasurements= {2},removeProtein_with1Feature={3}) \n".format(options.mprophet_q,only_unique_peptides,remove_single_run_str,removeProtein_with1Feature)) # GOOD FOR NEW MSSTATS
+    #script_writer.write("raw<-SkylinetoMSstatsFormat(raw_skyline, annotation=NULL,qvalue_cutoff={0},useUniquePeptide = {1},removeProtein_with1Peptide={3}) \n".format(options.mprophet_q,only_unique_peptides,remove_single_run_str,removeProtein_with1Feature))
+
 
     ##### MSstats dataProcess #####
     script_writer.write("TMP_result<-dataProcess(raw=raw,")
@@ -670,7 +703,7 @@ with open("MSstats_Script.R",'wb') as script_writer:
     elif "equalizeMedians" in options.normalization:
         script_writer.write("normalization=\"equalizeMedians\",")
     elif "globalStandards" in options.normalization:
-        norm_peptide_set=set(combined_results[combined_results["StandardType"]=="globalStandard"]["PeptideSequence"])
+        norm_peptide_set=set(combined_results[combined_results["StandardType"]=="globalStandard"]["PeptideModifiedSequence"])
         if len(norm_peptide_set)>0:
             script_writer.write("normalization=\"globalStandards\",")
             peptide_norm_string="c(\""+"\",\"".join(norm_peptide_set)+"\")"
@@ -703,8 +736,8 @@ with open("MSstats_Script.R",'wb') as script_writer:
         script_writer.write("censoredInt=NULL,MBimpute=FALSE,")
     else:
         if int(options.censoredInt)==0:
-            script_writer.write("censoredInt=0,")
-        elif "NULL" in options.censoredInt:
+            script_writer.write("censoredInt=\"0\",")
+        elif "NA" in options.censoredInt:
             script_writer.write("censoredInt=\"NA\",")
 
 
@@ -746,7 +779,7 @@ with open("MSstats_Script.R",'wb') as script_writer:
 
     script_writer.write("dataProcessPlots(data = TMP_result, type=\"ProfilePlot\", ylimUp=35, featureName=\"NA\",width=7,height=7)\n")
 
-    script_writer.write("dataProcessPlots(data = TMP_result, type=\"ConditionPlot\",save_condition_plot_result=TRUE)\n")
+    script_writer.write("dataProcessPlots(data = TMP_result, type=\"ConditionPlot\",save_condition_plot_result=TRUE,address=\"./\")\n")
 
     #dataProcessPlots(data=ideal,type="QCPlot")
     #dataProcessPlots(data=ideal,type="ProfilePlot")
@@ -858,7 +891,7 @@ with open("MSstats_Script.R",'wb') as script_writer:
 
     script_writer.write("quantification_csv<-read.csv(\"quantification.csv\",check.names=FALSE)\n")
     script_writer.write("comparison_csv<-read.csv(\"comparisonResult_output.csv\",check.names=FALSE)\n")
-    script_writer.write("condition_plot_csv<-read.csv(\"ConditionPlot_value.csv\",check.names=FALSE)\n")
+    script_writer.write("condition_plot_csv<-read.csv(\" ConditionPlot_value.csv\",check.names=FALSE)\n") # THIS HAS A SPACE AT THE START DUE TO MSSTATS USE OF paste INSTEAD OF paste0
     #script_writer.write("experiment_design<-read.csv(\""+options.experiment_file+"\",sep=\"\\t\",check.names=FALSE)\n")
 
 
@@ -896,7 +929,7 @@ shutil.copy('TMP_dataProcess_output.csv',options.processedOutput)
 shutil.copy('quantification.csv',options.quantificationOutput)
 shutil.copy('condition_quantification.csv',options.quantificationConditionOutput)
 shutil.copy('comparisonResult_output.csv',options.comparisonOutput)
-shutil.copy('ConditionPlot_value.csv',options.conditionPlotCSVOutput)
+shutil.copy(r'./ ConditionPlot_value.csv',options.conditionPlotCSVOutput)
 shutil.copy('image.RData',options.RDataOutput)
 shutil.copy('QCPlot.pdf',options.QCplotOutput)
 shutil.copy('ProfilePlot.pdf',options.profilePlotOutput)
