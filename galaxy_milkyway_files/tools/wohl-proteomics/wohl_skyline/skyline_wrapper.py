@@ -40,10 +40,10 @@ warnings.showwarning = customwarn
 #####################################
 #This is the wrapper for SkylineRunner.
 #
-#VERSION 0.81A
-version="0.81A"
-#DATE: 3/08/2018
-date="3/08/2018"
+#VERSION 0.90A
+version="0.90A"
+#DATE: 4/06/2020
+date="4/06/2020"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SkylineRunner wrapper for Galaxy, Wohlschlegel Lab UCLA"
@@ -144,13 +144,13 @@ tmp_stderr_name = tempfile.NamedTemporaryFile(dir = working_directory, suffix = 
 tmp_stdout_name = tempfile.NamedTemporaryFile(dir = working_directory, suffix = '.stdout').name
 
 #####################################
-#This is the wrapper for Paired Isotope Addition from two variable mods on a skyline file.
+#This is the wrapper for Skyline to run under the linux wine environment inside a docker container.
 #This is an embedded copy to aid in execution on Pulsar servers which don't seem to like to copy accessory scripts.
 #
-#VERSION 0.50A
-version="0.50A"
-#DATE: 1/17/2018
-date="1/17/2018"
+#VERSION 0.70A
+version="0.70A"
+#DATE: 4/06/2020
+date="4/06/2020"
 #####################################
 
 
@@ -1325,7 +1325,7 @@ def prependLine(filename,line):# From StackOverflow Q#5914627
 if options.fractions:
     #We have fractionated data.  This means that we'll make a Skyline file for each folder (read: fraction) of the dataset.
     #Let's go ahead and build the shared portion of the command...
-    skyline_runner_cmd = "SkylineCmd --batch-commands="
+    skyline_runner_cmd = "wine SkylineCmd --batch-commands="
     #skyline_runner_cmd = "SkylineRunner --batch-commands="
     os.chdir(basedir)
     cfgwriter=open("skyline_batch",'wb')
@@ -1578,7 +1578,7 @@ else:
         with open('skyline_batch','rb') as batchreader:
             whole=batchreader.read().replace("\r"," ").replace("\n"," ")
 
-        final_cmd="SkylineCmd "+whole
+        final_cmd="wine SkylineCmd "+whole
         #final_cmd="SkylineRunner "+whole
 
         final_cmd=final_cmd.split()
@@ -1675,7 +1675,7 @@ else:
 
         ################################# END DECOYS #########################################
         #Now we're going to strip out all the results so that we can reimport with the decoys!
-        strip_cmd="SkylineCmd --in="+skyline_filename+" --remove-all --out=docker_protection_temporary.sky"
+        strip_cmd="wine SkylineCmd --in="+skyline_filename+" --remove-all --out=docker_protection_temporary.sky"
         notConnectedSkyline=True
         attempt=1
         while notConnectedSkyline:
@@ -1828,7 +1828,7 @@ else:
     #final_cmd=skyline_runner_cmd+each_fraction_fldr+".sky "+skyline_runner_cmd_2
 
     if options.msstats is not None:
-        shutil.copy("C:\\skyline\\WOHL_MSSTATS_REPORT.skyr","WOHL_MSSTATS_REPORT.skyr")
+        shutil.copy("/skyline/WOHL_MSSTATS_REPORT.skyr","WOHL_MSSTATS_REPORT.skyr")
         single_cfgwriter.write("--report-add=WOHL_MSSTATS_REPORT.skyr\n")
         #single_cfgwriter.write("--report-add=\"/galaxy-central/tools/wohl-proteomics/wohl_skyline/WOHL_MSSTATS_REPORT.skyr\"\n")
         single_cfgwriter.write("--report-conflict-resolution=overwrite\n")
@@ -1856,7 +1856,7 @@ else:
     with open('skyline_batch','rb') as batchreader:
         whole=batchreader.read().replace("\r"," ").replace("\n"," ")
 
-    final_cmd="SkylineCmd "+whole
+    final_cmd="wine SkylineCmd "+whole
     #final_cmd="SkylineRunner "+whole
 
     final_cmd=final_cmd.split()
@@ -1891,7 +1891,7 @@ else:
     os.remove("docker_protection_temporary.sky")
 
 
-    shutil.copy("C:\\skyline\\peak_boundaries.skyr","peak_boundaries.skyr")
+    shutil.copy("/skyline/peak_boundaries.skyr","peak_boundaries.skyr")
 
     peak_cfgwriter=open("peak_skyline_batch",'ab')
     peak_cfgwriter.write("--timestamp\n")
@@ -1905,7 +1905,7 @@ else:
     with open('peak_skyline_batch','rb') as batchreader:
         whole=batchreader.read().replace("\r"," ").replace("\n"," ")
 
-    final_cmd="SkylineCmd "+whole
+    final_cmd="wine SkylineCmd "+whole
 
     final_cmd=final_cmd.split()
     print "execution 4:"

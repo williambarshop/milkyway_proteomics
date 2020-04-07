@@ -3,8 +3,8 @@
 ## Written by William Barshop
 ## For use in Galaxy-Proteomics Workflows
 ##
-version="1.09"
-##Date : 2019-04-02
+version="1.10"
+##Date : 2019-09-03
 ##
 ######################################
 from optparse import OptionParser
@@ -18,6 +18,7 @@ import os, gc, shutil
 import math
 import numpy as np
 import glob
+import csv
 #from tqdm import *
 #from multiprocessing import Pool, cpu_count
 #import joblib
@@ -146,38 +147,81 @@ groups_to_mzml={}
 mzML_files=glob.glob("*.mzML")
 mzid_files=[x.replace(".mzML",".mzid") for x in mzML_files]
 
-with open(fractions,'rb') as fraction_file:
-    for eachline in fraction_file:
-        myline=eachline.strip().split('___')
-        print myline
-	if len(myline)>1:
-            if myline[0] not in groups_to_mzml:
-                print "Looking for",myline[0]
-                groups_to_mzml[myline[0]]=glob.glob("*"+myline[0]+"*.mzML")
+#let's sniff the delimiter to find out if this is a DIA fractions file.... (request: weixian)
+#delimiter_sniffer = csv.Sniffer()
+delimiter_sniffer=pandas.read_csv(fractions, engine='python',iterator=True,sep=None)
+fractions_delimiter=delimiter_sniffer._engine.data.dialect.delimiter
+delimiter_sniffer.close()
 
-            if myline[1] not in run_groups:
-                run_groups[myline[1]]=[myline[0]]
-                #print "joining group ",myline[1]
-            else:
-                run_groups[myline[1]].append(myline[0])
-                #print "YOU HAVE DEFINED TWO GROUPS WITH THE SAME IDENTIFYING STRING. THAT'S BAD. DON'T DO THAT UNLESS YOU REALLY MEAN IT FOR SOME STRANGE REASON."
-                print "You should only see this message in the case of fractionation..."
-            if len(myline)>2:
-                if myline[1] in bio_cond_groups:
-                    if myline[2] not in bio_cond_groups[myline[1]]:
-                        bio_cond_groups[myline[1]].append(myline[2])
+if fractions_delimiter=="\t":
+    print "We've received a file that appears to be a processed fractions file.  We will consume it as such."
+    fractions_df=pandas.read_csv(fractions,sep="\t")
+    print fractions_df,"<================== that was frac_df"
+    print fractions_df.columns
+
+    #groups_to_mzml = dict(fractions_df["Fractionation Group Name"],fractions_df["Original File Name"]) #### RIGHT HERE, CHANGE TO SO #52424003
+    groups_to_mzml = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: list(grp["Original File Name"]+".mzML")).to_dict()
+    run_groups = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: list(grp["Original File Name"])).to_dict()
+    bio_cond_groups_unique_len = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: grp["Biological Condition"].unique().size).to_dict()
+    for each_group in bio_cond_groups_unique_len:
+        if bio_cond_groups_unique_len[each_group] > 1:
+            print ">>>>>> ERROR: You have a fractionation group which has multiple biological conditions.  This is an unsupported condition. Quitting!\n\n\n\n\n\n"
+            sys.exit(2)
+    bio_cond_groups = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: grp["Biological Condition"].unique().item(0)).to_dict()
+
+    test_control_groups_unique_len = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: grp["Test or Control"].unique().size).to_dict()
+    for each_group in test_control_groups_unique_len:
+        if test_control_groups_unique_len[each_group] > 1:
+            print ">>>>>> ERROR: You have a fractionation group which has multiple TEST/CONTROL conditions.  This is an unsupported condition. Quitting!\n\n\n\n\n\n"
+            sys.exit(2)
+    test_control_groups = fractions_df.groupby("Fractionation Group Name").apply(lambda grp: list(grp["Test or Control"].unique().item(0))).to_dict()
+    
+    print groups_to_mzml,"grp to mzml\n\n"
+    print test_control_groups,"test control groups\n\n"
+    print run_groups,"run groups\n\n"
+    print bio_cond_groups,"bio cond groups\n\n"
+    #groups_to_mzml = dict(fractions_df["Fractionation Group Name"],fractions_df["Original File Name"])
+    #groups_to_mzml = dict(fractions_df["Fractionation Group Name"],fractions_df["Original File Name"])
+
+
+    #sys.exit(2)
+else:
+    print "This has a delimiter of  type: ",fractions_delimiter," <-----"
+    print "This file appears to be a classic milkyway experimental design file.  We\'ll try to read it that way..."
+
+    with open(fractions,'rb') as fraction_file:
+        for eachline in fraction_file:
+            myline=eachline.strip().split('___')
+            print myline
+            if len(myline)>1:
+                if myline[0] not in groups_to_mzml:
+                    print "Looking for",myline[0]
+                    groups_to_mzml[myline[0]]=glob.glob("*"+myline[0]+"*.mzML")
+                    #groups_to_mzml[myline[0]]=glob.glob(myline[0]+".mzML")
+
+                if myline[1] not in run_groups:
+                    run_groups[myline[1]]=[myline[0]]
+                    #print "joining group ",myline[1]
+                else:
+                    run_groups[myline[1]].append(myline[0])
+                    #print "YOU HAVE DEFINED TWO GROUPS WITH THE SAME IDENTIFYING STRING. THAT'S BAD. DON'T DO THAT UNLESS YOU REALLY MEAN IT FOR SOME STRANGE REASON."
+                    print "You should only see this message in the case of fractionation..."
+                if len(myline)>2:
+                    if myline[1] in bio_cond_groups:
+                        if myline[2] not in bio_cond_groups[myline[1]]:
+                            bio_cond_groups[myline[1]].append(myline[2])
+                        else:
+                            print "I didn't add",myline[2],"because it was already in the bio cond group for",myline[1]
                     else:
-                        print "I didn't add",myline[2],"because it was already in the bio cond group for",myline[1]
-                else:
-                    bio_cond_groups[myline[1]]=[myline[2]]
-            if len(myline)>3:
-                if myline[1] in test_control_groups:
-                    print "SHOULDN'T HAPPEN!!!!!!!!!"
-                    print "At this point, you have the same group with two target/control definitions."
-                    test_control_groups[myline[1]].append(myline[3])
-                else:
-                    test_control_groups[myline[1]]=[myline[3]]
-
+                        bio_cond_groups[myline[1]]=[myline[2]]
+                if len(myline)>3:
+                    if myline[1] in test_control_groups:
+                        print "SHOULDN'T HAPPEN!!!!!!!!!"
+                        print "At this point, you have the same group with two target/control definitions."
+                        test_control_groups[myline[1]].append(myline[3])
+                    else:
+                        test_control_groups[myline[1]]=[myline[3]]
+    
 print bio_cond_groups,"These are the biological conditions."
 print run_groups,"THESE ARE THE RUN GROUPS..."
 print groups_to_mzml,"these are the groups<--->mzML"
