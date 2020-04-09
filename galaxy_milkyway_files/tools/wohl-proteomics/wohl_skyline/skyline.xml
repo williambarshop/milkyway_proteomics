@@ -9,11 +9,11 @@
         #set $light_modstr = str($resLabel.lightmod).replace("___,","___")
       #end if
 
-      awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${database} > ${database}_corrected.fasta &amp;
+      awk '{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }' ${database} > ${database}_corrected.fasta &amp;
       #if not $protdb_upload.protdb
       #set $background_database = $str($protdb_upload.background_database)
 
-      awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${background_database} > ${background_database}_corrected.fasta &amp;
+      awk '{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }' ${background_database} > ${background_database}_corrected.fasta &amp;
       #end if
       python2.7 ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database}_corrected.fasta $add_mods
       --mode ${ms_level.quant_type}
