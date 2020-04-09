@@ -17,10 +17,10 @@ import glob
 #Fraction parsing is taken from from after the final "-" in the file name.  For example, "2015-10-05-wb-HEK293-BioRep1-F1.mzML" 
 #would belong to fraction "F1"
 #
-#VERSION 1.8.0
-version="1.8.0"
-#DATE: 9/18/2017
-date="9/18/2017"
+#VERSION 1.8.1
+version="1.8.1"
+#DATE: 4/09/2020
+date="4/09/2020"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SSL file converter for Galaxy, Wohlschlegel Lab UCLA"
@@ -721,8 +721,19 @@ if options.fido_q_threshold is not None:
     fido_q_df=fido_q_df[fido_q_df['q-value']<=options.fido_q_threshold] #filter down...
     proteins_to_keep=fido_q_df['protein group'].unique().tolist()#this is the list of proteins we want to keep.   
 
-    with open(options.fasta,'rb') as fasta_file:
+    fasta_ids = list()
+    #ensure no duplicates...
+    with open("temp_unique.fasta",'a') as out_fasta:
+        with open(options.fasta,'rb') as fasta_file:
+            for each_seq in SeqIO.parse(fasta_file,"fasta"):
+                if each_seq.id not in fasta_ids:
+                    fasta_ids.append(each_seq.id)
+                    SeqIO.write(each_seq,out_fasta,'fasta')
+    #read in unique fasta as dict...
+    with open("temp_unique.fasta",'rb') as fasta_file:
         fasta_dict=SeqIO.to_dict(SeqIO.parse(fasta_file,"fasta"))
+
+    del fasta_tmp
     new_fasta=[]
     for eachprotein in proteins_to_keep:
         if eachprotein in fasta_dict:
