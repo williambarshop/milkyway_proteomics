@@ -15,7 +15,7 @@
 
       awk "{ if (\$0 !~ />/) {print toupper(\$0)} else {print \$0} }" ${background_database} > ${background_database}_corrected.fasta &amp;
       #end if
-      python ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database}_corrected.fasta $add_mods
+      python2.7 ${__tool_directory__}/skyline_wrapper.py --sslgz ${ssl_and_mzml} ${fractions} --db ${database}_corrected.fasta $add_mods
       --mode ${ms_level.quant_type}
       #if $ms_level.quant_type=="dda_ms1"
       --ms1_res ${ms_level.ms1_resolution}
