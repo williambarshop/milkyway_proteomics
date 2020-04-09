@@ -17,10 +17,10 @@ import glob
 #Fraction parsing is taken from from after the final "-" in the file name.  For example, "2015-10-05-wb-HEK293-BioRep1-F1.mzML" 
 #would belong to fraction "F1"
 #
-#VERSION 1.8.1
-version="1.8.1"
-#DATE: 4/09/2020
-date="4/09/2020"
+#VERSION 1.8.0
+version="1.8.0"
+#DATE: 9/18/2017
+date="9/18/2017"
 #####################################
 print "-----------------------------------------------------------------------"
 print "Welcome to the SSL file converter for Galaxy, Wohlschlegel Lab UCLA"
@@ -733,7 +733,6 @@ if options.fido_q_threshold is not None:
     with open("temp_unique.fasta",'rb') as fasta_file:
         fasta_dict=SeqIO.to_dict(SeqIO.parse(fasta_file,"fasta"))
 
-    del fasta_tmp
     new_fasta=[]
     for eachprotein in proteins_to_keep:
         if eachprotein in fasta_dict:
