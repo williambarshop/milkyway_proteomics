@@ -65,7 +65,7 @@ class obo_parser:
         for each in self.parseGOOBO(go_file):
             if not 'xref' in each.keys():
                 continue
-            mass=[x.split(" ",1)[1].replace("\"","") for x in each['xref'] if "delta_avge_mass" in x]
+            mass=[x.split(" ",1)[1].replace("\"","") for x in each['xref'] if "delta_mono_mass" in x]
             if len(mass) < 1:
                 continue #Nothing there...
             else:

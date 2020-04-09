@@ -12,12 +12,12 @@ from os.path import isfile, join
 ###############################################
 #CRUX PIN FIXER FOR FRACTIONATED DATA
 #William Barshop - 2015/08/24
-date="2015/08/24"
+date="2020/04/08"
 #Laboratory of James A. Wohlschlegel, UCLA
 #
 #VERSION:--------------------------------------
-#0.7.5 ALPHA
-version="0.7.5"
+#0.7.6 ALPHA
+version="0.7.6"
 #
 #DESCRIPTION:----------------------------------
 #crux_pin_fixer.py is a script designed to correct pin files generated from msgf2pin
@@ -213,7 +213,7 @@ for eachfiles in zipped:
                         #    print each_match
                         for each_mod in match:
                             if each_mod in mod_dict:
-                                new_peptide=new_peptide.replace("UNIMOD:"+each_mod,mod_dict[each_mod],1)
+                                new_peptide=new_peptide.replace("[UNIMOD:"+each_mod+"]",mod_dict[each_mod],1)
                             else:
                                 print "ERROR: Modification UNIMOD:{0} was NOT FOUND in our obo file!".format(each_mod)
                                 sys.exit(2)
