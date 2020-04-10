@@ -203,6 +203,7 @@
         <tool id="fidoCT" destination="win_pulsar" />
         <tool id="skylinerunner" destination="win_pulsar" />
         <tool id="msconvert_dia_demux" destination="win_pulsar" />
+        <tool id="ssl_converter" destination="win_pulsar" />
     </tools>
     <limits>
         <limit type="destination_total_concurrent_jobs" id="slurm_cluster">6</limit>

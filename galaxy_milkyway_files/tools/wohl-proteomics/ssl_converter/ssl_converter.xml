@@ -35,7 +35,7 @@
 
    tar -zxvf $perco_out;
    mkdir ssl_files;
-   python /galaxy-central/tools/wohl-proteomics/ssl_converter/ssl_converter.py
+   python2.7 /galaxy-central/tools/wohl-proteomics/ssl_converter/ssl_converter.py
    --pout output/
    --ssl ssl_files
    --fasta '${fwd_fasta_file.display_name}'

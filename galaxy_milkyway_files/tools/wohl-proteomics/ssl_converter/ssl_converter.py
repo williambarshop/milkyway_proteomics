@@ -508,12 +508,12 @@ if not fractions: #This is for all times when we have 1-D runs to compare.
         for file in glob.glob("*type2.ssl"):
             os.rename(file,file.split(".")[0]+".not_ssl")
             print "protected",file,"from inclusion in spectral lib..."
-        cmd = 'wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe -a milkyway-galaxy -m 1000M *.ssl combined_spectral_lib.blib'
+        cmd = 'wine BlibBuild -a milkyway-galaxy -m 1000M *.ssl combined_spectral_lib.blib'
         print "running command ",cmd
         subprocess.call(cmd,shell=True)
         for file in glob.glob("*.not_ssl"):
             os.rename(file,file.split(".")[0]+".ssl")
-        filtercmd='wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibFilter.exe combined_spectral_lib.blib filtered.blib'
+        filtercmd='wine BlibFilter combined_spectral_lib.blib filtered.blib'
         subprocess.call(filtercmd,shell=True)
 
         if options.mc_mzml_files is not None: #and not options.no_mzml:
@@ -659,11 +659,11 @@ else: #This is for when fractions is true... so we'll organize the output into f
                 print "protected",file,"from inclusion in spectral lib..."
 
             command_folder=basedir+"/"+options.ssl_output_folder+"/"+eachfraction.replace("-","")+"/"
-            cmd = 'wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibBuild.exe -a milkyway-galaxy -m 1000M {0}*.ssl {0}combined_spectral_lib.blib'.format(command_folder)
+            cmd = 'wine BlibBuild -a milkyway-galaxy -m 1000M {0}*.ssl {0}combined_spectral_lib.blib'.format(command_folder)
             blib_cmds.append(cmd)
             print "storing command to run later",cmd
             #subprocess.call(cmd,shell=True)
-            filtercmd='wine /galaxy-central/tools/wohl-proteomics/ssl_converter/skylineblib/BlibFilter.exe {0} {1}'.format(command_folder+"combined_spectral_lib.blib",command_folder+"filtered_spectral_lib.blib")
+            filtercmd='wine BlibFilter {0} {1}'.format(command_folder+"combined_spectral_lib.blib",command_folder+"filtered_spectral_lib.blib")
             filter_cmds.append(filtercmd)
             print "storing command for filter later",filtercmd
             #subprocess.call(filtercmd,shell=True)
