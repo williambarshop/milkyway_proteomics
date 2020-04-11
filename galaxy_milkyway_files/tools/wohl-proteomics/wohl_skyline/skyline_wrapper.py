@@ -1593,7 +1593,7 @@ else:
                 sys.exit(2)
             time.sleep(60)
             print "MAKING ATTEMPT NUMBER ",str(attempt)
-            proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+            proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)#, env=os.environ)
             #proc = subprocess.Popen("execute.bat")#, env=os.environ)
             output_communication=proc.communicate()[0]
             print output_communication
@@ -1684,7 +1684,7 @@ else:
                 sys.exit(2)
             time.sleep(60)
             print "MAKING ATTEMPT NUMBER ",str(attempt)
-            proc = subprocess.Popen(args=strip_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+            proc = subprocess.Popen(args=strip_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)#, env=os.environ)
             #proc = subprocess.Popen("execute.bat")#, env=os.environ)
             output_communication=proc.communicate()[0]
             print output_communication
@@ -1745,7 +1745,7 @@ else:
                 sys.exit(2)
             time.sleep(60)
             print "MAKING ATTEMPT NUMBER ",str(attempt)
-            proc = subprocess.Popen(args=setup_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+            proc = subprocess.Popen(args=setup_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)#, env=os.environ)
             output_communication=proc.communicate()[0]
             print output_communication
             returncode = proc.wait()
@@ -1871,7 +1871,7 @@ else:
             sys.exit(2)
         time.sleep(60)
         print "MAKING ATTEMPT NUMBER ",str(attempt)
-        proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+        proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)#, env=os.environ)
         #proc = subprocess.Popen("execute.bat")#, env=os.environ)
         output_communication=proc.communicate()[0]
         print output_communication
@@ -1920,7 +1920,7 @@ else:
             sys.exit(2)
         time.sleep(60)
         print "MAKING ATTEMPT NUMBER ",str(attempt)
-        proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)#, env=os.environ)
+        proc = subprocess.Popen(args=final_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)#, env=os.environ)
         #proc = subprocess.Popen("execute.bat")#, env=os.environ)
         output_communication=proc.communicate()[0]
         print output_communication
