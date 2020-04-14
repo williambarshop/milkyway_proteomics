@@ -1678,26 +1678,8 @@ else:
         strip_cmd="wine SkylineCmd --in="+skyline_filename+" --remove-all --out=docker_protection_temporary.sky"
         notConnectedSkyline=True
         attempt=1
-        strip_cmd=strip_cmd.split()
-        while notConnectedSkyline:
-            if attempt == 5:
-                print "I can't get a connection to Skyline... something wrong!\nQuitting!~"
-                sys.exit(2)
-            time.sleep(60)
-            print "MAKING ATTEMPT NUMBER ",str(attempt)
-            proc = subprocess.Popen(args=strip_cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True, env=os.environ)
-            output_communication=proc.communicate()[0]
-            print output_communication
-            returncode = proc.wait()
-            if "Error: Could not connect to Skyline." in output_communication:
-                attempt+=1
-                continue
-            if returncode != 0:
-                raise Exception, "Program returned with non-zero exit code %d." % (returncode)
-            else:
-                notConnectedSkyline=False
-
-        time.sleep(20)
+        os.system(strip_cmd)
+        time.sleep(10)
 
         os.remove(skyline_filename)
         shutil.copy("docker_protection_temporary.sky",skyline_filename)
