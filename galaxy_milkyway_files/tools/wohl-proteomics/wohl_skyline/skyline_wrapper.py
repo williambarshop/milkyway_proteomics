@@ -1676,8 +1676,6 @@ else:
         ################################# END DECOYS #########################################
         #Now we're going to strip out all the results so that we can reimport with the decoys!
         strip_cmd="wine SkylineCmd --in="+skyline_filename+" --remove-all --out=docker_protection_temporary.sky"
-        notConnectedSkyline=True
-        attempt=1
         os.system(strip_cmd)
         time.sleep(10)
 
@@ -1752,7 +1750,7 @@ else:
 
     #Now that the file has had all the targets set up, and resaved, the file should now be ready for import with parallelism.
     if options.num_procs is not None:
-        cfgwriter.write("--import-process-count={0}\n".format(options.num_procs))
+        cfgwriter.write("--import-thread-count={0}\n".format(options.num_procs))
 
     
     if options.mprophet is not None:
@@ -1972,7 +1970,7 @@ os.chdir(basedir)
 #zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ | 7z a -si OUTPUTARCHIVE.tar.gz"
 #zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar * | 7z a -si OUTPUTARCHIVE.tar.gz"
 os.chdir("..")
-zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ | pigz.exe > OUTPUTARCHIVE.tar.gz"
+zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ | pigz > OUTPUTARCHIVE.tar.gz"
 subprocess.call(args=zip_cmd,shell=True,env=os.environ)
 
 shutil.move("OUTPUTARCHIVE.tar.gz",options.output)
