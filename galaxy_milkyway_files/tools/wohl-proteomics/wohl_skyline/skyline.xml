@@ -136,7 +136,7 @@
            <option value="">None</option>
         </param>
 
-        <param name="num_procs" type="integer" value="6" min="0" max="32" label="Number of parallel import processes" />
+        <param name="num_procs" type="integer" value="4" min="1" max="12" label="Number of parallel import processes" />
 
 
    <section name="resLabel" title="Residue Labeling Experiment Parameters" expanded="False">
