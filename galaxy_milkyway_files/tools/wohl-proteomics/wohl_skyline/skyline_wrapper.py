@@ -1750,7 +1750,7 @@ else:
 
     #Now that the file has had all the targets set up, and resaved, the file should now be ready for import with parallelism.
     if options.num_procs is not None:
-        cfgwriter.write("--import-thread-count={0}\n".format(options.num_procs))
+        cfgwriter.write("--import-threads={0}\n".format(options.num_procs))
 
     
     if options.mprophet is not None:
