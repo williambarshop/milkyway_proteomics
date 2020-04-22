@@ -1836,6 +1836,7 @@ else:
     with open('skyline_batch','rb') as batchreader:
         whole=batchreader.read().replace("\r"," ").replace("\n"," ")
 
+    #final_cmd="wine SkylineCmd --batch-commands=skyline_batch"
     final_cmd="wine SkylineCmd "+whole
     #final_cmd="SkylineRunner "+whole
 
@@ -1970,7 +1971,7 @@ os.chdir(basedir)
 #zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ | 7z a -si OUTPUTARCHIVE.tar.gz"
 #zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar * | 7z a -si OUTPUTARCHIVE.tar.gz"
 os.chdir("..")
-zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ | pigz > OUTPUTARCHIVE.tar.gz"
+zip_cmd="7z a -ttar -so skyline_output"+str(datetime.datetime.now()).replace(" ","_").replace(":","_")+".tar ssl_files/ 2>/dev/null | pigz > OUTPUTARCHIVE.tar.gz"
 subprocess.call(args=zip_cmd,shell=True,env=os.environ)
 
 shutil.move("OUTPUTARCHIVE.tar.gz",options.output)
